@@ -306,8 +306,8 @@ KDE Plasma desktop session.
 
 **Is it safe?** The root daemon only listens on a local socket, only lets in root and members of
 the `xpanel` group (checked per connection), and only accepts a fixed, validated set of settings
-(TDP between 5 and 40 W, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
-system, only the controller and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
+(power limits within the range the firmware reports, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
+system, only the controller, motion sensor and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
 See [SECURITY.md](SECURITY.md) for details. As with any tool that changes power limits: use at
 your own risk.
 
