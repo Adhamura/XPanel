@@ -151,8 +151,9 @@ Remove: `scripts/uninstall.sh` and `sudo scripts/uninstall-daemon.sh`.
 ./build-release.sh --container   # builds in debian:trixie with Docker / Podman, like CI
 ```
 
-On Windows, `build-release.bat` runs the same script inside WSL. Pushing a `v*` tag makes GitHub
-Actions build the archive and publish a release.
+On Windows, `build-release.bat` runs the same script inside WSL. To publish a GitHub release,
+run **Actions → Release → Run workflow** on `main` (it tags `v<version>` from `CMakeLists.txt`), or
+push a `v*` tag.
 
 ## Using XPanel
 
