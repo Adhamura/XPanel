@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QThread>
 
+#include <cerrno>
+#include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -23,12 +25,12 @@ bool writeFile(const QString &fn, const QString &value)
 {
     QFile f(fn);
     if (!f.open(QIODevice::WriteOnly)) {
-        qWarning("xpanel-daemon: cannot open %s", qPrintable(fn));
+        qWarning("xpanel-daemon: cannot open %s: %s", qPrintable(fn), qPrintable(f.errorString()));
         return false;
     }
-    const bool ok = f.write(value.toUtf8()) >= 0;
+    const bool ok = f.write(value.toUtf8()) >= 0 && f.flush();
     if (!ok)
-        qWarning("xpanel-daemon: write '%s' to %s failed", qPrintable(value), qPrintable(fn));
+        qWarning("xpanel-daemon: write '%s' to %s failed: %s", qPrintable(value), qPrintable(fn), qPrintable(f.errorString()));
     return ok;
 }
 
@@ -182,7 +184,7 @@ bool applyLighting(const QString &effect, const QString &color, int brightness, 
     }
     const int fd = ::open(dev.toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
     if (fd < 0) {
-        qWarning("xpanel-daemon: cannot open %s", qPrintable(dev));
+        qWarning("xpanel-daemon: cannot open %s: %s", qPrintable(dev), strerror(errno));
         return false;
     }
 
@@ -259,6 +261,8 @@ QJsonObject gpuRange()
 {
     QJsonObject o{{"gpuMin", 0}, {"gpuMax", 0}};
     const QString dev = gpuDevice();
+    if (dev.isEmpty())
+        return o;
     // OD_RANGE: "SCLK:     800Mhz       2700Mhz"
     for (const QString &l : readFile(dev + "/pp_od_clk_voltage").split('\n')) {
         if (!l.startsWith("SCLK:"))

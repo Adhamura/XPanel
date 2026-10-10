@@ -1,22 +1,60 @@
 [Unit]
 Description=XPanel daemon (ROG Ally TDP, fan, charge limit, lighting, input layer)
-After=systemd-udev-settle.service
+# The input layer needs /dev/uinput when it starts.
+Wants=modprobe@uinput.service
+After=modprobe@uinput.service systemd-udevd.service
 
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/xpanel-daemon
 Restart=on-failure
+RestartSec=2
 # The input layer hides the raw Ally pad from games while it runs. When the daemon stops
 # (also after a crash), let udev restore the normal device permissions.
 ExecStopPost=/usr/bin/udevadm trigger --action=change --subsystem-match=input --subsystem-match=hidraw
-RestartSec=2
 RuntimeDirectory=xpanel
 RuntimeDirectoryMode=0755
 StateDirectory=xpanel
 Environment=XPANEL_SOCKET=/run/xpanel/xpanel.sock
-NoNewPrivileges=yes
+Environment=XPANEL_GROUP=xpanel
+
+# ---- Sandbox (see SECURITY.md) ----
+# What the daemon needs: write sysfs (asus-armoury TDP, platform_profile, hwmon fan,
+# charge limit, cpufreq, amdgpu clock), open and chmod the Ally's input / hidraw nodes,
+# create uinput devices, and write /var/lib/xpanel and /run/xpanel. Nothing else.
+# If a setting stops working, `journalctl -u xpanel-daemon -b` names the file and the error.
+#
+# Files: everything read-only except /dev, /proc, /sys and the two directories above.
+# (No ProtectKernelTunables: it would make /sys read-only.)
+ProtectSystem=strict
 ProtectHome=yes
 PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+# Devices: input (event*, js*), hidraw (pad and Aura lighting) and uinput only.
+DevicePolicy=closed
+DeviceAllow=char-input rw
+DeviceAllow=char-hidraw rw
+DeviceAllow=/dev/uinput rw
+# Root, but only these capabilities: DAC_OVERRIDE / DAC_READ_SEARCH to open nodes the input
+# layer set to mode 0 (the Aura hidraw can be one of them), FOWNER for chmod.
+CapabilityBoundingSet=CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER
+NoNewPrivileges=yes
+# Kernel interfaces: local sockets only (the app's socket, user lookups), no namespaces,
+# no realtime, no set-uid files, native system calls only.
+RestrictAddressFamilies=AF_UNIX AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+UMask=0022
 
 [Install]
 WantedBy=multi-user.target
