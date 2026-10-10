@@ -3,7 +3,7 @@
 ## 1.0.3
 
 - **Fixed**: the 1.0.2 AppImage showed no icons on the Quick Panel tiles: the Qt SVG plugins
-  were not bundled. The release build now fails if the SVG, X11 or Wayland / layer-shell
+  were not bundled (Debian 13 ships them in the separate package `qt6-svg-plugins`). The release build now fails if the SVG, X11 or Wayland / layer-shell
   plugins are missing from the AppImage.
 - Releases are automatic: a merge to `main` with a new version in `CMakeLists.txt` builds,
   smoke-tests (the AppImage is started on a virtual screen) and publishes the release.
