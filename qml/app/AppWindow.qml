@@ -73,6 +73,7 @@ Item {
             app.lastState = st
         }
         function onConnectedChanged() { app.note(device.connected ? "xpanel-daemon connected" : "xpanel-daemon disconnected") }
+        function onErrorChanged() { if (device.error) app.note("xpanel-daemon: " + device.error) }
     }
     Connections { target: library; function onLaunched(id) { app.note("Started " + id) } }
 

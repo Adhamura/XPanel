@@ -9,12 +9,16 @@
 class DeviceClient : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
+    // why the daemon refused us ("" when connected or not running)
+    Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(int rev READ rev NOTIFY stateChanged)
 
 public:
     explicit DeviceClient(QObject *parent = nullptr);
 
-    bool connected() const { return m_sock.state() == QLocalSocket::ConnectedState; }
+    // true once the daemon has sent its state (a refused connection never counts)
+    bool connected() const { return m_ready; }
+    QString error() const { return m_error; }
     int rev() const { return m_rev; }
 
     Q_INVOKABLE QVariant value(const QString &key) const;
@@ -24,6 +28,7 @@ public:
 
 signals:
     void connectedChanged();
+    void errorChanged();
     void stateChanged();
     void special(const QString &name); // Ally buttons: left_button, left_button_long, right_button
     void nav(const QString &name);     // menu navigation while grabbed: up down left right a b x y lb rb
@@ -39,4 +44,6 @@ private:
     QTimer m_retry;
     int m_rev = 0;
     bool m_grab = false;
+    bool m_ready = false;
+    QString m_error;
 };

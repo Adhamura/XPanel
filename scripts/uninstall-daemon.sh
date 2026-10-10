@@ -5,4 +5,5 @@ set -euo pipefail
 systemctl disable --now xpanel-daemon.service 2>/dev/null || true
 rm -f /etc/systemd/system/xpanel-daemon.service /usr/local/bin/xpanel-daemon
 systemctl daemon-reload
+echo "The group xpanel is kept (remove it with: sudo groupdel xpanel)."
 echo "xpanel-daemon removed. To use hhd again: sudo systemctl enable --now hhd@\$SUDO_USER"

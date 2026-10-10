@@ -13,12 +13,14 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
     m_retry.setInterval(3000);
     connect(&m_retry, &QTimer::timeout, this, &DeviceClient::connectNow);
     connect(&m_sock, &QLocalSocket::connected, this, [this] {
-        emit connectedChanged();
         send({{"get", true}});
         if (m_grab) send({{"input", QJsonObject{{"grab", true}}}});
     });
     connect(&m_sock, &QLocalSocket::disconnected, this, [this] {
-        emit connectedChanged();
+        if (m_ready) {
+            m_ready = false;
+            emit connectedChanged();
+        }
         m_retry.start();
     });
     connect(&m_sock, &QLocalSocket::errorOccurred, this, [this] {
@@ -47,17 +49,34 @@ void DeviceClient::onRead()
             else if (kind == "action") emit action(name);
             continue;
         }
+        if (msg.contains("error")) {
+            const QString why = msg["message"].toString(msg["error"].toString());
+            if (why != m_error) {
+                qWarning("XPanel: xpanel-daemon refused the connection: %s", qPrintable(why));
+                m_error = why;
+                emit errorChanged();
+            }
+            continue;
+        }
         if (msg.contains("state")) {
             m_state = msg["state"].toObject();
             ++m_rev;
             emit stateChanged();
+            if (!m_ready) {
+                m_ready = true;
+                emit connectedChanged();
+                if (!m_error.isEmpty()) {
+                    m_error.clear();
+                    emit errorChanged();
+                }
+            }
         }
     }
 }
 
 void DeviceClient::send(const QJsonObject &msg)
 {
-    if (!connected())
+    if (m_sock.state() != QLocalSocket::ConnectedState)
         return;
     m_sock.write(QJsonDocument(msg).toJson(QJsonDocument::Compact) + "\n");
     m_sock.flush();

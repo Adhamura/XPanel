@@ -1,0 +1,2 @@
+# xpanel-daemon accepts commands from root and members of this group (see SECURITY.md)
+g xpanel - -
