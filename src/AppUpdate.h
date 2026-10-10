@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QMap>
 #include <QNetworkAccessManager>
+#include <QNetworkReply> // QPointer<QNetworkReply> needs the complete type (Qt 6.8)
 #include <QObject>
 #include <QPointer>
 #include <QTimer>
