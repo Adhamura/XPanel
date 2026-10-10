@@ -1,10 +1,12 @@
 name: Release
 
-# Push a tag like v1.0.1 (it must match project(VERSION) in CMakeLists.txt) to publish
-# xpanel-<version>-linux-x86_64.tar.gz and its .sha256 as a GitHub Release.
+# Publishes xpanel-<version>-linux-x86_64.tar.gz and its .sha256 as a GitHub Release.
+# Either push a tag like v1.0.1 (it must match project(VERSION) in CMakeLists.txt), or
+# Actions -> Release -> "Run workflow" on main: it creates the tag v<version> itself.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,15 +24,18 @@ jobs:
             qt6-base-dev qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev \
             liblayershellqtinterface-dev libgl-dev libxkbcommon-dev
       - uses: actions/checkout@v4
-      - name: Check that the tag matches the project version
+      - name: Release tag from the project version
         run: |
           v=$(sed -n 's/^project(XPanel VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
-          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1; }
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "v$v" != "$GITHUB_REF_NAME" ]; then
+              echo "Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1
+          fi
+          echo "TAG=v$v" >> "$GITHUB_ENV"
       - name: Build release archive
         run: ./build-release.sh --clean
       - name: Release notes from CHANGELOG.md
         run: |
-          v=${GITHUB_REF_NAME#v}
+          v=${TAG#v}
           awk -v v="$v" '$0 ~ "^## "v { on=1; next } /^## / { on=0 } on' CHANGELOG.md > notes.md
           cat >> notes.md <<'NOTES'
 
@@ -44,7 +49,9 @@ jobs:
           NOTES
       - uses: softprops/action-gh-release@v2
         with:
-          name: XPanel ${{ github.ref_name }}
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          name: XPanel ${{ env.TAG }}
           body_path: notes.md
           files: |
             dist/*.tar.gz
