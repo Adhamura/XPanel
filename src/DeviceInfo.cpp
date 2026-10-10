@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QHash>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QRegularExpression>
@@ -69,7 +70,7 @@ QVariantList DeviceInfo::storage() const
         if (!dev.startsWith("/dev/") || seen.contains(dev))
             continue; // btrfs subvolumes share one device: show it once
         seen.insert(dev);
-        out << QVariantMap{{"name", s.displayName() == "/" ? "System (/)" : s.displayName()},
+        out << QVariantMap{{"name", s.displayName() == "/" ? tr("System (/)") : s.displayName()},
                            {"path", s.rootPath()}, {"device", dev}, {"fs", QString::fromUtf8(s.fileSystemType())},
                            {"total", double(s.bytesTotal())}, {"free", double(s.bytesAvailable())}};
     }
@@ -87,7 +88,12 @@ QVariantMap DeviceInfo::battery() const
     const double design = num("energy_full_design", "charge_full_design");
     QVariantMap m;
     m["capacity"] = readFile(b + "capacity").toInt();
-    m["status"] = readFile(b + "status");
+    // sysfs status words ("Not charging" ...): shown translated, the rest stays as the kernel says
+    const QString status = readFile(b + "status");
+    const QHash<QString, QString> kStatus = {
+        {"Charging", tr("Charging")}, {"Discharging", tr("Discharging")}, {"Full", tr("Full")},
+        {"Not charging", tr("Not charging")}, {"Unknown", tr("Unknown")}};
+    m["status"] = kStatus.value(status, status);
     m["cycles"] = readFile(b + "cycle_count").toInt();
     m["health"] = design > 0 ? qRound(full * 100 / design) : 0;
     // µWh or µAh; show Wh when the energy files exist

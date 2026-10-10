@@ -2,6 +2,7 @@
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QCoreApplication>
 #include <QDBusMessage>
 #include <QFileInfo>
 #include <QProcess>
@@ -82,7 +83,7 @@ QString label(Kind k)
     case Kind::Gamescope: return "Steam Game Mode";
     case Kind::Other: break;
     }
-    return "Other desktop";
+    return QCoreApplication::translate("Desktop", "Other desktop");
 }
 
 Caps capabilities(Kind k, const std::function<bool(const QString &)> &haveTool, bool haveSessionId)
@@ -181,11 +182,11 @@ void showInFileManager(const QString &path, bool selectFile)
 QString DesktopInfo::where() const
 {
     switch (Desktop::current()) {
-    case Desktop::Kind::Gamescope: return "in Steam Game Mode";
-    case Desktop::Kind::Other: return "on this desktop";
+    case Desktop::Kind::Gamescope: return tr("in Steam Game Mode");
+    case Desktop::Kind::Other: return tr("on this desktop");
     default: break;
     }
-    return "on " + label();
+    return tr("on %1").arg(label());
 }
 
 QStringList DesktopInfo::unavailableTiles() const

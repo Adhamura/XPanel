@@ -21,12 +21,12 @@ Rectangle {
 
     Text {
         x: 44 * ed.s; y: 36 * ed.s
-        text: "Edit Quick Panel"
+        text: qsTr("Edit Quick Panel")
         color: T.text; font.pixelSize: 34 * ed.s; font.bold: true; font.italic: true
     }
     Text {
         anchors.right: parent.right; anchors.rightMargin: 44 * ed.s; y: 46 * ed.s
-        text: "Reset"
+        text: qsTr("Reset")
         color: T.accent; font.pixelSize: 24 * ed.s
         MouseArea { anchors.fill: parent; anchors.margins: -10; onClicked: config.resetTiles() }
     }
@@ -90,7 +90,7 @@ Rectangle {
     Text {
         anchors.right: parent.right; anchors.rightMargin: 44 * ed.s
         anchors.bottom: parent.bottom; anchors.bottomMargin: 28 * ed.s
-        text: "Ⓐ Add / Remove    Ⓨ Done"
+        text: qsTr("Ⓐ Add / Remove    Ⓨ Done")
         color: T.text; font.pixelSize: 26 * ed.s
     }
 }

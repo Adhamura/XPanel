@@ -30,7 +30,7 @@ QString GameWatcher::titleOf(const QString &id) const
     const QString t = m_titleOf ? m_titleOf(id) : QString();
     if (!t.isEmpty())
         return t;
-    return id.startsWith("steam:") ? "Steam app " + id.mid(6) : id.section(':', 1);
+    return id.startsWith("steam:") ? tr("Steam app %1").arg(id.mid(6)) : id.section(':', 1);
 }
 
 #ifdef Q_OS_WIN

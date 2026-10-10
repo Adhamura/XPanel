@@ -20,31 +20,31 @@ CcPage {
         Column {
             anchors.verticalCenter: parent.verticalCenter; spacing: 6
             Text { text: page.user.name || ""; color: T.text; font.pixelSize: 34; font.bold: true }
-            Text { text: "Local account: " + (page.user.login || "") + "  ·  " + (page.info.hostname || ""); color: T.dim; font.pixelSize: 17 }
-            CcButton { visible: desktop.userSettings; text: desktop.kde ? "Edit profile (KDE)" : "Edit profile"
+            Text { text: qsTr("Local account: %1  ·  %2").arg(page.user.login || "").arg(page.info.hostname || ""); color: T.dim; font.pixelSize: 17 }
+            CcButton { visible: desktop.userSettings; text: desktop.kde ? qsTr("Edit profile (KDE)") : qsTr("Edit profile")
                        onClicked: tweaks.openSystemSettings("kcm_users") }
         }
     }
 
-    CcSection { title: "My Products" }
+    CcSection { title: qsTr("My Products") }
     CcRow { title: (device.rev, device.value("model") && device.value("model") !== "unknown"
                     ? "ASUS " + device.value("modelName") : page.info.vendor + " " + page.info.model)
-            description: "BIOS " + page.info.bios + " (" + page.info.biosDate + ")" +
-                         (device.value("serial") ? "  ·  Serial " + device.value("serial") : "")
-        CcButton { text: "Device info"; onClicked: { app.settingsPage = "general"; app.tab = "settings" } } }
+            description: qsTr("BIOS %1 (%2)").arg(page.info.bios).arg(page.info.biosDate) +
+                         (device.value("serial") ? qsTr("  ·  Serial %1").arg(device.value("serial")) : "")
+        CcButton { text: qsTr("Device info"); onClicked: { app.settingsPage = "general"; app.tab = "settings" } } }
     Repeater {
         model: deviceInfo.controllers()
-        CcRow { title: modelData.name; description: "Controller  ·  " + modelData.bus + "  ·  " + modelData.id; Item { width: 1; height: 1 } }
+        CcRow { title: modelData.name; description: qsTr("Controller  ·  %1  ·  %2").arg(modelData.bus).arg(modelData.id); Item { width: 1; height: 1 } }
     }
 
-    CcSection { title: "Notifications"; note: "What XPanel changed during this session." }
+    CcSection { title: qsTr("Notifications"); note: qsTr("What XPanel changed during this session.") }
     Repeater {
         model: app.notifications
         CcRow { title: model.text; description: model.time; Item { width: 1; height: 1 } }
     }
-    CcRow { visible: app.notifications.count === 0; title: "No notifications yet"; Item { width: 1; height: 1 } }
+    CcRow { visible: app.notifications.count === 0; title: qsTr("No notifications yet"); Item { width: 1; height: 1 } }
 
-    CcSection { title: "ASUS account"
-                note: "Member login, Registered Events and Redemption use ASUS online services that have no Linux version. " +
-                      "XPanel keeps everything on this device." }
+    CcSection { title: qsTr("ASUS account")
+                note: qsTr("Member login, Registered Events and Redemption use ASUS online services that have no Linux version. " +
+                           "XPanel keeps everything on this device.") }
 }

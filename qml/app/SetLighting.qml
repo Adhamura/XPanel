@@ -40,7 +40,7 @@ CcPage {
         }
     }
 
-    CcSection { title: "Lighting"; note: device.connected ? "" : device.error ? "No access to xpanel-daemon: " + device.error : "xpanel-daemon is not running." }
+    CcSection { title: qsTr("Lighting"); note: device.connected ? "" : device.error ? qsTr("No access to xpanel-daemon: %1").arg(device.error) : qsTr("xpanel-daemon is not running.") }
     Rectangle { // preview of the two rings
         width: parent.width; height: 120; color: "#101014"; radius: 4
         Repeater {
@@ -61,38 +61,38 @@ CcPage {
         QtObject { id: strobe; property bool on: true }
         Timer { interval: 180; repeat: true; running: page.effect === "strobe"; onTriggered: strobe.on = !strobe.on }
     }
-    CcRow { title: "Effect"
+    CcRow { title: qsTr("Effect")
         CcChoice { enabledChoice: device.connected
-                   options: [{ value: "off", label: "Off" }, { value: "static", label: "Static" }, { value: "breathing", label: "Breathing" },
-                             { value: "dualbreathing", label: "Dual breathing" }, { value: "colorcycle", label: "Color cycle" },
-                             { value: "rainbow", label: "Rainbow" }, { value: "strobe", label: "Strobe" }]
+                   options: [{ value: "off", label: qsTr("Off") }, { value: "static", label: qsTr("Static") }, { value: "breathing", label: qsTr("Breathing") },
+                             { value: "dualbreathing", label: qsTr("Dual breathing") }, { value: "colorcycle", label: qsTr("Color cycle") },
+                             { value: "rainbow", label: qsTr("Rainbow") }, { value: "strobe", label: qsTr("Strobe") }]
                    current: page.effect; onPicked: (v) => device.setValue("lighting", v) } }
-    CcRow { title: "Follow the system"
-           description: "Battery level: red when empty, green when full. Operating Mode: blue Silent, white Performance, red Turbo, your color in Manual."
+    CcRow { title: qsTr("Follow the system")
+           description: qsTr("Battery level: red when empty, green when full. Operating Mode: blue Silent, white Performance, red Turbo, your color in Manual.")
         CcChoice { enabledChoice: device.connected
-                   options: [{ value: "battery", label: "Battery level" }, { value: "followmode", label: "Operating Mode" }]
+                   options: [{ value: "battery", label: qsTr("Battery level") }, { value: "followmode", label: qsTr("Operating Mode") }]
                    current: page.effect; onPicked: (v) => device.setValue("lighting", v) } }
-    CcRow { title: "Color"; visible: page.usesColor
-            description: page.effect === "followmode" ? "Used in Manual mode." : ""
+    CcRow { title: qsTr("Color"); visible: page.usesColor
+            description: page.effect === "followmode" ? qsTr("Used in Manual mode.") : ""
         CcSwatches { current: page.color; onPicked: (c) => device.setValue("lightColor", c) } }
-    CcRow { title: "Hue"; visible: page.usesColor; description: "Any color of the rainbow."
+    CcRow { title: qsTr("Hue"); visible: page.usesColor; description: qsTr("Any color of the rainbow.")
         CcSlider { width: 460; from: 0; to: 359; stepSize: 5; unit: "°"; value: Qt.color(page.color).hsvHue * 360
                    onMoved: (v) => device.setValue("lightColor", page.hueToHex(v)) } }
-    CcRow { title: "Second color"; visible: page.effect === "dualbreathing"; description: "The light breathes between the two colors."
+    CcRow { title: qsTr("Second color"); visible: page.effect === "dualbreathing"; description: qsTr("The light breathes between the two colors.")
         CcSwatches { current: page.color2; onPicked: (c) => device.setValue("lightColor2", c) } }
-    CcRow { title: "Second hue"; visible: page.effect === "dualbreathing"
+    CcRow { title: qsTr("Second hue"); visible: page.effect === "dualbreathing"
         CcSlider { width: 460; from: 0; to: 359; stepSize: 5; unit: "°"; value: Qt.color(page.color2).hsvHue * 360
                    onMoved: (v) => device.setValue("lightColor2", page.hueToHex(v)) } }
-    CcRow { title: "Direction"; visible: page.effect === "rainbow"; description: "Which way the rainbow runs. Up and down may look the same on the rings."
+    CcRow { title: qsTr("Direction"); visible: page.effect === "rainbow"; description: qsTr("Which way the rainbow runs. Up and down may look the same on the rings.")
         CcChoice { enabledChoice: device.connected
-                   options: [{ value: "right", label: "Right" }, { value: "left", label: "Left" },
-                             { value: "up", label: "Up" }, { value: "down", label: "Down" }]
+                   options: [{ value: "right", label: qsTr("Right") }, { value: "left", label: qsTr("Left") },
+                             { value: "up", label: qsTr("Up") }, { value: "down", label: qsTr("Down") }]
                    current: (device.rev, device.value("lightDirection") || "right"); onPicked: (v) => device.setValue("lightDirection", v) } }
-    CcRow { title: "Brightness"
+    CcRow { title: qsTr("Brightness")
         CcChoice { enabledChoice: device.connected && page.effect !== "off"
-                   options: [{ value: 1, label: "Low" }, { value: 2, label: "Medium" }, { value: 3, label: "High" }]
+                   options: [{ value: 1, label: qsTr("Low") }, { value: 2, label: qsTr("Medium") }, { value: 3, label: qsTr("High") }]
                    current: (device.rev, device.value("lightBrightness") || 3); onPicked: (v) => device.setValue("lightBrightness", v) } }
-    CcRow { title: "Speed"; visible: page.animated
-        CcChoice { options: [{ value: "low", label: "Slow" }, { value: "medium", label: "Medium" }, { value: "high", label: "Fast" }]
+    CcRow { title: qsTr("Speed"); visible: page.animated
+        CcChoice { options: [{ value: "low", label: qsTr("Slow") }, { value: "medium", label: qsTr("Medium") }, { value: "high", label: qsTr("Fast") }]
                    current: (device.rev, device.value("lightSpeed") || "medium"); onPicked: (v) => device.setValue("lightSpeed", v) } }
 }

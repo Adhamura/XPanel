@@ -9,11 +9,11 @@ Item {
     focus: true
 
     readonly property var tabs: [
-        { id: "library",  title: "Game Library" },
-        { id: "control",  title: "Control Mode" },
-        { id: "gallery",  title: "Media Gallery" },
-        { id: "user",     title: "User Center" },
-        { id: "settings", title: "Settings" }
+        { id: "library",  title: qsTr("Game Library") },
+        { id: "control",  title: qsTr("Control Mode") },
+        { id: "gallery",  title: qsTr("Media Gallery") },
+        { id: "user",     title: qsTr("User Center") },
+        { id: "settings", title: qsTr("Settings") }
     ]
     property string tab: "library"
     property string settingsPage: "general"
@@ -61,21 +61,21 @@ Item {
     Connections {
         target: device
         function onStateChanged() {
-            const names = { opmode: "Operating Mode", charge: "Charge limit", lighting: "Lighting",
-                            fan: "Fan curve", eco: "Eco Mode", gpuClock: "GPU clock" }
+            const names = { opmode: qsTr("Operating Mode"), charge: qsTr("Charge limit"), lighting: qsTr("Lighting"),
+                            fan: qsTr("Fan curve"), eco: qsTr("Eco Mode"), gpuClock: qsTr("GPU clock") }
             const st = {}
             for (const k in names) {
                 const v = device.value(k)
                 st[k] = v
                 if (app.lastState[k] !== undefined && app.lastState[k] !== v)
-                    app.note(names[k] + " → " + v)
+                    app.note(qsTr("%1 → %2").arg(names[k]).arg(v))
             }
             app.lastState = st
         }
-        function onConnectedChanged() { app.note(device.connected ? "xpanel-daemon connected" : "xpanel-daemon disconnected") }
-        function onErrorChanged() { if (device.error) app.note("xpanel-daemon: " + device.error) }
+        function onConnectedChanged() { app.note(device.connected ? qsTr("xpanel-daemon connected") : qsTr("xpanel-daemon disconnected")) }
+        function onErrorChanged() { if (device.error) app.note(qsTr("xpanel-daemon: %1").arg(device.error)) }
     }
-    Connections { target: library; function onLaunched(id) { app.note("Started " + id) } }
+    Connections { target: library; function onLaunched(id) { app.note(qsTr("Started %1").arg(id)) } }
 
     // ---------- gamepad / keyboard navigation ----------
     function focusFirst() {
@@ -171,7 +171,7 @@ Item {
         Row {
             anchors.right: parent.right; anchors.rightMargin: 24; anchors.verticalCenter: parent.verticalCenter
             spacing: 22
-            Text { text: "LB / RB  switch"; color: "#5d5d66"; font.pixelSize: 15; anchors.verticalCenter: parent.verticalCenter }
+            Text { text: qsTr("LB / RB  switch"); color: "#5d5d66"; font.pixelSize: 15; anchors.verticalCenter: parent.verticalCenter }
             Text { text: sys.battery + "%" + (sys.charging ? " ⚡" : ""); color: T.text; font.pixelSize: 20; anchors.verticalCenter: parent.verticalCenter }
             Text { text: sys.clock; color: T.text; font.pixelSize: 20; anchors.verticalCenter: parent.verticalCenter }
             Text {
@@ -200,7 +200,7 @@ Item {
         Rectangle { width: parent.width; height: 1; color: "#26262d" }
         Text {
             anchors.right: parent.right; anchors.rightMargin: 24; anchors.verticalCenter: parent.verticalCenter
-            text: "Ⓐ Select    Ⓑ Back    ◀ ▶ Change    ▲ ▼ Move    LB / RB Section"
+            text: qsTr("Ⓐ Select    Ⓑ Back    ◀ ▶ Change    ▲ ▼ Move    LB / RB Section")
             color: T.dim; font.pixelSize: 16
         }
     }

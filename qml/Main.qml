@@ -32,20 +32,20 @@ Item {
     // (tiles the desktop cannot do, e.g. Refresh Rate outside KDE, are left out: see Desktop.h)
     readonly property var catalog: allTiles.filter(t => desktop.unavailableTiles.indexOf(t.id) < 0)
     readonly property var allTiles: [
-        { id: "opmode",     title: "Operating Mode",    icon: "opmode" },
-        { id: "ctrlmode",   title: "Control Mode",      icon: "ctrlmode" },
-        { id: "fan",        title: "Fan Curve",         icon: "fan" },
-        { id: "keyboard",   title: "Keyboard",          icon: "keyboard" },
-        { id: "monitor",    title: "Real-time Monitor", icon: "monitor" },
-        { id: "charge",     title: "Charge Limit",      icon: "charge" },
-        { id: "desktop",    title: "Show Desktop",      icon: "desktop" },
-        { id: "rgb",        title: "Lighting",          icon: "rgb" },
-        { id: "refresh",    title: "Refresh Rate",      icon: "refresh" },
-        { id: "display",    title: "Display Mode",      icon: "display" },
-        { id: "tdp",        title: "Manual TDP",        icon: "sliders" },
-        { id: "wifi",       title: "Wi-Fi",             icon: "wifi" },
-        { id: "bluetooth",  title: "Bluetooth",         icon: "bluetooth" },
-        { id: "screenshot", title: "Screenshot",        icon: "screenshot" }
+        { id: "opmode",     title: qsTr("Operating Mode"),    icon: "opmode" },
+        { id: "ctrlmode",   title: qsTr("Control Mode"),      icon: "ctrlmode" },
+        { id: "fan",        title: qsTr("Fan Curve"),         icon: "fan" },
+        { id: "keyboard",   title: qsTr("Keyboard"),          icon: "keyboard" },
+        { id: "monitor",    title: qsTr("Real-time Monitor"), icon: "monitor" },
+        { id: "charge",     title: qsTr("Charge Limit"),      icon: "charge" },
+        { id: "desktop",    title: qsTr("Show Desktop"),      icon: "desktop" },
+        { id: "rgb",        title: qsTr("Lighting"),          icon: "rgb" },
+        { id: "refresh",    title: qsTr("Refresh Rate"),      icon: "refresh" },
+        { id: "display",    title: qsTr("Display Mode"),      icon: "display" },
+        { id: "tdp",        title: qsTr("Manual TDP"),        icon: "sliders" },
+        { id: "wifi",       title: qsTr("Wi-Fi"),             icon: "wifi" },
+        { id: "bluetooth",  title: qsTr("Bluetooth"),         icon: "bluetooth" },
+        { id: "screenshot", title: qsTr("Screenshot"),        icon: "screenshot" }
     ]
     function catalogEntry(id) {
         for (let i = 0; i < catalog.length; ++i) if (catalog[i].id === id) return catalog[i]
@@ -55,35 +55,35 @@ Item {
 
     // xpanel-daemon values and their display names
     readonly property var opModes: [
-        { value: "silent",      label: "Silent" },
-        { value: "performance", label: "Performance" },
-        { value: "turbo",       label: "Turbo" },
-        { value: "manual",      label: "Manual" }
+        { value: "silent",      label: qsTr("Silent") },
+        { value: "performance", label: qsTr("Performance") },
+        { value: "turbo",       label: qsTr("Turbo") },
+        { value: "manual",      label: qsTr("Manual") }
     ]
     // Control Mode presets (as in Control Center): applied by xpanel-daemon's input layer
     readonly property var ctrlModes: [
-        { value: "gamepad", label: "Gamepad" },
-        { value: "desktop", label: "Desktop" }
+        { value: "gamepad", label: qsTr("Gamepad") },
+        { value: "desktop", label: qsTr("Desktop") }
     ]
     readonly property var chargeModes: [
-        { value: 100, label: "Off" }, { value: 60, label: "60%" },
+        { value: 100, label: qsTr("Off") }, { value: 60, label: "60%" },
         { value: 80, label: "80%" }, { value: 90, label: "90%" }
     ]
     readonly property var rgbModes: [
-        { value: "off", label: "Off" }, { value: "static", label: "Static" },
-        { value: "breathing", label: "Breathing" }, { value: "dualbreathing", label: "Dual breathing" },
-        { value: "colorcycle", label: "Color cycle" }, { value: "rainbow", label: "Rainbow" },
-        { value: "strobe", label: "Strobe" }, { value: "battery", label: "Battery level" },
-        { value: "followmode", label: "Follow mode" }
+        { value: "off", label: qsTr("Off") }, { value: "static", label: qsTr("Static") },
+        { value: "breathing", label: qsTr("Breathing") }, { value: "dualbreathing", label: qsTr("Dual breathing") },
+        { value: "colorcycle", label: qsTr("Color cycle") }, { value: "rainbow", label: qsTr("Rainbow") },
+        { value: "strobe", label: qsTr("Strobe") }, { value: "battery", label: qsTr("Battery level") },
+        { value: "followmode", label: qsTr("Follow mode") }
     ]
     // Display Mode: Ally screen only, external only, the same on both, or one desktop over both
     readonly property var displayModes: [
-        { value: "handheld", label: "Handheld" }, { value: "external", label: "External" },
-        { value: "duplicate", label: "Duplicate" }, { value: "extend", label: "Extend" }
+        { value: "handheld", label: qsTr("Handheld") }, { value: "external", label: qsTr("External") },
+        { value: "duplicate", label: qsTr("Duplicate") }, { value: "extend", label: qsTr("Extend") }
     ]
     readonly property var fanModes: [
-        { value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" },
-        { value: "max", label: "Max" }, { value: "custom", label: "Custom" }
+        { value: "auto", label: qsTr("Auto") }, { value: "quiet", label: qsTr("Quiet") },
+        { value: "max", label: qsTr("Max") }, { value: "custom", label: qsTr("Custom") }
     ]
     // Custom joins the cycle once a curve was saved (Settings > Performance)
     function fanCycle() {
@@ -107,11 +107,11 @@ Item {
         case "tdp": {
             const w = device.value("tdp")
             return { value: device.connected ? w + "W" : off,
-                     badge: device.value("opmode") === "manual" ? "ON" : "" }
+                     badge: device.value("opmode") === "manual" ? qsTr("ON") : "" }
         }
         case "ctrlmode": {
             const e = labelOf(ctrlModes, config.get("control.preset", "gamepad"))
-            return { value: e ? e.label : "Gamepad" }
+            return { value: e ? e.label : qsTr("Gamepad") }
         }
         case "charge": {
             const e = labelOf(chargeModes, device.value("charge"))
@@ -126,15 +126,15 @@ Item {
             const e = labelOf(fanModes, device.value("fan"))
             return { value: e ? e.label : off }
         }
-        case "monitor":  return { value: config.monitorOsd ? "On" : "Off" }
+        case "monitor":  return { value: config.monitorOsd ? qsTr("On") : qsTr("Off") }
         case "refresh":  return { value: sys.refreshRate > 0 ? sys.refreshRate + "Hz" : "" }
         case "display": {
-            if (!sys.hasExternal) return { value: "Handheld only" }
+            if (!sys.hasExternal) return { value: qsTr("Handheld only") }
             const e = labelOf(displayModes, sys.displayMode)
             return { value: e ? e.label : "" }
         }
-        case "wifi":     return { value: sys.wifi ? "On" : "Off" }
-        case "bluetooth":return { value: sys.bluetooth ? "On" : "Off" }
+        case "wifi":     return { value: sys.wifi ? qsTr("On") : qsTr("Off") }
+        case "bluetooth":return { value: sys.bluetooth ? qsTr("On") : qsTr("Off") }
         }
         return { value: "" }
     }
@@ -184,12 +184,12 @@ Item {
     }
 
     function openPowerMenu() {
-        chooser.show("Power", [
-            { label: "Sleep", value: "suspend" },
-            { label: "Restart", value: "reboot" },
-            { label: "Shut down", value: "poweroff" },
-            { label: "Log out", value: "logout" },
-            { label: "Quit XPanel", value: "quit" }
+        chooser.show(qsTr("Power"), [
+            { label: qsTr("Sleep"), value: "suspend" },
+            { label: qsTr("Restart"), value: "reboot" },
+            { label: qsTr("Shut down"), value: "poweroff" },
+            { label: qsTr("Log out"), value: "logout" },
+            { label: qsTr("Quit XPanel"), value: "quit" }
         ].filter(it => it.value !== "logout" || desktop.logout), it => {
             panel.requestClose()
             if (it.value === "quit") Qt.callLater(Qt.quit)
@@ -343,7 +343,7 @@ Item {
         }
         Text {
             x: 144 * root.s; y: 40 * root.s
-            text: "Quick Panel"
+            text: qsTr("Quick Panel")
             color: T.text
             font.pixelSize: 42 * root.s
         }
@@ -353,7 +353,7 @@ Item {
             spacing: 16 * root.s
             Text {
                 visible: !device.connected
-                text: "xpanel-daemon offline"
+                text: qsTr("xpanel-daemon offline")
                 color: T.warn; font.pixelSize: 22 * root.s
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -368,7 +368,7 @@ Item {
                     id: profileText
                     anchors.centerIn: parent
                     width: Math.min(implicitWidth, 260 * root.s)
-                    text: "Profile: " + profiles.activeTitle
+                    text: qsTr("Profile: %1").arg(profiles.activeTitle)
                     color: T.accent; font.pixelSize: 19 * root.s
                     elide: Text.ElideRight
                 }
@@ -399,12 +399,13 @@ Item {
             anchors.right: parent.right; y: 0
             width: 60 * root.s; height: 60 * root.s
             Canvas {
+                id: editCorner
                 anchors.right: parent.right; anchors.rightMargin: 14 * root.s
                 y: 12 * root.s
                 width: 16 * root.s; height: 16 * root.s
                 onPaint: { const c = getContext("2d"); c.fillStyle = root.editing ? T.accent : "#fff"
                            c.beginPath(); c.moveTo(0, 0); c.lineTo(width, 0); c.lineTo(width, height); c.fill() }
-                Connections { target: root; function onEditingChanged() { parent.requestPaint() } }
+                Connections { target: root; function onEditingChanged() { editCorner.requestPaint() } }
             }
             MouseArea { anchors.fill: parent; onClicked: root.editing = !root.editing }
         }
@@ -542,7 +543,7 @@ Item {
         Text {
             anchors.right: parent.right; anchors.rightMargin: 30 * root.s
             anchors.bottom: parent.bottom; anchors.bottomMargin: 14 * root.s
-            text: "Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit"
+            text: qsTr("Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit")
             color: T.dim; font.pixelSize: 20 * root.s
             visible: device.value("inputLayer") === "active"
         }

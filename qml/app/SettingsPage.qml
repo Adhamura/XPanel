@@ -6,17 +6,17 @@ import "../Theme.js" as T
 Item {
     id: page
     readonly property var pages: [
-        { id: "general",     title: "General" },
-        { id: "performance", title: "Performance" },
-        { id: "update",      title: "Update Center" },
-        { id: "calibration", title: "Calibration" },
-        { id: "lighting",    title: "Lighting" },
-        { id: "audio",       title: "Audio" },
-        { id: "display",     title: "Display" },
-        { id: "connection",  title: "Connection" },
-        { id: "shortcuts",   title: "Keyboard Shortcuts" },
-        { id: "feedback",    title: "Feedback" },
-        { id: "battery",     title: "Battery Care" }
+        { id: "general",     title: qsTr("General") },
+        { id: "performance", title: qsTr("Performance") },
+        { id: "update",      title: qsTr("Update Center") },
+        { id: "calibration", title: qsTr("Calibration") },
+        { id: "lighting",    title: qsTr("Lighting") },
+        { id: "audio",       title: qsTr("Audio") },
+        { id: "display",     title: qsTr("Display") },
+        { id: "connection",  title: qsTr("Connection") },
+        { id: "shortcuts",   title: qsTr("Keyboard Shortcuts") },
+        { id: "feedback",    title: qsTr("Feedback") },
+        { id: "battery",     title: qsTr("Battery Care") }
     ]
     readonly property var files: ({ general: "SetGeneral.qml", performance: "SetPerformance.qml", update: "SetUpdate.qml",
         calibration: "SetCalibration.qml", lighting: "SetLighting.qml", audio: "SetAudio.qml",

@@ -22,21 +22,21 @@ Item {
         id: bar
         x: 32; y: 20; spacing: 12
         CcChoice {
-            options: [{ value: "all", label: "All" }, { value: "screenshots", label: "Screenshots" },
-                      { value: "pictures", label: "Pictures" }, { value: "videos", label: "Videos" }]
+            options: [{ value: "all", label: qsTr("All") }, { value: "screenshots", label: qsTr("Screenshots") },
+                      { value: "pictures", label: qsTr("Pictures") }, { value: "videos", label: qsTr("Videos") }]
             current: page.filter; onPicked: (v) => { page.filter = v; page.selected = [] }
         }
-        CcButton { text: page.selecting ? "Done selecting" : "Select"; primary: page.selecting
+        CcButton { text: page.selecting ? qsTr("Done selecting") : qsTr("Select"); primary: page.selecting
                    onClicked: { page.selecting = !page.selecting; page.selected = [] } }
-        CcButton { visible: page.selecting; text: "Select all"; onClicked: page.selected = page.shown.map(m => m.path) }
-        CcButton { visible: page.selecting; text: "Share (" + page.selected.length + ")"; enabledButton: page.selected.length > 0
-                   onClicked: { gallery.copyToClipboard(page.selected); app.note(page.selected.length + " files copied to the clipboard") } }
-        CcButton { visible: page.selecting; text: "Delete (" + page.selected.length + ")"; danger: true; enabledButton: page.selected.length > 0
+        CcButton { visible: page.selecting; text: qsTr("Select all"); onClicked: page.selected = page.shown.map(m => m.path) }
+        CcButton { visible: page.selecting; text: qsTr("Share (%1)").arg(page.selected.length); enabledButton: page.selected.length > 0
+                   onClicked: { gallery.copyToClipboard(page.selected); app.note(qsTr("%n file(s) copied to the clipboard", "", page.selected.length)) } }
+        CcButton { visible: page.selecting; text: qsTr("Delete (%1)").arg(page.selected.length); danger: true; enabledButton: page.selected.length > 0
                    onClicked: confirm.show() }
-        CcButton { text: "Refresh"; onClicked: gallery.rescan() }
+        CcButton { text: qsTr("Refresh"); onClicked: gallery.rescan() }
     }
     Text { anchors.right: parent.right; anchors.rightMargin: 32; y: 32
-           text: page.shown.length + " items  ·  ~/Pictures, ~/Videos"; color: T.dim; font.pixelSize: 16 }
+           text: qsTr("%n item(s)  ·  ~/Pictures, ~/Videos", "", page.shown.length); color: T.dim; font.pixelSize: 16 }
 
     GridView {
         id: grid
@@ -72,7 +72,7 @@ Item {
             }
         }
         Text { anchors.centerIn: parent; visible: page.shown.length === 0
-               text: "No pictures or videos yet.\nScreenshots from the Quick Panel appear here."
+               text: qsTr("No pictures or videos yet.\nScreenshots from the Quick Panel appear here.")
                horizontalAlignment: Text.AlignHCenter; color: T.dim; font.pixelSize: 20 }
     }
 
@@ -88,12 +88,12 @@ Item {
         Row {
             anchors.horizontalCenter: parent.horizontalCenter; anchors.bottom: parent.bottom; anchors.bottomMargin: 26
             spacing: 12
-            CcButton { id: openBtn; text: viewer.item && viewer.item.video ? "Play" : "Open"; primary: true
+            CcButton { id: openBtn; text: viewer.item && viewer.item.video ? qsTr("Play") : qsTr("Open"); primary: true
                        onClicked: gallery.openFile(viewer.item.path) }
-            CcButton { text: "Share"; onClicked: { gallery.copyToClipboard([viewer.item.path]); app.note("Copied to the clipboard: " + viewer.item.name) } }
-            CcButton { text: "Show in folder"; onClicked: gallery.showInFolder(viewer.item.path) }
-            CcButton { text: "Delete"; danger: true; onClicked: { page.selected = [viewer.item.path]; confirm.show() } }
-            CcButton { text: "Back"; onClicked: { viewer.item = null; app.popBack() } }
+            CcButton { text: qsTr("Share"); onClicked: { gallery.copyToClipboard([viewer.item.path]); app.note(qsTr("Copied to the clipboard: %1").arg(viewer.item.name)) } }
+            CcButton { text: qsTr("Show in folder"); onClicked: gallery.showInFolder(viewer.item.path) }
+            CcButton { text: qsTr("Delete"); danger: true; onClicked: { page.selected = [viewer.item.path]; confirm.show() } }
+            CcButton { text: qsTr("Back"); onClicked: { viewer.item = null; app.popBack() } }
         }
     }
 
@@ -106,13 +106,13 @@ Item {
         Rectangle {
             anchors.centerIn: parent; width: 560; height: 210; color: T.popup; border.color: T.tileBorder
             Text { x: 28; y: 26; width: parent.width - 56; wrapMode: Text.WordWrap; color: T.text; font.pixelSize: 20
-                   text: "Move " + page.selected.length + " item(s) to the trash?\nYou can restore them from the trash later." }
+                   text: qsTr("Move %n item(s) to the trash?", "", page.selected.length) + "\n" + qsTr("You can restore them from the trash later.") }
             Row {
                 anchors.right: parent.right; anchors.rightMargin: 24; anchors.bottom: parent.bottom; anchors.bottomMargin: 24
                 spacing: 12
-                CcButton { id: noBtn; text: "Cancel"; onClicked: { confirm.visible = false; app.popBack() } }
-                CcButton { text: "Move to trash"; danger: true; onClicked: {
-                        gallery.trash(page.selected); app.note(page.selected.length + " item(s) moved to the trash")
+                CcButton { id: noBtn; text: qsTr("Cancel"); onClicked: { confirm.visible = false; app.popBack() } }
+                CcButton { text: qsTr("Move to trash"); danger: true; onClicked: {
+                        gallery.trash(page.selected); app.note(qsTr("%n item(s) moved to the trash", "", page.selected.length))
                         page.selected = []; confirm.visible = false; app.popBack()
                         if (viewer.item) { viewer.item = null; app.popBack() } } }
             }
