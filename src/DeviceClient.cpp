@@ -1,5 +1,6 @@
 #include "DeviceClient.h"
 
+#include <QCoreApplication>
 #include <QJsonDocument>
 
 static QString socketPath()
@@ -29,6 +30,15 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
     });
     connect(&m_sock, &QLocalSocket::readyRead, this, &DeviceClient::onRead);
     connectNow();
+}
+
+QString DeviceClient::installHint()
+{
+    if (!qEnvironmentVariableIsEmpty("APPIMAGE"))
+        return "sudo " + qEnvironmentVariable("APPIMAGE") + " --install";
+    if (QCoreApplication::applicationDirPath().startsWith("/opt/xpanel/"))
+        return "sudo xpanel --install";
+    return "sudo scripts/install-daemon.sh";
 }
 
 void DeviceClient::connectNow()

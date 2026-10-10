@@ -242,7 +242,7 @@ private:
         const group *gr = getgrnam(kGroup.constData());
         const passwd *pw = getpwuid(uid);
         if (!gr || !pw) {
-            *why = !gr ? QString("the group \"%1\" does not exist; run: sudo scripts/install-daemon.sh").arg(QString(kGroup))
+            *why = !gr ? QString("the group \"%1\" does not exist; create it: sudo groupadd --system %1").arg(QString(kGroup))
                        : QString("unknown user id %1").arg(uid);
             return false;
         }

@@ -1,6 +1,7 @@
 name: Release
 
-# Publishes xpanel-<version>-linux-x86_64.tar.gz and its .sha256 as a GitHub Release.
+# Publishes XPanel-<version>-x86_64.AppImage, xpanel-<version>-linux-x86_64.tar.gz and
+# SHA256SUMS as a GitHub Release.
 # Either push a tag like v1.0.1 (it must match project(VERSION) in CMakeLists.txt), or
 # Actions -> Release -> "Run workflow" on main: it creates the tag v<version> itself.
 on:
@@ -16,14 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:trixie
     steps:
-      - name: Install build dependencies
-        run: |
-          apt-get update -qq
-          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
-            ca-certificates git cmake ninja-build g++ file \
-            qt6-base-dev qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev \
-            liblayershellqtinterface-dev libgl-dev libxkbcommon-dev
+      - name: Install git
+        run: apt-get update -qq && apt-get install -y -qq git
       - uses: actions/checkout@v4
+      - name: Install build dependencies (packaging/build-deps-debian.txt)
+        run: DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $(cat packaging/build-deps-debian.txt)
       - name: Release tag from the project version
         run: |
           v=$(sed -n 's/^project(XPanel VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
@@ -31,7 +29,7 @@ jobs:
               echo "Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1
           fi
           echo "TAG=v$v" >> "$GITHUB_ENV"
-      - name: Build release archive
+      - name: Build AppImage and release archive
         run: ./build-release.sh --clean
       - name: Release notes from CHANGELOG.md
         run: |
@@ -39,13 +37,18 @@ jobs:
           awk -v v="$v" '$0 ~ "^## "v { on=1; next } /^## / { on=0 } on' CHANGELOG.md > notes.md
           cat >> notes.md <<'NOTES'
 
-          ### Install
+          ### Install: one file
+          Download **XPanel-*-x86_64.AppImage** (everything included, Qt too), then:
           ```bash
-          tar xzf xpanel-*-linux-x86_64.tar.gz && cd xpanel-*-linux-x86_64
-          scripts/install.sh                             # app, tray icon, autostart
-          sudo scripts/install-daemon.sh --disable-hhd   # root service (stops hhd)
+          chmod +x XPanel-*-x86_64.AppImage
+          sudo ./XPanel-*-x86_64.AppImage --install --disable-hhd   # app, tray, menu entry, root service
           ```
-          Linux x86_64 only (ROG Ally X, KDE Plasma 6, Qt ≥ 6.8). On Windows, use Armoury Crate.
+          Or just run it: `./XPanel-*-x86_64.AppImage`. Remove with `sudo xpanel --uninstall`.
+
+          The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`,
+          `sudo scripts/install-daemon.sh`). Check downloads with `sha256sum -c SHA256SUMS`.
+
+          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.41). On Windows, use Armoury Crate.
           NOTES
       - uses: softprops/action-gh-release@v2
         with:
@@ -54,5 +57,6 @@ jobs:
           name: XPanel ${{ env.TAG }}
           body_path: notes.md
           files: |
+            dist/*.AppImage
             dist/*.tar.gz
-            dist/*.sha256
+            dist/SHA256SUMS

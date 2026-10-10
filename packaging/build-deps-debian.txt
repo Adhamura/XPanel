@@ -1,0 +1,5 @@
+ca-certificates curl file cmake ninja-build g++
+qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev
+qt6-wayland qt6-wayland-dev liblayershellqtinterface-dev layer-shell-qt
+qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtqml-workerscript
+libgl-dev libxkbcommon-dev

@@ -1,5 +1,6 @@
 #include "DesktopTweaks.h"
 #include "Config.h"
+#include "DeviceClient.h"
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -149,7 +150,7 @@ QVariantList DesktopTweaks::diagnostics() const
     QLocalSocket s;
     s.connectToServer("/run/xpanel/xpanel.sock");
     const bool daemon = s.waitForConnected(500);
-    add("xpanel-daemon", daemon, daemon ? "running (/run/xpanel/xpanel.sock)" : "not reachable: sudo scripts/install-daemon.sh");
+    add("xpanel-daemon", daemon, daemon ? "running (/run/xpanel/xpanel.sock)" : "not reachable: " + DeviceClient::installHint());
     add("Wayland overlay", !qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY"), qEnvironmentVariable("WAYLAND_DISPLAY", "no Wayland"));
     add("TDP interface", QFile::exists("/sys/class/firmware-attributes/asus-armoury/attributes/ppt_pl1_spl"), "asus-armoury ppt_pl1_spl");
     bool fan = false;

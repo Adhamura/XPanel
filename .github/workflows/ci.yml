@@ -8,19 +8,16 @@ on:
 
 jobs:
   debian:
-    name: Build (Debian 13, Qt 6.8) + release archive
+    name: Build (Debian 13, Qt 6.8) + AppImage + release archive
     runs-on: ubuntu-latest
     container: debian:trixie
     steps:
-      - name: Install build dependencies
-        run: |
-          apt-get update -qq
-          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
-            ca-certificates git cmake ninja-build g++ file \
-            qt6-base-dev qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev \
-            liblayershellqtinterface-dev libgl-dev libxkbcommon-dev
+      - name: Install git
+        run: apt-get update -qq && apt-get install -y -qq git
       - uses: actions/checkout@v4
-      - name: Build release archive
+      - name: Install build dependencies (packaging/build-deps-debian.txt)
+        run: DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $(cat packaging/build-deps-debian.txt)
+      - name: Build AppImage and release archive
         run: ./build-release.sh --clean
       - uses: actions/upload-artifact@v4
         with:
@@ -56,4 +53,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh
+      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh packaging/appimage/AppRun packaging/appimage/appimage-install.sh

@@ -1,7 +1,8 @@
 @echo off
 rem Build the XPanel Linux release from Windows, inside WSL (Windows Subsystem for Linux).
-rem XPanel itself runs on Linux only (on Windows, use Armoury Crate); this only builds the
-rem Linux x86_64 archive into dist\. Needs WSL with Docker/Podman, or Qt 6 >= 6.5 + cmake + ninja.
+rem XPanel itself runs on Linux only (on Windows, use Armoury Crate); this builds the Linux
+rem files into dist\: XPanel-<version>-x86_64.AppImage (one file), the .tar.gz and SHA256SUMS.
+rem Needs WSL with Docker/Podman (--container), or Qt 6 >= 6.5 + cmake + ninja + curl in WSL.
 rem   build-release.bat              build with the Qt 6 inside WSL
 rem   build-release.bat --container  build in a debian:trixie container (same as CI)
 setlocal

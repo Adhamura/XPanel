@@ -11,6 +11,8 @@ class DeviceClient : public QObject {
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
     // why the daemon refused us ("" when connected or not running)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
+    // the command that installs the daemon for this kind of install (AppImage, /opt, source)
+    Q_PROPERTY(QString installHint READ installHint CONSTANT)
     Q_PROPERTY(int rev READ rev NOTIFY stateChanged)
 
 public:
@@ -19,6 +21,7 @@ public:
     // true once the daemon has sent its state (a refused connection never counts)
     bool connected() const { return m_ready; }
     QString error() const { return m_error; }
+    static QString installHint();
     int rev() const { return m_rev; }
 
     Q_INVOKABLE QVariant value(const QString &key) const;

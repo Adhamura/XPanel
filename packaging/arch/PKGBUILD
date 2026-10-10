@@ -1,7 +1,7 @@
 # Maintainer: Adhamura
 # Arch / CachyOS / Manjaro: makepkg -si   (from this folder)
 pkgname=xpanel
-pkgver=1.0.1
+pkgver=1.0.2
 pkgrel=1
 pkgdesc="Armoury Crate-style Quick Panel and Control Center for the ASUS ROG Ally X on Linux (KDE Plasma)"
 arch=('x86_64')

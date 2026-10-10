@@ -1,0 +1,12 @@
+#!/bin/sh
+# XPanel AppImage entry point.
+#   ./XPanel-x86_64.AppImage [--toggle|--open|--app [page]|...]   run XPanel
+#   sudo ./XPanel-x86_64.AppImage --install [--disable-hhd]      install to /opt/xpanel:
+#                                       root service, menu entry, autostart
+#   sudo ./XPanel-x86_64.AppImage --uninstall
+HERE="$(dirname "$(readlink -f "$0")")"
+case "${1:-}" in
+    --install|--uninstall) exec "$HERE/usr/share/xpanel/appimage-install.sh" "$@" ;;
+    --daemon) shift; exec "$HERE/usr/bin/xpanel-daemon" "$@" ;;
+esac
+exec "$HERE/usr/bin/XPanel" "$@"
