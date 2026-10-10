@@ -6,139 +6,139 @@
     <message>
         <location filename="../src/AppUpdate.cpp" line="+154"/>
         <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub의 업데이트 확인 횟수 제한에 도달했습니다. 1시간 후에 다시 시도하세요.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No connection to GitHub. Check the network and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub에 연결되지 않았습니다. 네트워크를 확인한 후 다시 시도하세요.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The download was stopped (or redirected to a server other than GitHub).</source>
-        <translation type="unfinished"></translation>
+        <translation>다운로드가 중단되었습니다(또는 GitHub가 아닌 다른 서버로 리디렉션되었습니다).</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>GitHub answered with error %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub가 오류 %1(으)로 응답했습니다.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The update address is not allowed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>허용되지 않는 업데이트 주소입니다: %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>GitHub&apos;s answer has no release version.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub의 응답에 릴리스 버전이 없습니다.</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>This release has no file for this installation (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>이 릴리스에는 현재 설치(%1)에 맞는 파일이 없습니다.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>이 릴리스에는 SHA256SUMS 파일이 없어 다운로드를 확인할 수 없습니다. 아무것도 설치되지 않았습니다.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The release file is not on GitHub: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>릴리스 파일이 GitHub에 없습니다: %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Cannot create the folder %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>폴더 %1을(를) 만들 수 없습니다.</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+28"/>
         <location line="+21"/>
         <source>Cannot write %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1에 쓸 수 없습니다: %2</translation>
     </message>
     <message>
         <location line="-43"/>
         <source>Downloading %1 …</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 다운로드하는 중 …</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Download failed: %1</source>
-        <translation type="unfinished">다운로드 실패: %1</translation>
+        <translation>다운로드 실패: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Checking the download …</source>
-        <translation type="unfinished"></translation>
+        <translation>다운로드를 확인하는 중 …</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Cannot download SHA256SUMS: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>SHA256SUMS를 다운로드할 수 없습니다: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>SHA256SUMS does not list %1. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>SHA256SUMS에 %1이(가) 없습니다. 아무것도 설치되지 않았습니다.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>다운로드가 손상되었습니다. SHA-256 체크섬이 릴리스와 일치하지 않습니다. 아무것도 설치되지 않았습니다.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>XPanel %1 was saved as %2. The old file was kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1을(를) %2(으)로 저장했습니다. 이전 파일은 그대로 유지되었습니다.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot start the installer %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>설치 프로그램 %1을(를) 시작할 수 없습니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The installer is running. XPanel closes now and starts again when it is done.</source>
-        <translation type="unfinished"></translation>
+        <translation>설치 프로그램이 실행 중입니다. XPanel이 지금 종료되며 완료되면 다시 시작됩니다.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>pkexec가 설치되어 있지 않습니다. XPanel %1을(를) 설치하려면 터미널에서 다음 명령을 실행하세요:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Installing XPanel %1. Enter your password when asked …</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1을(를) 설치하는 중입니다. 비밀번호를 물으면 입력하세요 …</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>XPanel %1 is installed. Restart XPanel to use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1이(가) 설치되었습니다. 사용하려면 XPanel을 다시 시작하세요.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
-        <translation type="unfinished"></translation>
+        <translation>비밀번호 입력창이 취소되었거나 여기서는 사용할 수 없습니다(Steam 게임 모드에는 없습니다). 터미널에서 다음 명령을 실행하세요:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
-        <translation type="unfinished"></translation>
+        <translation>설치 프로그램이 오류 %1(으)로 중지되었습니다. 이유를 확인하려면 터미널에서 다음 명령을 실행하세요:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>pkexec could not be started. Run this command in a terminal:</source>
-        <translation type="unfinished"></translation>
+        <translation>pkexec를 시작할 수 없습니다. 터미널에서 다음 명령을 실행하세요:</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Cannot start %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1을(를) 시작할 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -226,7 +226,7 @@
     <message>
         <location line="+1"/>
         <source>XPanel %1 is available: Settings › Update Center</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1을(를) 사용할 수 있습니다: 설정 › 업데이트 센터</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2266,37 +2266,37 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-17"/>
         <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
-        <translation type="unfinished"></translation>
+        <translation>브라우저를 열 수 없습니다. QR 코드를 사용하거나 복사하여 github.com에 붙여넣으세요.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>브라우저에서 열었습니다. 텍스트가 링크에 넣기에는 너무 길어 그곳에서는 줄여서 표시되며, 전체 텍스트는 클립보드에 복사되었습니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opened in your browser. Submit the issue there.</source>
-        <translation type="unfinished"></translation>
+        <translation>브라우저에서 열었습니다. 그곳에서 이슈를 제출하세요.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>클립보드에 복사했습니다.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Saved to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1에 저장했습니다</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub 이슈를 엽니다 — GitHub 계정이 필요합니다. 그곳에서 제출하기 전까지는 아무것도 전송되지 않습니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Steam 게임 모드에서는 브라우저를 사용할 수 없는 경우가 많습니다. 휴대폰으로 QR 코드를 스캔하세요.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2321,7 +2321,7 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="+2"/>
         <source>Short title</source>
-        <translation type="unfinished"></translation>
+        <translation>짧은 제목</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2331,57 +2331,57 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="+1"/>
         <source>Include device info</source>
-        <translation type="unfinished"></translation>
+        <translation>기기 정보 포함</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
-        <translation type="unfinished"></translation>
+        <translation>모델, BIOS, 배포판, 데스크톱 및 버전을 채워 넣습니다. 일련 번호, 사용자 이름, 파일은 포함되지 않습니다. XPanel 버전은 항상 포함됩니다.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Added to the report</source>
-        <translation type="unfinished"></translation>
+        <translation>보고서에 추가됨</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Send on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub에서 보내기</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show QR code</source>
-        <translation type="unfinished"></translation>
+        <translation>QR 코드 표시</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>복사</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save locally</source>
-        <translation type="unfinished"></translation>
+        <translation>로컬에 저장</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Scan with your phone</source>
-        <translation type="unfinished"></translation>
+        <translation>휴대폰으로 스캔하세요</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>텍스트가 QR 코드에 넣기에는 너무 깁니다. 이 코드는 제목과 기기 정보만 담긴 보고서를 열며, 전체 텍스트는 클립보드에 복사됩니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
-        <translation type="unfinished"></translation>
+        <translation>입력한 텍스트로 GitHub 이슈를 엽니다. 그곳에서 GitHub 계정으로 제출하세요.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>닫기</translation>
     </message>
     <message>
         <location line="-96"/>
@@ -2600,17 +2600,17 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="+1"/>
         <source>Report a problem</source>
-        <translation type="unfinished"></translation>
+        <translation>문제 신고</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Send feedback to the developer on GitHub.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub에서 개발자에게 피드백을 보냅니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open Feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>피드백 열기</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3187,27 +3187,27 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-10"/>
         <source>Install in a terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>터미널에서 설치</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy command</source>
-        <translation type="unfinished"></translation>
+        <translation>명령 복사</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Copied</source>
-        <translation type="unfinished"></translation>
+        <translation>복사됨</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트 자동 확인</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel이 하루에 한 번 api.github.com에 최신 릴리스를 요청합니다. 그 외에는 아무것도 전송되지 않습니다.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3269,57 +3269,57 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-134"/>
         <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
-        <translation type="unfinished"></translation>
+        <translation>/opt/xpanel에 설치됨: 업데이트 시 비밀번호를 묻고, XPanel을 교체한 다음 xpanel-daemon을 다시 시작합니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
-        <translation type="unfinished"></translation>
+        <translation>AppImage: 새 버전이 이 파일 옆에 저장됩니다(이전 파일은 유지됩니다).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>설치 프로그램이 실행되고(Windows에서 권한을 요청합니다) 이후 XPanel이 다시 시작됩니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Installed by your package manager: update XPanel with it.</source>
-        <translation type="unfinished"></translation>
+        <translation>패키지 관리자로 설치됨: 패키지 관리자로 XPanel을 업데이트하세요.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
-        <translation type="unfinished"></translation>
+        <translation>이 사본은 소스에서 빌드되었거나 압축 파일에서 풀린 것입니다. 릴리스 페이지에서 새 버전을 다운로드하세요.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Checking GitHub …</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub 확인하는 중 …</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Installed version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>설치된 버전 %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Version %1 is available (skipped).</source>
-        <translation type="unfinished"></translation>
+        <translation>버전 %1을(를) 사용할 수 있습니다(건너뜀).</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Version %1 is available.</source>
-        <translation type="unfinished"></translation>
+        <translation>버전 %1을(를) 사용할 수 있습니다.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>XPanel is up to date (latest release: %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel이 최신 상태입니다(최신 릴리스: %1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Check now</source>
-        <translation type="unfinished"></translation>
+        <translation>지금 확인</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -3369,7 +3369,7 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-98"/>
         <source>XPanel %1</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -3384,17 +3384,17 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-99"/>
         <source>Restart XPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel 다시 시작</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Updating…</source>
-        <translation type="unfinished"></translation>
+        <translation>업데이트하는 중…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Update now</source>
-        <translation type="unfinished"></translation>
+        <translation>지금 업데이트</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -3414,17 +3414,17 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="-97"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>건너뜀</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Skip this version</source>
-        <translation type="unfinished"></translation>
+        <translation>이 버전 건너뛰기</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Release page</source>
-        <translation type="unfinished"></translation>
+        <translation>릴리스 페이지</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -3606,12 +3606,12 @@ Steam 게임은 설치하면 표시됩니다. 다른 게임은 라이브러리 �
     <message>
         <location line="+19"/>
         <source>XPanel %1 is available</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1을(를) 사용할 수 있습니다</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open Settings › Update Center to install it.</source>
-        <translation type="unfinished"></translation>
+        <translation>설치하려면 설정 › 업데이트 센터를 여세요.</translation>
     </message>
 </context>
 <context>
