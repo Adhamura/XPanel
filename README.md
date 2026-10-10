@@ -444,14 +444,15 @@ tray icon); if it was closed during a game, it restores your settings the next t
   hardware.
 - **Later** — ✅ GNOME (experimental); ✅ Steam Game Mode / gamescope (experimental); ✅ other
   ASUS handhelds: ROG Xbox Ally and ROG Xbox Ally X (experimental, untested on hardware);
-  ✅ translations (German; more languages in progress).
+  ✅ translations: German, Spanish, French, Italian, Japanese, Korean, Brazilian Portuguese,
+  Russian, Simplified Chinese.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).
 
 ## Languages
 
-XPanel is available in **English** and **German** (Deutsch); Spanish, French, Italian, Japanese,
-Korean, Brazilian Portuguese, Russian and Simplified Chinese are in progress. It follows your
+XPanel is available in **English**, **Deutsch**, **Español**, **Français**, **Italiano**,
+**日本語**, **한국어**, **Português (Brasil)**, **Русский** and **简体中文**. It follows your
 system language; **Settings › General › Language** changes it right away. Japanese, Korean and
 Chinese need a CJK font on the system (for example Noto Sans CJK).
 
