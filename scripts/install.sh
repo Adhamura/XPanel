@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 if [ -x bin/XPanel ]; then
     APP=bin/XPanel # release archive: prebuilt
 else
-    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXPANEL_BUILD_TOOLS=OFF
+    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
     cmake --build build
     APP=build/bin/XPanel
 fi

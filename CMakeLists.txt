@@ -10,6 +10,14 @@ find_package(LayerShellQt QUIET)
 
 include(GNUInstallDirs)
 option(XPANEL_BUILD_TOOLS "Build the developer tools (xpanel-mapper, xpanel-input-probe)" ON)
+# Release archives: no ahead-of-time QML compilation. AOT code links Qt's private API, which
+# only works with the exact Qt minor version it was built with; without it one binary runs
+# on every Qt >= the build version (the QML is compiled at run time instead).
+option(XPANEL_PORTABLE "Build binaries that run on newer Qt 6 versions too (release archives)" OFF)
+set(XPANEL_QML_OPTIONS)
+if(XPANEL_PORTABLE)
+    set(XPANEL_QML_OPTIONS NO_CACHEGEN)
+endif()
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -38,6 +46,7 @@ qt_add_qml_module(XPanel
     URI XPanel
     VERSION 1.0
     NO_RESOURCE_TARGET_PATH
+    ${XPANEL_QML_OPTIONS}
     QML_FILES
         qml/Main.qml
         qml/Tile.qml

@@ -61,13 +61,16 @@ STAGE="dist/$NAME"
 rm -rf "$STAGE" "dist/$NAME.tar.gz" "dist/$NAME.tar.gz.sha256"
 
 echo "==> Building XPanel $VERSION ($ARCH)"
-cmake -S . -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release -DXPANEL_BUILD_TOOLS=OFF \
+cmake -S . -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release -DXPANEL_BUILD_TOOLS=OFF -DXPANEL_PORTABLE=ON \
     ${QT_PREFIX:+-DCMAKE_PREFIX_PATH="$QT_PREFIX"}
 cmake --build "$BUILD"
 
 echo "==> Checking the binaries"
 "$BUILD/bin/XPanel" --version
 "$BUILD/bin/xpanel-daemon" --version
+if command -v objdump >/dev/null && objdump -T "$BUILD/bin/XPanel" | grep -q PRIVATE_API; then
+    echo "XPanel links Qt private API: it would only run with this exact Qt version"; exit 1
+fi
 
 echo "==> Staging $STAGE"
 mkdir -p "$STAGE/bin" "$STAGE/daemon" "$STAGE/qml/icons" "$STAGE/scripts" "$STAGE/packaging"
