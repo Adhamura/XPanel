@@ -6,6 +6,10 @@
 #include <QDBusVariant>
 #include <QDateTime>
 #include <QDir>
+#include <QDBusArgument>
+#include <QGuiApplication>
+#include <QScreen>
+#include <algorithm>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -50,18 +54,28 @@ SystemControl::SystemControl(QObject *parent) : QObject(parent)
         }
     }
 
-    // Find the internal display in KDE's brightness service.
-    for (int i = 0; i < 8; ++i) {
-        const QString path = QString("/org/kde/ScreenBrightness/display%1").arg(i);
-        QDBusInterface d("org.kde.ScreenBrightness", path, "org.kde.ScreenBrightness.Display");
-        if (!d.isValid())
-            break;
-        if (d.property("IsInternal").toBool()) {
-            m_blPath = path;
-            m_blMax = qMax(1, d.property("MaxBrightness").toInt());
-            break;
-        }
+    // Displays in KDE's brightness service: the internal panel and (Plasma >= 6.2) DDC/CI monitors.
+    // Re-enumerate when the service reports a change or the set of active screens changes.
+    m_screenDebounce.setSingleShot(true);
+    m_screenDebounce.setInterval(400);
+    connect(&m_screenDebounce, &QTimer::timeout, this, &SystemControl::rescanDisplays);
+    auto bus = QDBusConnection::sessionBus();
+    const QString svc = "org.kde.ScreenBrightness";
+    bus.connect(svc, "/org/kde/ScreenBrightness", svc, "DisplayAdded", this, SLOT(rescanDisplays()));
+    bus.connect(svc, "/org/kde/ScreenBrightness", svc, "DisplayRemoved", this, SLOT(rescanDisplays()));
+    bus.connect(svc, "/org/kde/ScreenBrightness", svc, "DisplaysChanged", this, SLOT(rescanDisplays()));
+    bus.connect(svc, QString(), "org.kde.ScreenBrightness.Display", "BrightnessChanged", this,
+                SLOT(onBrightnessSignal(QDBusMessage)));
+    if (auto *gui = qobject_cast<QGuiApplication *>(QCoreApplication::instance())) {
+        for (QScreen *s : QGuiApplication::screens())
+            watchScreen(s);
+        connect(gui, &QGuiApplication::screenAdded, this, [this](QScreen *s) {
+            watchScreen(s);
+            m_screenDebounce.start();
+        });
+        connect(gui, &QGuiApplication::screenRemoved, this, [this] { m_screenDebounce.start(); });
     }
+    enumerateDisplays();
 
     connect(&m_slow, &QTimer::timeout, this, [this] {
         readBattery();
@@ -126,31 +140,205 @@ void SystemControl::setSampling(bool on)
 }
 
 // ---------- brightness ----------
-void SystemControl::readBrightness()
+static const char *kBlService = "org.kde.ScreenBrightness";
+static const char *kBlDisplayIface = "org.kde.ScreenBrightness.Display";
+
+static bool isInternalScreenName(const QString &n)
 {
-    if (m_blPath.isEmpty())
-        return;
-    QDBusInterface d("org.kde.ScreenBrightness", m_blPath, "org.kde.ScreenBrightness.Display");
-    const int raw = d.property("Brightness").toInt();
-    const int pct = qRound(raw * 100.0 / m_blMax);
-    if (pct != m_brightness) {
-        m_brightness = pct;
-        emit brightnessChanged();
-    }
+    return n.startsWith("eDP", Qt::CaseInsensitive) || n.startsWith("LVDS", Qt::CaseInsensitive)
+        || n.startsWith("DSI", Qt::CaseInsensitive);
 }
 
+void SystemControl::watchScreen(QScreen *screen)
+{
+    // a mode switch (extend <-> mirror) moves / resizes outputs without adding or removing one
+    connect(screen, &QScreen::geometryChanged, &m_screenDebounce, qOverload<>(&QTimer::start));
+}
+
+void SystemControl::rescanDisplays()
+{
+    enumerateDisplays();
+}
+
+void SystemControl::readBrightness()
+{
+    enumerateDisplays();
+}
+
+// Ask the service which displays it knows (all of them, active or not) and read their values.
+void SystemControl::enumerateDisplays()
+{
+    QStringList ids;
+    {
+        QDBusInterface root(kBlService, "/org/kde/ScreenBrightness", kBlService);
+        if (root.isValid()) {
+            const QVariant v = root.property("DisplaysDBusNames");
+            if (v.canConvert<QDBusArgument>())
+                ids = qdbus_cast<QStringList>(v.value<QDBusArgument>());
+            else
+                ids = v.toStringList();
+        }
+    }
+    if (ids.isEmpty()) {
+        // older service / no property: probe display0..7
+        for (int i = 0; i < 8; ++i) {
+            QDBusInterface d(kBlService, QString("/org/kde/ScreenBrightness/display%1").arg(i), kBlDisplayIface);
+            if (d.isValid())
+                ids << QString("display%1").arg(i);
+            else if (i == 0)
+                break;
+        }
+    }
+    std::vector<BlDisplay> all;
+    for (const QString &raw : std::as_const(ids)) {
+        BlDisplay b;
+        b.id = raw.section('/', -1);
+        b.path = "/org/kde/ScreenBrightness/" + b.id;
+        QDBusInterface d(kBlService, b.path, kBlDisplayIface);
+        if (!d.isValid())
+            continue;
+        b.internal = d.property("IsInternal").toBool();
+        b.label = d.property("Label").toString();
+        b.max = qMax(1, d.property("MaxBrightness").toInt());
+        b.pct = qRound(d.property("Brightness").toInt() * 100.0 / b.max);
+        if (b.label.isEmpty())
+            b.label = b.internal ? "Built-in" : b.id;
+        all.push_back(b);
+    }
+    m_all = all;
+    updateActiveDisplays();
+}
+
+// Keep only the displays that are switched on (a disabled internal panel can still be listed),
+// internal first, and merge them into one bar when the screens are mirrored.
+void SystemControl::updateActiveDisplays()
+{
+    std::vector<BlDisplay> act;
+    bool mirror = false;
+    const QList<QScreen *> screens = QGuiApplication::screens();
+    if (!screens.isEmpty()) {
+        int nInt = 0, nExt = 0;
+        QStringList extModels;
+        for (QScreen *s : screens) {
+            if (isInternalScreenName(s->name())) {
+                ++nInt;
+            } else {
+                ++nExt;
+                extModels << s->model();
+            }
+        }
+        std::vector<BlDisplay> ext;
+        for (const BlDisplay &b : m_all) {
+            if (b.internal) {
+                if (nInt > 0)
+                    act.push_back(b);
+            } else {
+                ext.push_back(b);
+            }
+        }
+        // More external entries than external screens (stale DDC entry): prefer the ones whose
+        // label matches a screen's model name, otherwise keep the first ones.
+        if (int(ext.size()) > nExt) {
+            std::vector<BlDisplay> match;
+            for (const BlDisplay &b : ext)
+                for (const QString &m : std::as_const(extModels))
+                    if (!m.isEmpty() && b.label.contains(m, Qt::CaseInsensitive)) {
+                        match.push_back(b);
+                        break;
+                    }
+            ext = int(match.size()) == nExt ? match : std::vector<BlDisplay>(ext.begin(), ext.begin() + nExt);
+        }
+        act.insert(act.end(), ext.begin(), ext.end());
+
+        // Mirror: two or more active screens with identical geometry
+        if (screens.size() >= 2) {
+            mirror = true;
+            for (QScreen *s : screens)
+                if (s->geometry().isEmpty() || s->geometry() != screens.first()->geometry())
+                    mirror = false;
+        }
+    }
+    if (act.empty())            // nothing matched (unusual screen names, no screens): trust the service
+        act = m_all;
+    if (act.size() < 2)
+        mirror = false;
+    std::stable_sort(act.begin(), act.end(),
+                     [](const BlDisplay &a, const BlDisplay &b) { return a.internal && !b.internal; });
+
+    QVariantList var;
+    if (mirror) {
+        var << QVariantMap{{"id", "mirror"}, {"label", "Both screens"},
+                           {"internal", act.front().internal}, {"brightness", act.front().pct}};
+    } else {
+        for (const BlDisplay &b : act)
+            var << QVariantMap{{"id", b.id}, {"label", b.label}, {"internal", b.internal}, {"brightness", b.pct}};
+    }
+    const bool availBefore = !m_active.empty();
+    const int primaryBefore = m_brightness;
+    m_active = act;
+    m_mirror = mirror;
+    if (!act.empty())
+        m_brightness = act.front().pct;
+    if (var != m_displaysVar) {
+        m_displaysVar = var;
+        emit displaysChanged();
+    }
+    if (availBefore != !m_active.empty() || primaryBefore != m_brightness)
+        emit brightnessChanged();
+}
+
+void SystemControl::onBrightnessSignal(const QDBusMessage &msg)
+{
+    // BrightnessChanged(int brightness, QString sourceClientName) from /org/kde/ScreenBrightness/displayN
+    const QString id = msg.path().section('/', -1);
+    if (msg.arguments().isEmpty())
+        return;
+    const auto it = m_lastSet.constFind(id);
+    if (it != m_lastSet.constEnd() && it->isValid() && it->elapsed() < 500)
+        return;
+    bool changed = false;
+    for (BlDisplay &b : m_all)
+        if (b.id == id) {
+            const int pct = qRound(msg.arguments().first().toInt() * 100.0 / b.max);
+            if (pct != b.pct) {
+                b.pct = pct;
+                changed = true;
+            }
+        }
+    if (changed)
+        updateActiveDisplays();
+}
+
+void SystemControl::setDisplayBrightness(const QString &id, int percent)
+{
+    percent = qBound(1, percent, 100);
+    for (BlDisplay &a : m_active) {
+        if (id != "mirror" && a.id != id)
+            continue;
+        a.pct = percent;
+        for (BlDisplay &b : m_all)
+            if (b.id == a.id)
+                b.pct = percent;
+        m_lastSet[a.id].start();
+        QDBusMessage msg = QDBusMessage::createMethodCall(kBlService, a.path, kBlDisplayIface, "SetBrightness");
+        // flags = 1: do not show the KDE brightness OSD, our slider is the indicator.
+        msg << int(qRound(percent / 100.0 * a.max)) << uint(1);
+        QDBusConnection::sessionBus().asyncCall(msg);
+    }
+    updateActiveDisplays();
+}
+
+// Primary target: the internal panel if it is on, otherwise the first external monitor
+// (a mirrored pair is driven together).
 void SystemControl::setBrightness(int percent)
 {
     percent = qBound(1, percent, 100);
-    m_brightness = percent;
-    emit brightnessChanged();
-    if (m_blPath.isEmpty())
+    if (m_active.empty()) {
+        m_brightness = percent;
+        emit brightnessChanged();
         return;
-    QDBusMessage msg = QDBusMessage::createMethodCall(
-        "org.kde.ScreenBrightness", m_blPath, "org.kde.ScreenBrightness.Display", "SetBrightness");
-    // flags = 1: do not show the KDE brightness OSD, our slider is the indicator.
-    msg << int(qRound(percent / 100.0 * m_blMax)) << uint(1);
-    QDBusConnection::sessionBus().asyncCall(msg);
+    }
+    setDisplayBrightness(m_mirror ? QString("mirror") : m_active.front().id, percent);
 }
 
 // ---------- volume ----------

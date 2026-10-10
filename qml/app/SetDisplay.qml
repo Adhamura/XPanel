@@ -32,6 +32,17 @@ CcPage {
                    onPicked: (v) => { if ((v > 90) !== (sys.refreshRate > 90)) sys.toggleRefreshRate() } } }
     CcRow { title: "Wide color gamut"; description: "More saturated colours (KWin colour management)."
         CcSwitch { checked: (config.rev, config.get("display.wcg", false)); onToggled: (v) => tweaks.setWideColor(v) } }
-    CcRow { title: "Brightness"
-        CcSlider { width: 460; from: 1; to: 100; unit: " %"; value: sys.brightness; onMoved: (v) => sys.setBrightness(v) } }
+    // one row per active screen (Ally, external monitor, or both when extended)
+    Repeater {
+        model: Math.max(1, sys.displays.length)   // a count, so the sliders survive value updates
+        CcRow {
+            id: row
+            readonly property var e: index < sys.displays.length
+                ? sys.displays[index] : { id: "", label: "", internal: true, brightness: sys.brightness }
+            title: sys.displays.length > 1 || (sys.displays.length === 1 && !e.internal)
+                   ? "Brightness \u2014 " + e.label : "Brightness"
+            CcSlider { width: 460; from: 1; to: 100; unit: " %"; value: row.e.brightness
+                       onMoved: (v) => { if (row.e.id === "") sys.setBrightness(v); else sys.setDisplayBrightness(row.e.id, v) } }
+        }
+    }
 }

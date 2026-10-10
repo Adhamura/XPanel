@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Brightness follows the active display: external monitor only, Ally only, or one bar per screen when extended.
+
 ## 1.0.5
 
 - **Fixed**: the 1.0.4 AppImage crashed at start on Wayland (KDE Plasma, SteamOS / Bazzite desktop

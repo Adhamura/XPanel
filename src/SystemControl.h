@@ -3,6 +3,12 @@
 #include <QObject>
 #include <QTimer>
 #include <QString>
+#include <QStringList>
+#include <QVariantList>
+#include <QElapsedTimer>
+#include <QHash>
+#include <QDBusMessage>
+#include <vector>
 #include <functional>
 
 // Everything that is not in xpanel-daemon: screen brightness, volume, battery, radios,
@@ -11,6 +17,9 @@ class SystemControl : public QObject {
     Q_OBJECT
     Q_PROPERTY(int brightness READ brightness NOTIFY brightnessChanged)
     Q_PROPERTY(bool brightnessAvailable READ brightnessAvailable NOTIFY brightnessChanged)
+    // One entry per active display (one entry for a mirrored pair):
+    // { id, label, internal, brightness (0-100) }. Internal panel first.
+    Q_PROPERTY(QVariantList displays READ displays NOTIFY displaysChanged)
     Q_PROPERTY(int volume READ volume NOTIFY volumeChanged)
     Q_PROPERTY(bool muted READ muted NOTIFY volumeChanged)
     Q_PROPERTY(int battery READ battery NOTIFY batteryChanged)
@@ -37,7 +46,8 @@ public:
     explicit SystemControl(QObject *parent = nullptr);
 
     int brightness() const { return m_brightness; }
-    bool brightnessAvailable() const { return !m_blPath.isEmpty(); }
+    bool brightnessAvailable() const { return !m_active.empty(); }
+    QVariantList displays() const { return m_displaysVar; }
     int volume() const { return m_volume; }
     bool muted() const { return m_muted; }
     int battery() const { return m_battery; }
@@ -61,6 +71,7 @@ public:
     int ramUsedMb() const { return m_ramMb; }
 
     Q_INVOKABLE void setBrightness(int percent);
+    Q_INVOKABLE void setDisplayBrightness(const QString &id, int percent);
     Q_INVOKABLE void setVolume(int percent);
     Q_INVOKABLE void toggleMute();
     Q_INVOKABLE void setWifi(bool on);
@@ -75,6 +86,7 @@ public:
 
 signals:
     void brightnessChanged();
+    void displaysChanged();
     void volumeChanged();
     void batteryChanged();
     void radiosChanged();
@@ -84,10 +96,17 @@ signals:
     void samplingChanged();
     void statsChanged();
 
+private slots:
+    void onBrightnessSignal(const QDBusMessage &msg);
+    void rescanDisplays();
+
 private:
     void run(const QString &prog, const QStringList &args,
              std::function<void(const QString &)> done = nullptr);
     void readBrightness();
+    void enumerateDisplays();
+    void updateActiveDisplays();
+    void watchScreen(class QScreen *screen);
     void readVolume();
     void readBattery();
     void readRadios();
@@ -95,8 +114,21 @@ private:
     void readStats();
     void tickClock();
 
-    QString m_blPath;      // D-Bus path of the internal display (org.kde.ScreenBrightness)
-    int m_blMax = 100;
+    // A display exposed by org.kde.ScreenBrightness.
+    struct BlDisplay {
+        QString id;        // "display0"
+        QString path;      // /org/kde/ScreenBrightness/display0
+        QString label;
+        bool internal = false;
+        int max = 100;
+        int pct = 50;
+    };
+    std::vector<BlDisplay> m_all;     // everything the service lists
+    std::vector<BlDisplay> m_active;  // ... that is switched on right now, internal panel first
+    bool m_mirror = false;            // the active screens show the same picture: one merged bar
+    QHash<QString, QElapsedTimer> m_lastSet; // ignore the service's echo of our own writes briefly
+    QVariantList m_displaysVar;
+    QTimer m_screenDebounce;
     int m_brightness = 50;
     int m_volume = 50;
     bool m_muted = false;
