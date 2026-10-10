@@ -462,11 +462,14 @@ void InputLayer::readKeyboard(int fd)
             if (e.type != EV_KEY || e.value == 2) continue;
             // Original Ally (hid-asus): the menu buttons come from the N-KEY device, not the pad.
             // Left = KEY_F16, right (ROG) = KEY_PROG1, right held = KEY_F17 then KEY_F18.
-            if (kRawSpecial.contains(e.code)) {
+            // When the pad reports these keys itself (Ally X with hid-asus-ally), the pad is the
+            // source and the keyboard copy goes on unchanged, so a press never opens twice.
+            const bool padHasIt = m_pad >= 0 && testBit(m_pad, EV_KEY, e.code);
+            if (kRawSpecial.contains(e.code) && !padHasIt) {
                 if (e.value) emit special(kRawSpecial[e.code]);
                 continue;
             }
-            if (e.code == KEY_F17 || e.code == KEY_F18) {
+            if ((e.code == KEY_F17 || e.code == KEY_F18) && !padHasIt) {
                 if (e.code == KEY_F17 && e.value) emit special("right_button_long");
                 continue;
             }
