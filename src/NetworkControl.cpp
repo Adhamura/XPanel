@@ -48,12 +48,12 @@ void NetworkControl::scanWifi()
 void NetworkControl::connectWifi(const QString &ssid, const QString &password)
 {
     begin();
-    setMessage("Connecting to " + ssid + "…");
+    setMessage(tr("Connecting to %1…").arg(ssid));
     QStringList args{"device", "wifi", "connect", ssid};
     if (!password.isEmpty())
         args << "password" << password;
     runProcess(this, "nmcli", args, [this, ssid](const QString &, int code) {
-        setMessage(code == 0 ? "Connected to " + ssid : "Could not connect to " + ssid);
+        setMessage(code == 0 ? tr("Connected to %1").arg(ssid) : tr("Could not connect to %1").arg(ssid));
         end();
         scanWifi();
     });
@@ -111,11 +111,11 @@ void NetworkControl::connectBluetooth(const QString &mac)
     if (!macRe.match(mac).hasMatch())
         return;
     begin();
-    setMessage("Connecting…");
+    setMessage(tr("Connecting…"));
     // pair + trust first for new devices; harmless for known ones
     runProcess(this, "sh", {"-c", QString("bluetoothctl pair %1; bluetoothctl trust %1; bluetoothctl connect %1").arg(mac)},
                [this](const QString &out, int) {
-        setMessage(out.contains("Connection successful") ? "Connected" : "Could not connect");
+        setMessage(out.contains("Connection successful") ? tr("Connected") : tr("Could not connect"));
         listBluetooth();
         end();
     }, 30000);

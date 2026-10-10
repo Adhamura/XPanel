@@ -11,7 +11,7 @@ Item {
     id: ed
     property var source: null        // [[°C, %] x 8] from the daemon
     property bool enabledEditor: true
-    property string caption: "Fan curve"
+    property string caption: qsTr("Fan curve")
     property string liveText: ""     // right of the caption: current temperature and fan speed
     property int liveTemp: 0         // marker line at this temperature (0 = none)
     signal committed(var curve)
@@ -236,7 +236,7 @@ Item {
     Text {
         x: 20; anchors.bottom: parent.bottom; anchors.bottomMargin: 14; width: parent.width - 40
         wrapMode: Text.WordWrap; color: ed.editing ? T.accent : T.dim; font.pixelSize: 15
-        text: ed.editing ? "◀ ▶ point    ▲ ▼ fan speed    LB / RB temperature    Ⓐ or Ⓑ done"
-                         : "Drag the points. With a gamepad: Ⓐ to edit the curve."
+        text: ed.editing ? qsTr("◀ ▶ point    ▲ ▼ fan speed    LB / RB temperature    Ⓐ or Ⓑ done")
+                         : qsTr("Drag the points. With a gamepad: Ⓐ to edit the curve.")
     }
 }

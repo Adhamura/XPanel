@@ -16,7 +16,7 @@ Row {
     Stat { label: "CPU"; val: sys.cpuLoad + "%  " + sys.cpuTemp + "°" }
     Stat { label: "GPU"; val: sys.gpuLoad + "%  " + sys.gpuTemp + "°" }
     Stat { label: "SoC"; val: sys.socWatts.toFixed(1) + "W" }
-    Stat { label: "FAN"; val: sys.fanRpm + "" }
+    Stat { label: qsTr("FAN"); val: sys.fanRpm + "" }
     Stat { label: "RAM"; val: (sys.ramUsedMb / 1024).toFixed(1) + "G" }
-    Stat { label: "BAT"; val: (sys.charging ? "+" : "-") + sys.batteryWatts.toFixed(1) + "W" }
+    Stat { label: qsTr("BAT"); val: (sys.charging ? "+" : "-") + sys.batteryWatts.toFixed(1) + "W" }
 }

@@ -8,7 +8,7 @@ arch=('x86_64')
 url="https://github.com/Adhamura/XPanel"
 license=('MIT')
 depends=('qt6-base' 'qt6-declarative' 'qt6-svg' 'layer-shell-qt' 'libxcb' 'systemd')
-makedepends=('cmake' 'ninja' 'git')
+makedepends=('cmake' 'ninja' 'git' 'qt6-tools')
 optdepends=('wireplumber: volume (wpctl)'
             'networkmanager: Wi-Fi tile and Connection settings'
             'bluez-utils: Bluetooth (bluetoothctl)'
@@ -24,7 +24,7 @@ sha256sums=('SKIP')
 
 build() {
     cmake -S "$pkgname" -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/usr -DXPANEL_BUILD_TOOLS=OFF
+        -DCMAKE_INSTALL_PREFIX=/usr -DXPANEL_BUILD_TOOLS=OFF -DXPANEL_REQUIRE_TRANSLATIONS=ON
     cmake --build build
 }
 

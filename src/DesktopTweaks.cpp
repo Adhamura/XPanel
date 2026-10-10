@@ -184,21 +184,21 @@ QVariantList DesktopTweaks::diagnostics() const
     QLocalSocket s;
     s.connectToServer("/run/xpanel/xpanel.sock");
     const bool daemon = s.waitForConnected(500);
-    add("Desktop", true, Desktop::label(Desktop::current()) + " (XDG_CURRENT_DESKTOP="
-        + qEnvironmentVariable("XDG_CURRENT_DESKTOP", "unset") + ")");
-    add("xpanel-daemon", daemon, daemon ? "running (/run/xpanel/xpanel.sock)" : "not reachable: " + DeviceClient::installHint());
+    add(tr("Desktop"), true, tr("%1 (XDG_CURRENT_DESKTOP=%2)").arg(Desktop::label(Desktop::current()),
+                                                                  qEnvironmentVariable("XDG_CURRENT_DESKTOP", tr("unset"))));
+    add("xpanel-daemon", daemon, daemon ? tr("running (/run/xpanel/xpanel.sock)") : tr("not reachable: %1").arg(DeviceClient::installHint()));
     if (Desktop::current() == Desktop::Kind::KDE)
-        add("Wayland overlay", !qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY"), qEnvironmentVariable("WAYLAND_DISPLAY", "no Wayland"));
+        add(tr("Wayland overlay"), !qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY"), qEnvironmentVariable("WAYLAND_DISPLAY", tr("no Wayland")));
     else
-        add("X11 overlay (XWayland)", !qEnvironmentVariableIsEmpty("DISPLAY"), qEnvironmentVariable("DISPLAY", "no DISPLAY"));
-    add("TDP interface", QFile::exists("/sys/class/firmware-attributes/asus-armoury/attributes/ppt_pl1_spl"), "asus-armoury ppt_pl1_spl");
+        add(tr("X11 overlay (XWayland)"), !qEnvironmentVariableIsEmpty("DISPLAY"), qEnvironmentVariable("DISPLAY", tr("no DISPLAY")));
+    add(tr("TDP interface"), QFile::exists("/sys/class/firmware-attributes/asus-armoury/attributes/ppt_pl1_spl"), "asus-armoury ppt_pl1_spl");
     bool fan = false;
     for (const QString &e : QDir("/sys/class/hwmon").entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         QFile n("/sys/class/hwmon/" + e + "/name");
         if (n.open(QIODevice::ReadOnly) && n.readAll().trimmed() == "asus_custom_fan_curve") fan = true;
     }
-    add("Fan curve interface", fan, "hwmon asus_custom_fan_curve");
-    add("Charge limit", QFile::exists("/sys/class/power_supply/BAT0/charge_control_end_threshold"), "BAT0 charge_control_end_threshold");
+    add(tr("Fan curve interface"), fan, "hwmon asus_custom_fan_curve");
+    add(tr("Charge limit"), QFile::exists("/sys/class/power_supply/BAT0/charge_control_end_threshold"), "BAT0 charge_control_end_threshold");
     QStringList tools{"wpctl", "pactl", "nmcli", "bluetoothctl"};
     switch (Desktop::current()) {
     case Desktop::Kind::KDE: tools << "kscreen-doctor" << "spectacle"; break;
@@ -208,6 +208,6 @@ QVariantList DesktopTweaks::diagnostics() const
     }
     tools << "checkupdates" << "fwupdmgr";
     for (const QString &tool : std::as_const(tools))
-        add("Tool: " + tool, !QStandardPaths::findExecutable(tool).isEmpty(), QStandardPaths::findExecutable(tool));
+        add(tr("Tool: %1").arg(tool), !QStandardPaths::findExecutable(tool).isEmpty(), QStandardPaths::findExecutable(tool));
     return out;
 }

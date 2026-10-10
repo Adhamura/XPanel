@@ -43,7 +43,7 @@ Remove-Item -Recurse -Force $Stage -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force dist, $Stage | Out-Null
 
 Write-Host "==> Building XPanel $Version (Windows x64)"
-cmake -S . -B $Build -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH=$Qt" -DXPANEL_BUILD_TOOLS=OFF
+cmake -S . -B $Build -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH=$Qt" -DXPANEL_BUILD_TOOLS=OFF -DXPANEL_REQUIRE_TRANSLATIONS=ON
 if ($LASTEXITCODE) { throw 'cmake configure failed' }
 cmake --build $Build
 if ($LASTEXITCODE) { throw 'build failed' }

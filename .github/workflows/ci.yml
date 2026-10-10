@@ -56,11 +56,11 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install build dependencies
-        run: pacman -Syu --noconfirm --needed base-devel git cmake ninja qt6-base qt6-declarative qt6-svg layer-shell-qt
+        run: pacman -Syu --noconfirm --needed base-devel git cmake ninja qt6-base qt6-declarative qt6-svg qt6-tools layer-shell-qt
       - uses: actions/checkout@v4
       - name: Build (with developer tools)
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DXPANEL_REQUIRE_TRANSLATIONS=ON
           cmake --build build
           build/bin/XPanel --version
           build/bin/xpanel-daemon --version

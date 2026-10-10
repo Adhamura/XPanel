@@ -67,7 +67,7 @@ void PanelController::setDevice(DeviceClient *device)
 void PanelController::setAppView(QQuickView *app)
 {
     m_app = app;
-    m_app->setTitle("Control Center");
+    m_app->setTitle(tr("Control Center"));
     m_app->setResizeMode(QQuickView::SizeRootObjectToView);
     m_app->setMinimumSize(QSize(960, 600));
     m_app->resize(1600, 900);
@@ -193,7 +193,7 @@ void PanelController::prepareOsdWindow()
     if (!m_osd)
         return;
     m_osd->setColor(Qt::transparent);
-    m_osd->setTitle("XPanel Monitor");
+    m_osd->setTitle(tr("XPanel Monitor"));
     m_osd->setResizeMode(QQuickView::SizeRootObjectToView);
     m_osd->resize(560, 44);
 #ifdef XPANEL_HAVE_LAYERSHELL
@@ -280,6 +280,14 @@ void PanelController::closeFinished()
             updateOsd();
         }
     }
+}
+
+void PanelController::retranslate()
+{
+    if (m_app)
+        m_app->setTitle(tr("Control Center"));
+    if (m_osd)
+        m_osd->setTitle(tr("XPanel Monitor"));
 }
 
 void PanelController::toggle()

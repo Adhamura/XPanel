@@ -130,6 +130,9 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 - Optional, for the matching tiles and settings: `wireplumber` (`wpctl`), NetworkManager,
   `bluez-utils`, `kscreen`, `spectacle`, `fwupd`, `pacman-contrib`; outside KDE also
   `gnome-screenshot` (GNOME) and `ddcutil` (external monitor brightness).
+- Japanese, Korean and Chinese need a CJK font on the system (for example Noto Sans CJK; Windows has
+  them). To build from source with translations, Qt's Linguist tools (`qt6-tools` on Arch,
+  `qt6-l10n-tools` + `qt6-tools-dev` on Debian) are needed; without them XPanel builds in English only.
 
 ### Desktops
 
@@ -441,9 +444,24 @@ tray icon); if it was closed during a game, it restores your settings the next t
   hardware.
 - **Later** — ✅ GNOME (experimental); ✅ Steam Game Mode / gamescope (experimental); ✅ other
   ASUS handhelds: ROG Xbox Ally and ROG Xbox Ally X (experimental, untested on hardware);
-  translations.
+  ✅ translations (German; more languages in progress).
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).
+
+## Languages
+
+XPanel is available in **English** and **German** (Deutsch); Spanish, French, Italian, Japanese,
+Korean, Brazilian Portuguese, Russian and Simplified Chinese are in progress. It follows your
+system language; **Settings › General › Language** changes it right away. Japanese, Korean and
+Chinese need a CJK font on the system (for example Noto Sans CJK).
+
+**Contributing a translation:** the texts live in `i18n/xpanel_<code>.ts`. Open the file for your
+language with Qt Linguist (`linguist6 i18n/xpanel_de.ts`, package `qt6-tools`), translate, save,
+and send a pull request. Keep `%1` / `%n` placeholders as they are. The translations are compiled
+into the program, no extra files to install. After code changes, maintainers run
+`cmake --build build --target update_translations` to add new texts to the `.ts` files.
+**A new language:** add `i18n/xpanel_<code>.ts` to the language list in `CMakeLists.txt`, add its
+code and native name to `kLanguages` in `src/Translations.cpp`, then run the update target.
 
 ## Contributing
 

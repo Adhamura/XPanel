@@ -96,7 +96,7 @@ Item {
                 }
             }
             Text {
-                text: "Ⓐ Select    Ⓑ Back" + (ch.items.some(i => i.stepper) ? "    ◀ ▶ Adjust" : "")
+                text: ch.items.some(i => i.stepper) ? qsTr("Ⓐ Select    Ⓑ Back    ◀ ▶ Adjust") : qsTr("Ⓐ Select    Ⓑ Back")
                 color: T.dim; font.pixelSize: 22 * ch.s; topPadding: 8 * ch.s
             }
         }

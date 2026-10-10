@@ -39,7 +39,7 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
 QString DeviceClient::installHint()
 {
 #ifdef Q_OS_WIN
-    return "restart XPanel (it starts xpanel-daemon.exe), or reinstall it";
+    return tr("restart XPanel (it starts xpanel-daemon.exe), or reinstall it");
 #else
     if (!qEnvironmentVariableIsEmpty("APPIMAGE"))
         return "sudo " + qEnvironmentVariable("APPIMAGE") + " --install";

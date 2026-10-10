@@ -2,6 +2,7 @@
 #include "Desktop.h"
 #include "Proc.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -15,18 +16,18 @@
 #include <QStandardPaths>
 
 // Packages that carry the Ally X drivers and firmware on Linux.
-static const QList<QPair<QString, QString>> kDriverPackages = {
-    {"^linux(-cachyos[a-z-]*)?$", "Kernel: hid_asus_ally, asus-armoury, amdgpu, mt7921 drivers"},
-    {"^linux(-cachyos[a-z-]*)?-headers$", "Kernel headers (for DKMS modules)"},
-    {"^linux-firmware(-[a-z]+)?$", "Firmware files: AMD GPU, MediaTek Wi-Fi / Bluetooth, audio"},
-    {"^amd-ucode$", "AMD CPU microcode"},
-    {"^(lib32-)?mesa$", "Graphics driver (OpenGL)"},
-    {"^(lib32-)?vulkan-radeon$", "Graphics driver (Vulkan, RADV)"},
-    {"^sof-firmware$", "Audio DSP firmware"},
-    {"^alsa-ucm-conf$", "Audio device profiles"},
-    {"^bluez$", "Bluetooth stack"},
-    {"^networkmanager$", "Wi-Fi / network"},
-    {"^fwupd$", "Firmware updater"},
+static const QList<QPair<QString, const char *>> kDriverPackages = {
+    {"^linux(-cachyos[a-z-]*)?$", QT_TRANSLATE_NOOP("UpdateCenter", "Kernel: hid_asus_ally, asus-armoury, amdgpu, mt7921 drivers")},
+    {"^linux(-cachyos[a-z-]*)?-headers$", QT_TRANSLATE_NOOP("UpdateCenter", "Kernel headers (for DKMS modules)")},
+    {"^linux-firmware(-[a-z]+)?$", QT_TRANSLATE_NOOP("UpdateCenter", "Firmware files: AMD GPU, MediaTek Wi-Fi / Bluetooth, audio")},
+    {"^amd-ucode$", QT_TRANSLATE_NOOP("UpdateCenter", "AMD CPU microcode")},
+    {"^(lib32-)?mesa$", QT_TRANSLATE_NOOP("UpdateCenter", "Graphics driver (OpenGL)")},
+    {"^(lib32-)?vulkan-radeon$", QT_TRANSLATE_NOOP("UpdateCenter", "Graphics driver (Vulkan, RADV)")},
+    {"^sof-firmware$", QT_TRANSLATE_NOOP("UpdateCenter", "Audio DSP firmware")},
+    {"^alsa-ucm-conf$", QT_TRANSLATE_NOOP("UpdateCenter", "Audio device profiles")},
+    {"^bluez$", QT_TRANSLATE_NOOP("UpdateCenter", "Bluetooth stack")},
+    {"^networkmanager$", QT_TRANSLATE_NOOP("UpdateCenter", "Wi-Fi / network")},
+    {"^fwupd$", QT_TRANSLATE_NOOP("UpdateCenter", "Firmware updater")},
 };
 
 void UpdateCenter::done()
@@ -44,7 +45,7 @@ void UpdateCenter::done()
             if (!QRegularExpression(d.first).match(it.key()).hasMatch())
                 continue;
             m_drivers << QVariantMap{{"name", it.key()}, {"installed", it.value()},
-                                     {"update", pending.value(it.key())}, {"note", d.second}};
+                                     {"update", pending.value(it.key())}, {"note", tr(d.second)}};
             break;
         }
     }
@@ -166,12 +167,12 @@ void UpdateCenter::checkAsus()
             QString installed, name = title, how;
             if (it.key().startsWith("BIOS|")) {
                 name = "BIOS"; installed = biosNow;
-                how = "Linux: download, put the .CAP file on a FAT32 USB stick, restart to BIOS, use EZ Flash.";
+                how = tr("Linux: download, put the .CAP file on a FAT32 USB stick, restart to BIOS, use EZ Flash.");
             } else if (title.contains("MCU", Qt::CaseInsensitive)) {
-                name = "Controller (MCU)"; installed = m_fwVersions.value("mcu");
-                how = "ASUS ships it only as a Windows tool. Linux needs version 313 or newer.";
+                name = tr("Controller (MCU)"); installed = m_fwVersions.value("mcu");
+                how = tr("ASUS ships it only as a Windows tool. Linux needs version 313 or newer.");
             } else {
-                how = "ASUS ships it only as a Windows tool.";
+                how = tr("ASUS ships it only as a Windows tool.");
             }
             auto num = [](const QString &v) { return QString(v).remove(QRegularExpression("[^0-9]")).toInt(); };
             QString status = "unknown";
@@ -183,8 +184,8 @@ void UpdateCenter::checkAsus()
                                     {"status", status}, {"how", how}, {"bios", name == "BIOS"}};
         }
         if (m_allyFw.isEmpty())
-            m_allyFw << QVariantMap{{"name", "ASUS support site"}, {"title", model}, {"status", "unknown"},
-                                    {"how", reply->error() ? "Not reachable: " + reply->errorString() : "No files listed for " + model}};
+            m_allyFw << QVariantMap{{"name", tr("ASUS support site")}, {"title", model}, {"status", "unknown"},
+                                    {"how", reply->error() ? tr("Not reachable: %1").arg(reply->errorString()) : tr("No files listed for %1").arg(model)}};
         done();
     });
 }
@@ -202,7 +203,7 @@ void UpdateCenter::downloadBios(const QString &url, const QString &version)
     const QString dir = QDir::homePath() + "/Downloads/XPanel-BIOS-" + QString(version).remove(QRegularExpression("[^0-9A-Za-z]"));
     QDir().mkpath(dir);
     const QString file = dir + "/" + QUrl(url).fileName();
-    m_downloadStatus = "Downloading " + QUrl(url).fileName() + "…";
+    m_downloadStatus = tr("Downloading %1…").arg(QUrl(url).fileName());
     emit changed();
     QNetworkRequest req{QUrl(url)};
     req.setHeader(QNetworkRequest::UserAgentHeader, "XPanel/" XPANEL_VERSION);
@@ -210,18 +211,18 @@ void UpdateCenter::downloadBios(const QString &url, const QString &version)
     connect(reply, &QNetworkReply::finished, this, [this, reply, file, dir] {
         reply->deleteLater();
         if (reply->error()) {
-            m_downloadStatus = "Download failed: " + reply->errorString();
+            m_downloadStatus = tr("Download failed: %1").arg(reply->errorString());
             emit changed();
             return;
         }
         QSaveFile out(file);
-        if (!out.open(QIODevice::WriteOnly)) { m_downloadStatus = "Cannot write " + file; emit changed(); return; }
+        if (!out.open(QIODevice::WriteOnly)) { m_downloadStatus = tr("Cannot write %1").arg(file); emit changed(); return; }
         out.write(reply->readAll());
         out.commit();
         // the EZ Flash zip holds the .CAP capsule
         runProcess(this, "bsdtar", {"-xf", file, "-C", dir}, [this, dir](const QString &, int code) {
-            m_downloadStatus = code == 0 ? "Saved in " + dir + ". Copy the .CAP file to a FAT32 USB stick, then Restart to BIOS → EZ Flash."
-                                         : "Saved in " + dir + " (unpack the zip yourself).";
+            m_downloadStatus = code == 0 ? tr("Saved in %1. Copy the .CAP file to a FAT32 USB stick, then Restart to BIOS → EZ Flash.").arg(dir)
+                                         : tr("Saved in %1 (unpack the zip yourself).").arg(dir);
             emit changed();
             Desktop::showInFileManager(dir, false);
         });

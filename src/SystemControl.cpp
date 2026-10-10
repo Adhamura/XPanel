@@ -286,7 +286,7 @@ void SystemControl::scanDdc()
                 num.clear();
             } else if (l.startsWith("Monitor:") && !num.isEmpty()) {
                 const QString model = l.mid(8).trimmed().section(':', 1, 1).trimmed();
-                found.push_back({num, model.isEmpty() ? "Monitor " + num : model});
+                found.push_back({num, model.isEmpty() ? tr("Monitor %1").arg(num) : model});
                 num.clear();
             }
         }
@@ -433,7 +433,7 @@ void SystemControl::updateActiveDisplays()
 
     QVariantList var;
     if (mirror) {
-        var << QVariantMap{{"id", "mirror"}, {"label", "Both screens"},
+        var << QVariantMap{{"id", "mirror"}, {"label", tr("Both screens")},
                            {"internal", act.front().internal}, {"brightness", act.front().pct}};
     } else {
         for (const BlDisplay &b : act)

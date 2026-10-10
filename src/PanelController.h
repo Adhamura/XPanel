@@ -38,6 +38,8 @@ public:
     Q_INVOKABLE void toggle();
     // Called by QML when the slide-out animation has finished.
     Q_INVOKABLE void closeFinished();
+    // The window titles in the current UI language (after a language change).
+    void retranslate();
 
 signals:
     void openChanged();

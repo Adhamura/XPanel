@@ -18,6 +18,9 @@ endif()
 
 include(GNUInstallDirs)
 option(XPANEL_BUILD_TOOLS "Build the developer tools (xpanel-mapper, xpanel-input-probe)" ON)
+# Translations (i18n/*.ts) need Qt LinguistTools. Without it the app still builds, in English only.
+# Release builds and CI turn this on so a missing tool cannot ship an English-only package unnoticed.
+option(XPANEL_REQUIRE_TRANSLATIONS "Fail when Qt LinguistTools (lrelease, lupdate) is missing" OFF)
 # Release archives: no ahead-of-time QML compilation. AOT code links Qt's private API, which
 # only works with the exact Qt minor version it was built with; without it one binary runs
 # on every Qt >= the build version (the QML is compiled at run time instead).
@@ -47,6 +50,7 @@ qt_add_executable(XPanel
     src/MediaGallery.h src/MediaGallery.cpp
     src/DesktopTweaks.h src/DesktopTweaks.cpp
     src/Desktop.h src/Desktop.cpp
+    src/Translations.h src/Translations.cpp src/LanguageMatch.h
 )
 
 file(GLOB XPANEL_ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/icons/*.svg)
@@ -78,6 +82,27 @@ qt_add_qml_module(XPanel
         qml/app/SetBattery.qml qml/app/FanCurveEditor.qml qml/app/CcSwatches.qml
     RESOURCES ${XPANEL_ICONS}
 )
+
+# Translations: i18n/xpanel_<code>.ts (edit with Qt Linguist) are compiled into the executable as
+# resources ":/i18n/xpanel_<code>.qm", so packaging needs no extra files. To add a language: add its
+# .ts file here and to kLanguages in src/Translations.cpp, then run the "update_translations" target.
+# Maintainers: `cmake --build <dir> --target update_translations` extracts new strings into the .ts files.
+if(XPANEL_REQUIRE_TRANSLATIONS)
+    find_package(Qt6 REQUIRED COMPONENTS LinguistTools)
+else()
+    find_package(Qt6 QUIET COMPONENTS LinguistTools)
+endif()
+if(Qt6LinguistTools_FOUND)
+    set(XPANEL_TS_FILES)
+    foreach(lang de es fr it ja ko pt_BR ru zh_CN)
+        list(APPEND XPANEL_TS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/i18n/xpanel_${lang}.ts)
+    endforeach()
+    qt_add_translations(XPanel TS_FILES ${XPANEL_TS_FILES} RESOURCE_PREFIX /i18n
+        LUPDATE_OPTIONS -no-obsolete -locations relative)
+    message(STATUS "XPanel: translations enabled (${CMAKE_CURRENT_SOURCE_DIR}/i18n, target update_translations)")
+else()
+    message(STATUS "XPanel: Qt LinguistTools not found, building without translations (English only)")
+endif()
 
 set_target_properties(XPanel PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 target_compile_definitions(XPanel PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")

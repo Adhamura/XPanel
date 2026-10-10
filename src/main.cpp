@@ -33,8 +33,10 @@
 #include "UpdateCenter.h"
 #include "PanelController.h"
 #include "SystemControl.h"
+#include "Translations.h"
 
 #include <QApplication>
+#include <QCoreApplication>
 #include <QFile>
 #include <QIcon>
 #include <QLocalServer>
@@ -54,6 +56,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <functional>
 #ifdef Q_OS_WIN
 #include <QAbstractNativeEventFilter>
 #include <QProcess>
@@ -263,6 +266,8 @@ int main(int argc, char **argv)
     chooseGraphics();
 
     Config config;
+    Translations i18n(&config); // before any window: qsTr / tr() read the translator
+    i18n.apply();
     DeviceClient device;
     SystemControl sys;
     PanelController panel(backend, &config);
@@ -357,6 +362,8 @@ int main(int argc, char **argv)
     engine.rootContext()->setContextProperty("profiles", &profiles);
     engine.rootContext()->setContextProperty("gallery", &gallery);
     engine.rootContext()->setContextProperty("tweaks", &tweaks);
+    engine.rootContext()->setContextProperty("i18n", &i18n);
+    i18n.setEngine(&engine);
     DesktopInfo desktopInfo;
     engine.rootContext()->setContextProperty("desktop", &desktopInfo);
     engine.rootContext()->setContextProperty("appVersion", QString(XPANEL_VERSION));
@@ -379,33 +386,65 @@ int main(int argc, char **argv)
     // Tray icon in the taskbar: click toggles the panel, right click has a menu.
     QSystemTrayIcon tray(QIcon(":/qml/icons/tray.svg")); // no background tile: the mark fills the tray slot
     QMenu trayMenu;
-    trayMenu.addAction("Open Quick Panel", [&] { panel.requestOpen(); });
-    trayMenu.addAction(QIcon::fromTheme("configure"), "Control Center", [&] { panel.openApp(); });
-    QMenu *pages = trayMenu.addMenu("Control Center pages");
-    for (const auto &pg : QList<QPair<QString, QString>>{
-             {"library", "Game Library"}, {"control", "Control Mode"}, {"gallery", "Media Gallery"},
-             {"user", "User Center"}, {"settings", "Settings"}, {"settings/performance", "Settings › Performance"},
-             {"settings/lighting", "Settings › Lighting"}, {"settings/battery", "Settings › Battery Care"}})
-        pages->addAction(pg.second, [&panel, id = pg.first] { panel.openApp(id); });
-    trayMenu.addSeparator();
-    QMenu *btnMenu = trayMenu.addMenu("Open with Ally button");
-    const QList<QPair<QString, QString>> buttons = {
-        {"left_button", "Left menu button"},
-        {"right_button", "Right menu button"},
-        {"none", "No button (tray / shortcut only)"},
+    // Texts of the tray menu, set again whenever the language changes
+    QList<std::function<void()>> trayTexts;
+    using TrText = std::function<QString()>;
+    auto textOf = [&trayTexts](QAction *a, const TrText &t) {
+        a->setText(t());
+        trayTexts << [a, t] { a->setText(t()); };
     };
-    for (const auto &b : buttons) {
-        QAction *a = btnMenu->addAction(b.second, [&config, id = b.first] { config.setButton(id); });
+    auto titleOf = [&trayTexts](QMenu *m, const TrText &t) {
+        m->setTitle(t());
+        trayTexts << [m, t] { m->setTitle(t()); };
+    };
+    textOf(trayMenu.addAction(QString(), [&] { panel.requestOpen(); }),
+           [] { return QCoreApplication::translate("Tray", "Open Quick Panel"); });
+    textOf(trayMenu.addAction(QIcon::fromTheme("configure"), QString(), [&] { panel.openApp(); }),
+           [] { return QCoreApplication::translate("Tray", "Control Center"); });
+    QMenu *pages = trayMenu.addMenu(QString());
+    titleOf(pages, [] { return QCoreApplication::translate("Tray", "Control Center pages"); });
+    struct TrayPage { const char *id; const char *title; };
+    for (const TrayPage &pg : {
+             TrayPage{"library", QT_TRANSLATE_NOOP("Tray", "Game Library")},
+             TrayPage{"control", QT_TRANSLATE_NOOP("Tray", "Control Mode")},
+             TrayPage{"gallery", QT_TRANSLATE_NOOP("Tray", "Media Gallery")},
+             TrayPage{"user", QT_TRANSLATE_NOOP("Tray", "User Center")},
+             TrayPage{"settings", QT_TRANSLATE_NOOP("Tray", "Settings")},
+             TrayPage{"settings/performance", QT_TRANSLATE_NOOP("Tray", "Settings › Performance")},
+             TrayPage{"settings/lighting", QT_TRANSLATE_NOOP("Tray", "Settings › Lighting")},
+             TrayPage{"settings/battery", QT_TRANSLATE_NOOP("Tray", "Settings › Battery Care")}})
+        textOf(pages->addAction(QString(), [&panel, id = QString(pg.id)] { panel.openApp(id); }),
+               [title = pg.title] { return QCoreApplication::translate("Tray", title); });
+    trayMenu.addSeparator();
+    QMenu *btnMenu = trayMenu.addMenu(QString());
+    titleOf(btnMenu, [] { return QCoreApplication::translate("Tray", "Open with Ally button"); });
+    struct TrayButton { const char *id; const char *title; };
+    for (const TrayButton &b : {
+             TrayButton{"left_button", QT_TRANSLATE_NOOP("Tray", "Left menu button")},
+             TrayButton{"right_button", QT_TRANSLATE_NOOP("Tray", "Right menu button")},
+             TrayButton{"none", QT_TRANSLATE_NOOP("Tray", "No button (tray / shortcut only)")}}) {
+        QAction *a = btnMenu->addAction(QString(), [&config, id = QString(b.id)] { config.setButton(id); });
+        textOf(a, [title = b.title] { return QCoreApplication::translate("Tray", title); });
         a->setCheckable(true);
-        a->setChecked(config.button() == b.first);
-        QObject::connect(&config, &Config::buttonChanged, a, [a, &config, id = b.first] {
+        a->setChecked(config.button() == b.id);
+        QObject::connect(&config, &Config::buttonChanged, a, [a, &config, id = QString(b.id)] {
             a->setChecked(config.button() == id);
         });
     }
     trayMenu.addSeparator();
-    trayMenu.addAction("Quit XPanel", [&] { app.quit(); });
+    textOf(trayMenu.addAction(QString(), [&] { app.quit(); }),
+           [] { return QCoreApplication::translate("Tray", "Quit XPanel"); });
     tray.setContextMenu(&trayMenu);
-    tray.setToolTip("XPanel Quick Panel " XPANEL_VERSION);
+    trayTexts << [&tray] {
+        tray.setToolTip(QCoreApplication::translate("Tray", "XPanel Quick Panel %1").arg(QString(XPANEL_VERSION)));
+    };
+    trayTexts.last()();
+    // a language change: menu, tooltip and window titles follow (QML retranslates itself)
+    QObject::connect(&i18n, &Translations::languageChanged, &app, [&] {
+        for (const auto &f : std::as_const(trayTexts))
+            f();
+        panel.retranslate();
+    });
     QObject::connect(&tray, &QSystemTrayIcon::activated, [&](QSystemTrayIcon::ActivationReason r) {
         if (r == QSystemTrayIcon::Trigger || r == QSystemTrayIcon::DoubleClick)
             panel.toggle();
