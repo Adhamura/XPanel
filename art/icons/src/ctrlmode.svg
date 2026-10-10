@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64">
+<g inkscape:groupmode="layer" inkscape:label="ctrlmode">
+<g inkscape:label="body" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><path d="M18 18H46C54 18 59 24 60 33L61 42C62 50 54 53 49 47L44 41H20L15 47C10 53 2 50 3 42L4 33C5 24 10 18 18 18Z"/></g>
+<g inkscape:label="dpad" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><path d="M18 25V35M13 30H23"/></g>
+<g inkscape:label="buttons" style="fill:#f2f2f2;stroke:none"><circle cx="44" cy="27" r="3"/><circle cx="50" cy="33" r="3"/></g>
+</g>
+</svg>

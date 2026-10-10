@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64">
+<g inkscape:groupmode="layer" inkscape:label="sun">
+<g inkscape:label="disc" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><circle cx="32" cy="32" r="9"/></g>
+<g inkscape:label="rays" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><path d="M50.00 32.00L57.00 32.00"/><path d="M44.73 44.73L49.68 49.68"/><path d="M32.00 50.00L32.00 57.00"/><path d="M19.27 44.73L14.32 49.68"/><path d="M14.00 32.00L7.00 32.00"/><path d="M19.27 19.27L14.32 14.32"/><path d="M32.00 14.00L32.00 7.00"/><path d="M44.73 19.27L49.68 14.32"/></g>
+</g>
+</svg>

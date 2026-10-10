@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64">
+<g inkscape:groupmode="layer" inkscape:label="charge">
+<g inkscape:label="battery" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><rect x="5" y="18" width="48" height="28" rx="5"/></g>
+<g inkscape:label="tip" style="fill:#f2f2f2;stroke:none"><rect x="55" y="26" width="5" height="12" rx="2"/></g>
+<g inkscape:label="bolt" style="fill:#f2f2f2;stroke:none"><path d="M31 21L21 34H28.5L25 43L37 29H29.5Z"/></g>
+</g>
+</svg>

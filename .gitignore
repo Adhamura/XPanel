@@ -1,0 +1,22 @@
+# Build trees
+build/
+cmake-build-*/
+CMakeLists.txt.user*
+CMakeCache.txt
+CMakeFiles/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*~
+
+# Icon build output (the app uses the copies in qml/icons/)
+art/icons/out/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Local logs and dumps
+*.log

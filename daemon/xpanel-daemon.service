@@ -1,0 +1,22 @@
+[Unit]
+Description=XPanel daemon (ROG Ally TDP, fan, charge limit, lighting, input layer)
+After=systemd-udev-settle.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/xpanel-daemon
+Restart=on-failure
+# The input layer hides the raw Ally pad from games while it runs. When the daemon stops
+# (also after a crash), let udev restore the normal device permissions.
+ExecStopPost=/usr/bin/udevadm trigger --action=change --subsystem-match=input --subsystem-match=hidraw
+RestartSec=2
+RuntimeDirectory=xpanel
+RuntimeDirectoryMode=0755
+StateDirectory=xpanel
+Environment=XPANEL_SOCKET=/run/xpanel/xpanel.sock
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

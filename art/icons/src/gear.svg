@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="64" height="64" viewBox="0 0 64 64">
+<g inkscape:groupmode="layer" inkscape:label="gear">
+<g inkscape:label="teeth" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><path d="M27.39 12.03L28.16 6.29L35.84 6.29L36.61 12.03A20.5 20.5 0 0 1 42.86 14.62L47.47 11.10L52.90 16.53L49.38 21.14A20.5 20.5 0 0 1 51.97 27.39L57.71 28.16L57.71 35.84L51.97 36.61A20.5 20.5 0 0 1 49.38 42.86L52.90 47.47L47.47 52.90L42.86 49.38A20.5 20.5 0 0 1 36.61 51.97L35.84 57.71L28.16 57.71L27.39 51.97A20.5 20.5 0 0 1 21.14 49.38L16.53 52.90L11.10 47.47L14.62 42.86A20.5 20.5 0 0 1 12.03 36.61L6.29 35.84L6.29 28.16L12.03 27.39A20.5 20.5 0 0 1 14.62 21.14L11.10 16.53L16.53 11.10L21.14 14.62A20.5 20.5 0 0 1 27.39 12.03Z"/></g>
+<g inkscape:label="hole" style="fill:none;stroke:#f2f2f2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round"><circle cx="32" cy="32" r="8.5"/></g>
+</g>
+</svg>
