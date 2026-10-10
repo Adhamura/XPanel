@@ -2,6 +2,8 @@
 # Install xpanel-daemon as a system service. Run with sudo:
 #   sudo scripts/install-daemon.sh                # install + start
 #   sudo scripts/install-daemon.sh --disable-hhd  # also stop and disable Handheld Daemon
+# Creates the group "xpanel" and adds the user who ran sudo: only root and that group may
+# control the daemon.
 # hhd changes the same TDP / fan / lighting settings, so the two must not run together.
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "Run with sudo."; exit 1; }
@@ -14,6 +16,15 @@ elif [ -x build/bin/xpanel-daemon ]; then
 else
     echo "Build first (as your user): ./run.sh --version"
     exit 1
+fi
+
+# Only root and members of the group "xpanel" may control the daemon (see SECURITY.md).
+getent group xpanel >/dev/null || groupadd --system xpanel
+if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
+    usermod -aG xpanel "$SUDO_USER"
+    echo "Added $SUDO_USER to the group xpanel."
+else
+    echo "Add your desktop user to the group xpanel: sudo usermod -aG xpanel <user>"
 fi
 
 install -m 755 "$BIN" /usr/local/bin/xpanel-daemon

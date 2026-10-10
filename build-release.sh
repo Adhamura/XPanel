@@ -79,7 +79,7 @@ strip --strip-unneeded "$STAGE/bin/XPanel" "$STAGE/bin/xpanel-daemon" 2>/dev/nul
 install -m 644 daemon/xpanel-daemon.service "$STAGE/daemon/"
 install -m 644 qml/icons/app.svg "$STAGE/qml/icons/"
 install -m 755 scripts/install.sh scripts/install-daemon.sh scripts/uninstall.sh scripts/uninstall-daemon.sh "$STAGE/scripts/"
-install -m 644 packaging/xpanel.desktop "$STAGE/packaging/"
+install -m 644 packaging/xpanel.desktop packaging/xpanel.sysusers "$STAGE/packaging/"
 install -m 644 README.md LICENSE CHANGELOG.md "$STAGE/"
 cat > "$STAGE/INSTALL.txt" <<EOF
 XPanel $VERSION for Linux $ARCH (ROG Ally X, KDE Plasma 6)

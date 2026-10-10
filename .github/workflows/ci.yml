@@ -49,6 +49,7 @@ jobs:
           test -x stage/usr/bin/XPanel
           test -f stage/usr/share/applications/xpanel.desktop
           grep -q '^ExecStart=/usr/bin/xpanel-daemon$' stage/usr/lib/systemd/system/xpanel-daemon.service
+          test -f stage/usr/lib/sysusers.d/xpanel.conf
 
   scripts:
     name: Shell scripts (shellcheck)

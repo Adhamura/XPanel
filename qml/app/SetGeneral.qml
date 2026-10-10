@@ -49,8 +49,8 @@ CcPage {
     CcSection { title: "About" }
     CcRow { title: "XPanel"; description: "Quick Panel and Control Center for the ROG Ally on Linux"
         Text { text: "Version " + appVersion; color: T.text; font.pixelSize: 18 } }
-    CcRow { title: "Service"; description: "xpanel-daemon (TDP, fan, charge limit, lighting)"
-        Text { text: device.connected ? "Running" : "Not running"; color: device.connected ? T.text : T.warn; font.pixelSize: 18 } }
+    CcRow { title: "Service"; description: device.error ? "No access: " + device.error : "xpanel-daemon (TDP, fan, charge limit, lighting)"
+        Text { text: device.connected ? "Running" : device.error ? "No access" : "Not running"; color: device.connected ? T.text : T.warn; font.pixelSize: 18 } }
     CcRow { title: "Input layer"; description: "XPanel's own controller handling (in xpanel-daemon)."
         Text { text: device.value("inputLayer") || "not running"; color: device.value("inputLayer") === "active" ? "#5fd38d" : T.warn; font.pixelSize: 18 } }
     CcRow { title: "App Diagnostics"; description: "Checks the services and tools XPanel uses."

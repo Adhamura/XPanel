@@ -6,6 +6,9 @@
 // something else (firmware, another tool) changes the TDP.
 //
 // Protocol: UNIX socket /run/xpanel/xpanel.sock, one JSON object per line.
+// Access: root and members of the group "xpanel" (XPANEL_GROUP); checked per connection with
+// SO_PEERCRED against the current group database, so a new member needs no new login.
+// Others get {"error": "denied", "message": "..."} and are disconnected.
 //   client -> {"get": true}
 //   client -> {"set": {"opmode": "turbo"}}          (any of the keys below)
 //   daemon -> {"state": {...}}                      (reply, and pushed to every
@@ -32,18 +35,22 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QSaveFile>
+#include <QSet>
 #include <QSocketNotifier>
 #include <QTimer>
 
 #include <csignal>
 #include <cstdio>
 #include <cstring>
+#include <grp.h>
+#include <pwd.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 static const QString kStateDir = qEnvironmentVariable("STATE_DIRECTORY", "/var/lib/xpanel");
 static const QString kSocketPath = qEnvironmentVariable("XPANEL_SOCKET", "/run/xpanel/xpanel.sock");
+static const QByteArray kGroup = qEnvironmentVariable("XPANEL_GROUP", "xpanel").toLocal8Bit();
 
 static const QStringList kOpModes = {"silent", "performance", "turbo", "manual"};
 static const QStringList kFans = {"auto", "quiet", "max"};
@@ -59,6 +66,8 @@ public:
 
         QDir().mkpath(QFileInfo(kSocketPath).absolutePath());
         QLocalServer::removeServer(kSocketPath);
+        // Anyone may connect; onConnection() lets only root and the xpanel group in. A file
+        // mode of 0660 would need a new login before a newly added member could connect.
         m_server.setSocketOptions(QLocalServer::WorldAccessOption);
         if (!m_server.listen(kSocketPath))
             qFatal("xpanel-daemon: cannot listen on %s", qPrintable(kSocketPath));
@@ -225,9 +234,54 @@ private:
             c->write(msg);
     }
 
+    // Who may change the hardware: root, or a member of kGroup (looked up now, not at login).
+    static bool authorized(uid_t uid, QString *why)
+    {
+        if (uid == 0)
+            return true;
+        const group *gr = getgrnam(kGroup.constData());
+        const passwd *pw = getpwuid(uid);
+        if (!gr || !pw) {
+            *why = !gr ? QString("the group \"%1\" does not exist; run: sudo scripts/install-daemon.sh").arg(QString(kGroup))
+                       : QString("unknown user id %1").arg(uid);
+            return false;
+        }
+        const gid_t want = gr->gr_gid;
+        int n = 64;
+        QList<gid_t> groups(n);
+        if (getgrouplist(pw->pw_name, pw->pw_gid, groups.data(), &n) < 0) {
+            groups.resize(n);
+            getgrouplist(pw->pw_name, pw->pw_gid, groups.data(), &n);
+        }
+        for (int i = 0; i < n && i < groups.size(); ++i)
+            if (groups[i] == want)
+                return true;
+        *why = QString("user %1 is not in the group \"%2\"; run: sudo usermod -aG %2 %1")
+                   .arg(QString::fromLocal8Bit(pw->pw_name), QString(kGroup));
+        return false;
+    }
+
     void onConnection()
     {
         while (QLocalSocket *c = m_server.nextPendingConnection()) {
+            ucred cred{};
+            cred.uid = uid_t(-1); // stays "nobody" in the log if the lookup fails
+            socklen_t len = sizeof(cred);
+            QString why = "cannot read the peer credentials";
+            if (getsockopt(int(c->socketDescriptor()), SOL_SOCKET, SO_PEERCRED, &cred, &len) != 0
+                || !authorized(cred.uid, &why)) {
+                if (!m_deniedLogged.contains(cred.uid)) { // once per user, the app retries every few seconds
+                    m_deniedLogged.insert(cred.uid);
+                    qWarning("xpanel-daemon: refused uid %u (pid %d): %s", cred.uid, cred.pid, qPrintable(why));
+                }
+                c->write(QJsonDocument(QJsonObject{{"error", "denied"}, {"message", why}}).toJson(QJsonDocument::Compact) + "\n");
+                c->flush();
+                connect(c, &QLocalSocket::disconnected, c, &QObject::deleteLater);
+                c->disconnectFromServer();
+                if (c->state() == QLocalSocket::UnconnectedState)
+                    c->deleteLater();
+                continue;
+            }
             m_clients.append(c);
             connect(c, &QLocalSocket::readyRead, this, [this, c] { onRead(c); });
             connect(c, &QLocalSocket::disconnected, this, [this, c] {
@@ -284,6 +338,7 @@ private:
     const QJsonObject m_info = Hardware::deviceInfo(); // read once (serial needs root)
     QLocalServer m_server;
     QList<QLocalSocket *> m_clients;
+    QSet<uid_t> m_deniedLogged;
     InputLayer m_input;
     QLocalSocket *m_grabOwner = nullptr;
     QTimer m_watch;

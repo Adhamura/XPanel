@@ -14,7 +14,7 @@ CcPage {
         return "#" + x(c.r) + x(c.g) + x(c.b)
     }
 
-    CcSection { title: "Lighting"; note: device.connected ? "" : "xpanel-daemon is not running." }
+    CcSection { title: "Lighting"; note: device.connected ? "" : device.error ? "No access to xpanel-daemon: " + device.error : "xpanel-daemon is not running." }
     Rectangle { // preview of the two rings
         width: parent.width; height: 120; color: "#101014"; radius: 4
         Repeater {

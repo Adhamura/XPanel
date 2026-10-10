@@ -21,6 +21,11 @@ hidraw; its own input layer (evdev grab + uinput virtual Xbox 360 pad, keyboard 
 workflow on `v*` tags; Arch `PKGBUILD`; CMake install rules for the desktop entry, icon and
 systemd unit; `xpanel-daemon --version`.
 
+**Security**: only root and members of the new `xpanel` group may control `xpanel-daemon`
+(peer credentials checked on every connection; no new login needed after `usermod -aG xpanel`).
+Refused clients get a clear message, which the app shows in Settings. `install-daemon.sh`
+creates the group and adds the installing user; packages get a `sysusers.d` entry.
+
 **Fixed**: the daemon dropped requests over 4 KB, so large Control Mode settings were silently
 not applied; it now accepts up to 128 KB (the setting itself is limited to 64 KB).
 

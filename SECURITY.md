@@ -7,6 +7,13 @@ only says you have something to report, without details).
 ## What the daemon does and does not do
 
 - It listens only on a local UNIX socket, `/run/xpanel/xpanel.sock`. There is no network listener.
+- Only **root and members of the `xpanel` group** may use it. The daemon reads each client's
+  credentials (`SO_PEERCRED`) and looks the user up in the group database when it connects, so
+  a user added with `usermod -aG xpanel` gets access without a new login, and a removed user
+  loses it on the next connection. Everyone else gets `{"error":"denied"}` and is disconnected
+  before any state is sent; the refusal is logged once per user in the journal.
+  `install-daemon.sh` creates the group and adds the user who ran `sudo`; packages create it
+  through `sysusers.d`.
 - It accepts a fixed set of keys (operating mode, TDP within 5–40 W, fan mode, charge limit
   50–100 %, lighting, GPU clock, control settings). Each value is validated. It runs no commands
   it receives and writes no paths it receives.
@@ -17,8 +24,10 @@ only says you have something to report, without details).
 
 ## Known limits (planned work)
 
-- The socket is world-writable. Any local program can change the power and lighting settings, or
-  ask for the controller grab. On a single-user handheld this is the same trust level as the
-  desktop session, but a group-restricted socket with peer-credential checks is planned.
+- Any program running as a member of the `xpanel` group (in practice: your desktop session)
+  can change the power and lighting settings and ask for the controller grab. That is the
+  intended trust level, the same as the user at the device.
+- The systemd unit is not yet sandboxed further (`ProtectSystem`, `DeviceAllow`, capability
+  bounding); this is planned once it can be tested on hardware.
 - BIOS files downloaded by the Update Center come from ASUS's servers over HTTPS and are not
   checked against a separate checksum. XPanel only downloads them; it does not flash them.

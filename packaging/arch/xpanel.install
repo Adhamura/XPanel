@@ -3,6 +3,8 @@ post_install() {
 ==> XPanel installed.
     Start the root service (TDP, fan, charge limit, lighting, input layer):
         sudo systemctl enable --now xpanel-daemon
+    Allow your user to control it (no new login needed):
+        sudo usermod -aG xpanel $USER
     Handheld Daemon (hhd) changes the same hardware; stop it first:
         sudo systemctl disable --now hhd@$USER
     Then start "XPanel Quick Panel" from the menu (it adds a tray icon).

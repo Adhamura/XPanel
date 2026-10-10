@@ -6,14 +6,16 @@ CcPage {
     id: page
     readonly property bool manual: device.value("opmode") === "manual"
 
-    CcSection { title: "Operating Mode"; note: device.connected ? "" : "xpanel-daemon is not running: install it with  sudo scripts/install-daemon.sh" }
+    CcSection { title: "Operating Mode"; note: device.connected ? "" : device.error ? "No access to xpanel-daemon: " + device.error
+                                                                       : "xpanel-daemon is not running: install it with  sudo scripts/install-daemon.sh" }
     CcRow { title: "Mode"; description: "Silent 13 W · Performance 17 W · Turbo 25 W (30 W on the charger) · Manual"
         CcChoice { enabledChoice: device.connected
                    options: [{ value: "silent", label: "Silent" }, { value: "performance", label: "Performance" },
                              { value: "turbo", label: "Turbo" }, { value: "manual", label: "Manual" }]
                    current: (device.rev, device.value("opmode")); onPicked: (v) => device.setValue("opmode", v) } }
     CcRow { title: "Now"; description: "Applied power limits (SPL / SPPT / FPPT) and platform profile"
-        Text { text: (device.rev, device.value("spl") + " / " + device.value("sppt") + " / " + device.value("fppt") + " W  ·  " + device.value("profile"))
+        Text { text: (device.rev, !device.connected ? "—"
+                     : device.value("spl") + " / " + device.value("sppt") + " / " + device.value("fppt") + " W  ·  " + device.value("profile"))
                color: T.accent; font.pixelSize: 18 } }
 
     CcSection { title: "Manual"; note: "Used in Manual mode. SPPT / FPPT at 0 W = SPL + 5 W / + 10 W." }

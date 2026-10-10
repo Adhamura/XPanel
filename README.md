@@ -131,6 +131,7 @@ Distro packages for Qt, on Arch / CachyOS: `sudo pacman -S qt6-base qt6-declarat
 ```bash
 cd packaging/arch && makepkg -si
 sudo systemctl enable --now xpanel-daemon
+sudo usermod -aG xpanel $USER                  # allow your user to control the daemon
 ```
 
 ### From source
@@ -229,10 +230,15 @@ holds the controller, Control Mode shows it as busy.
 **Does it work in Steam Game Mode (Bazzite / SteamOS / ChimeraOS)?** Not yet. XPanel is for the
 KDE Plasma desktop session.
 
-**Is it safe?** The root daemon only listens on a local socket and only accepts a fixed,
-validated set of settings (TDP between 5 and 40 W, charge limit 50–100 %, …). Wattages stay close
-to ASUS's Windows defaults. See [SECURITY.md](SECURITY.md) for details and known limits. As
-with any tool that changes power limits: use at your own risk.
+**Is it safe?** The root daemon only listens on a local socket, only lets in root and members of
+the `xpanel` group (checked per connection), and only accepts a fixed, validated set of settings
+(TDP between 5 and 40 W, charge limit 50–100 %, …). Wattages stay close to ASUS's Windows defaults.
+See [SECURITY.md](SECURITY.md) for details. As with any tool that changes power limits: use at
+your own risk.
+
+**Settings say "No access to xpanel-daemon".** Your user is not in the `xpanel` group:
+`sudo usermod -aG xpanel $USER`. It works right away, no new login needed.
+`install-daemon.sh` adds the user that ran `sudo` automatically.
 
 **The controller stopped working in games.** Restart the daemon:
 `sudo systemctl restart xpanel-daemon`. If you stopped it, udev restores the normal controller
@@ -250,8 +256,8 @@ from XPanel's Game Library for now.
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
   for games started from Steam, restored when the game ends.
-- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; a stricter daemon
-  socket (group + peer credentials).
+- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; tighter systemd
+  sandboxing for the daemon.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).
