@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.0.3 LANGUAGES CXX)
+project(XPanel VERSION 1.0.4 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets Quick Network DBus Svg)
-find_package(LayerShellQt QUIET)
+if(NOT WIN32)
+    find_package(LayerShellQt QUIET)
+endif()
 
 include(GNUInstallDirs)
 option(XPANEL_BUILD_TOOLS "Build the developer tools (xpanel-mapper, xpanel-input-probe)" ON)
@@ -70,6 +72,13 @@ qt_add_qml_module(XPanel
 set_target_properties(XPanel PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 target_compile_definitions(XPanel PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")
 target_link_libraries(XPanel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Quick Qt6::Network Qt6::DBus Qt6::Svg)
+if(WIN32)
+    # Windows (experimental): no console window, app icon, global hotkeys (user32)
+    set_target_properties(XPanel PROPERTIES WIN32_EXECUTABLE ON)
+    target_sources(XPanel PRIVATE packaging/windows/xpanel.rc)
+    target_compile_definitions(XPanel PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+    target_link_libraries(XPanel PRIVATE user32)
+endif()
 
 if(LayerShellQt_FOUND)
     target_link_libraries(XPanel PRIVATE LayerShellQt::Interface)
@@ -89,15 +98,24 @@ else()
     message(STATUS "XPanel: LayerShellQt not found, X11/xdg-shell fallback only")
 endif()
 
-# Root helper: TDP, fan curve, charge limit, lighting (no GUI libraries)
-add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Hardware.cpp
-    daemon/InputLayer.h daemon/InputLayer.cpp)
+# Hardware helper: TDP, fan curve, charge limit, lighting (no GUI libraries).
+# Linux: root service with the input layer. Windows: ASUS ACPI + HID backend in the user session.
+if(WIN32)
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/HardwareWin.cpp daemon/InputLayerStub.h)
+    set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON)
+    target_sources(xpanel-daemon PRIVATE packaging/windows/xpanel.rc)
+    target_compile_definitions(xpanel-daemon PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+    target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
+else()
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Hardware.cpp
+        daemon/InputLayer.h daemon/InputLayer.cpp)
+endif()
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)
 target_compile_definitions(xpanel-daemon PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")
 target_link_libraries(xpanel-daemon PRIVATE Qt6::Core Qt6::Network)
 
 # Developer tool: map Ally X input codes to physical controls (tools/mapper)
-if(XPANEL_BUILD_TOOLS)
+if(XPANEL_BUILD_TOOLS AND NOT WIN32)
     add_executable(xpanel-input-probe tools/mapper/probe_main.cpp)
     set_target_properties(xpanel-input-probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     qt_add_executable(xpanel-mapper tools/mapper/mapper_main.cpp)
@@ -110,6 +128,9 @@ endif()
 # Install: binaries, desktop entry, icon, systemd unit (ExecStart follows the install prefix).
 # Packagers: cmake -DCMAKE_INSTALL_PREFIX=/usr ... && DESTDIR=pkg cmake --install build
 install(TARGETS XPanel xpanel-daemon RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(WIN32) # Windows packaging: packaging/windows/build-release.ps1 (windeployqt + Inno Setup)
+    return()
+endif()
 install(FILES packaging/xpanel.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES qml/icons/app.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps RENAME xpanel.svg)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS daemon/xpanel-daemon.service)

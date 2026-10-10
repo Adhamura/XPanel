@@ -1,7 +1,7 @@
 name: Release
 
-# Publishes XPanel-<version>-x86_64.AppImage, xpanel-<version>-linux-x86_64.tar.gz and
-# SHA256SUMS as the GitHub Release v<version>, automatically:
+# Publishes the GitHub Release v<version> automatically: XPanel-<version>-x86_64.AppImage,
+# xpanel-<version>-linux-x86_64.tar.gz, XPanel-<version>-Windows-x64-Setup.exe and SHA256SUMS.
 #   every push to main whose project(VERSION) in CMakeLists.txt has no release yet is built,
 #   smoke-tested and published (it creates the tag). To release: bump the version, add a
 #   "## <version>" section to CHANGELOG.md, merge.
@@ -45,14 +45,12 @@ jobs:
               echo "release=true" >> "$GITHUB_OUTPUT"
           fi
 
-  release:
-    name: Build, smoke-test and publish
+  linux:
+    name: Linux (AppImage + archive)
     needs: check
     if: needs.check.outputs.release == 'true'
     runs-on: ubuntu-latest
     container: debian:trixie
-    env:
-      TAG: ${{ needs.check.outputs.tag }}
     steps:
       - name: Install git
         run: apt-get update -qq && apt-get install -y -qq git
@@ -65,24 +63,65 @@ jobs:
         run: |
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth
           packaging/appimage/smoke-test.sh dist/XPanel-*-x86_64.AppImage
+      - uses: actions/upload-artifact@v4
+        with: { name: linux, path: "dist/*", if-no-files-found: error }
+
+  windows:
+    name: Windows (installer, experimental)
+    needs: check
+    if: needs.check.outputs.release == 'true'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurplel/install-qt-action@v4
+        with: { version: "6.8.3", arch: win64_msvc2022_64, cache: true }
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Tools (Ninja, Inno Setup)
+        run: choco install ninja innosetup -y --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: packaging/windows/build-release.ps1 -Clean
+      - name: Smoke test (offscreen)
+        shell: pwsh
+        run: packaging/windows/smoke-test.ps1 build-release-win/stage/XPanel.exe
+      - uses: actions/upload-artifact@v4
+        with: { name: windows, path: "dist/*Setup.exe", if-no-files-found: error }
+
+  publish:
+    name: Publish the release
+    needs: [check, linux, windows]
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ needs.check.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - name: Checksums
+        run: cd dist && rm -f SHA256SUMS && sha256sum ./*.AppImage ./*.tar.gz ./*.exe | sed 's| \./| |' > SHA256SUMS && cat SHA256SUMS
       - name: Release notes from CHANGELOG.md
         run: |
           v=${TAG#v}
           awk -v v="$v" '$0 ~ "^## "v { on=1; next } /^## / { on=0 } on' CHANGELOG.md > notes.md
           cat >> notes.md <<'NOTES'
 
-          ### Install: one file
+          ### Linux: one file
           Download **XPanel-*-x86_64.AppImage** (everything included, Qt too), then:
           ```bash
           chmod +x XPanel-*-x86_64.AppImage
           sudo ./XPanel-*-x86_64.AppImage --install --disable-hhd   # app, tray, menu entry, root service
           ```
           Or just run it: `./XPanel-*-x86_64.AppImage`. Remove with `sudo xpanel --uninstall`.
+          The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`, `sudo scripts/install-daemon.sh`).
+          Linux x86_64, ROG Ally X, KDE Plasma 6, glibc ≥ 2.39.
 
-          The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`,
-          `sudo scripts/install-daemon.sh`). Check downloads with `sha256sum -c SHA256SUMS`.
+          ### Windows (experimental)
+          Run **XPanel-*-Windows-x64-Setup.exe**. Operating Mode / TDP, fan, charge limit, Aura lighting and
+          boot sound work through the ASUS System Control Interface; controller remapping is Linux-only for now.
+          Open the Quick Panel from the tray icon or **Win+Shift+Q**, the Control Center with **Win+Shift+C**.
+          Close Armoury Crate while you use XPanel (both change the same settings). Windows 10/11 x64.
 
-          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.39). On Windows, use Armoury Crate.
+          Check downloads with `sha256sum -c SHA256SUMS --ignore-missing`.
           NOTES
       - uses: softprops/action-gh-release@v2
         with:
@@ -93,4 +132,5 @@ jobs:
           files: |
             dist/*.AppImage
             dist/*.tar.gz
+            dist/*.exe
             dist/SHA256SUMS

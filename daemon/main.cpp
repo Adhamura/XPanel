@@ -24,7 +24,11 @@
 //       lightBrightness (0..3), lightSpeed (low|medium|high), bootSound, mcuPowersave (bool)
 
 #include "Hardware.h"
+#ifdef Q_OS_WIN
+#include "InputLayerStub.h"
+#else
 #include "InputLayer.h"
+#endif
 
 #include <QCoreApplication>
 #include <QDir>
@@ -42,14 +46,23 @@
 #include <csignal>
 #include <cstdio>
 #include <cstring>
+#include <QtGlobal> // Q_OS_*
+#ifndef Q_OS_WIN
 #include <grp.h>
 #include <pwd.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#endif
 
+#ifdef Q_OS_WIN
+// Windows: runs in the user's session (started by XPanel), named pipe \\.\pipe\xpanel.
+static const QString kStateDir = qEnvironmentVariable("STATE_DIRECTORY", qEnvironmentVariable("LOCALAPPDATA") + "/XPanel/daemon");
+static const QString kSocketPath = qEnvironmentVariable("XPANEL_SOCKET", "xpanel");
+#else
 static const QString kStateDir = qEnvironmentVariable("STATE_DIRECTORY", "/var/lib/xpanel");
 static const QString kSocketPath = qEnvironmentVariable("XPANEL_SOCKET", "/run/xpanel/xpanel.sock");
+#endif
 static const QByteArray kGroup = qEnvironmentVariable("XPANEL_GROUP", "xpanel").toLocal8Bit();
 
 static const QStringList kOpModes = {"silent", "performance", "turbo", "manual"};
@@ -64,6 +77,11 @@ public:
         load();
         applyAll();
 
+#ifdef Q_OS_WIN
+        // The pipe keeps Windows' default security: only this user (and admins) can write to it.
+        if (!m_server.listen(kSocketPath))
+            qFatal("xpanel-daemon: cannot listen on %s (already running?)", qPrintable(kSocketPath));
+#else
         QDir().mkpath(QFileInfo(kSocketPath).absolutePath());
         QLocalServer::removeServer(kSocketPath);
         // Anyone may connect; onConnection() lets only root and the xpanel group in. A file
@@ -72,6 +90,7 @@ public:
         if (!m_server.listen(kSocketPath))
             qFatal("xpanel-daemon: cannot listen on %s", qPrintable(kSocketPath));
         ::chmod(kSocketPath.toLocal8Bit().constData(), 0666);
+#endif
         connect(&m_server, &QLocalServer::newConnection, this, &Daemon::onConnection);
 
         // Our own input layer: the Ally pad -> virtual Xbox pad / keyboard / mouse.
@@ -234,6 +253,7 @@ private:
             c->write(msg);
     }
 
+#ifndef Q_OS_WIN
     // Who may change the hardware: root, or a member of kGroup (looked up now, not at login).
     static bool authorized(uid_t uid, QString *why)
     {
@@ -261,9 +281,12 @@ private:
         return false;
     }
 
+#endif
+
     void onConnection()
     {
         while (QLocalSocket *c = m_server.nextPendingConnection()) {
+#ifndef Q_OS_WIN
             ucred cred{};
             cred.uid = uid_t(-1); // stays "nobody" in the log if the lookup fails
             socklen_t len = sizeof(cred);
@@ -282,6 +305,7 @@ private:
                     c->deleteLater();
                 continue;
             }
+#endif
             m_clients.append(c);
             connect(c, &QLocalSocket::readyRead, this, [this, c] { onRead(c); });
             connect(c, &QLocalSocket::disconnected, this, [this, c] {
@@ -338,14 +362,18 @@ private:
     const QJsonObject m_info = Hardware::deviceInfo(); // read once (serial needs root)
     QLocalServer m_server;
     QList<QLocalSocket *> m_clients;
+#ifndef Q_OS_WIN
     QSet<uid_t> m_deniedLogged;
+#endif
     InputLayer m_input;
     QLocalSocket *m_grabOwner = nullptr;
     QTimer m_watch;
     bool m_lastAc = false;
 };
 
+#ifndef Q_OS_WIN
 static int g_sig[2];
+#endif
 
 int main(int argc, char **argv)
 {
@@ -355,6 +383,7 @@ int main(int argc, char **argv)
             return 0;
         }
     QCoreApplication app(argc, argv);
+#ifndef Q_OS_WIN
     if (geteuid() != 0)
         qWarning("xpanel-daemon: not running as root, hardware writes will fail");
 
@@ -364,6 +393,7 @@ int main(int argc, char **argv)
     auto handler = [](int) { const char c = 1; (void)!::write(g_sig[0], &c, 1); };
     std::signal(SIGTERM, handler);
     std::signal(SIGINT, handler);
+#endif
 
     Daemon d;
     const int rc = app.exec();

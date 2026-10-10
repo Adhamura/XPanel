@@ -5,7 +5,11 @@
 
 static QString socketPath()
 {
+#ifdef Q_OS_WIN
+    return qEnvironmentVariable("XPANEL_SOCKET", "xpanel"); // named pipe of xpanel-daemon.exe
+#else
     return qEnvironmentVariable("XPANEL_SOCKET", "/run/xpanel/xpanel.sock");
+#endif
 }
 
 DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
@@ -34,11 +38,15 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
 
 QString DeviceClient::installHint()
 {
+#ifdef Q_OS_WIN
+    return "restart XPanel (it starts xpanel-daemon.exe), or reinstall it";
+#else
     if (!qEnvironmentVariableIsEmpty("APPIMAGE"))
         return "sudo " + qEnvironmentVariable("APPIMAGE") + " --install";
     if (QCoreApplication::applicationDirPath().startsWith("/opt/xpanel/"))
         return "sudo xpanel --install";
     return "sudo scripts/install-daemon.sh";
+#endif
 }
 
 void DeviceClient::connectNow()

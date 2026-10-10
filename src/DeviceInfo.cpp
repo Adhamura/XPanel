@@ -9,8 +9,10 @@
 #include <QStorageInfo>
 #include <QSysInfo>
 
+#ifndef Q_OS_WIN
 #include <pwd.h>
 #include <unistd.h>
+#endif
 
 static QString readFile(const QString &fn)
 {
@@ -99,10 +101,14 @@ QVariantMap DeviceInfo::battery() const
 QVariantMap DeviceInfo::user() const
 {
     QVariantMap m;
+#ifdef Q_OS_WIN
+    m["login"] = qEnvironmentVariable("USERNAME");
+#else
     if (const passwd *pw = getpwuid(getuid())) {
         m["login"] = QString::fromLocal8Bit(pw->pw_name);
         m["name"] = QString::fromLocal8Bit(pw->pw_gecos).section(',', 0, 0);
     }
+#endif
     if (m["name"].toString().isEmpty())
         m["name"] = m["login"];
     for (const QString &p : {QDir::homePath() + "/.face.icon", QDir::homePath() + "/.face",
