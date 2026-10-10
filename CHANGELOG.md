@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.2 — one-file download
+
+- **AppImage**: `XPanel-<version>-x86_64.AppImage` is a single file with everything included
+  (Qt, Wayland / X11 plugins, layer-shell-qt). Run it, or install it with
+  `sudo ./XPanel-*-x86_64.AppImage --install [--disable-hhd]`: it copies itself to `/opt/xpanel`
+  and sets up the root service, the `xpanel` group, the menu entry, autostart and the `xpanel`
+  command. `sudo xpanel --uninstall` removes it again.
+- `build-release.sh` (and `build-release.bat` via WSL) builds the AppImage next to the archive;
+  releases list the files in `SHA256SUMS`.
+- The app shows the matching install command (AppImage, `/opt`, or source checkout) when the
+  daemon is not running.
+- CMake installs the systemd unit and the sysusers file relative to the install prefix.
+
 ## 1.0.1 — first public release
 
 **Quick Panel** (Ally button, tray, shortcut): Operating Mode (Silent 13 W / Performance 17 W /

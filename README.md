@@ -108,15 +108,34 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 - Optional, for the matching tiles and settings: `wireplumber` (`wpctl`), NetworkManager,
   `bluez-utils`, `kscreen`, `spectacle`, `fwupd`, `pacman-contrib`.
 
-There is **no Windows build** (on Windows, use Armoury Crate) and **no 32-bit build** (the Ally X
-is a 64-bit device, and XPanel uses Linux kernel interfaces such as sysfs, hidraw and uinput).
+There is **no Windows build**: every feature talks to Linux kernel interfaces (sysfs, hidraw,
+uinput, systemd), so a Windows version would be a different program. On Windows, use Armoury
+Crate or G-Helper. There is **no 32-bit build** either: the Ally X is a 64-bit device.
 
 ## Install
 
-### Release archive (recommended)
+### One file: AppImage (recommended)
 
-Download `xpanel-<version>-linux-x86_64.tar.gz` from
-[**Releases**](https://github.com/Adhamura/XPanel/releases/latest), then:
+Download **`XPanel-<version>-x86_64.AppImage`** from
+[**Releases**](https://github.com/Adhamura/XPanel/releases/latest). It contains everything,
+Qt included, and works on any x86_64 distro from 2025 on (glibc ≥ 2.41: CachyOS, Arch, Fedora 42+,
+Bazzite, Debian 13, …).
+
+```bash
+chmod +x XPanel-*-x86_64.AppImage
+sudo ./XPanel-*-x86_64.AppImage --install --disable-hhd   # app, tray icon, menu entry, root service
+```
+
+`--install` copies XPanel to `/opt/xpanel`, sets up the root service and the `xpanel` group,
+adds a menu entry, autostart and the `xpanel` command; `--disable-hhd` stops hhd (it changes the
+same hardware). Remove everything with `sudo xpanel --uninstall`.
+You can also just run the file (`./XPanel-*-x86_64.AppImage`) to try the app; hardware settings
+need the installed service.
+
+### Release archive (uses your system's Qt)
+
+`xpanel-<version>-linux-x86_64.tar.gz` needs Qt ≥ 6.8 and layer-shell-qt from your distro
+(Arch / CachyOS: `sudo pacman -S qt6-base qt6-declarative qt6-svg layer-shell-qt`):
 
 ```bash
 tar xzf xpanel-*-linux-x86_64.tar.gz && cd xpanel-*-linux-x86_64
@@ -124,7 +143,7 @@ scripts/install.sh                             # app, tray icon, autostart (your
 sudo scripts/install-daemon.sh --disable-hhd   # root service; stops hhd (it changes the same hardware)
 ```
 
-Distro packages for Qt, on Arch / CachyOS: `sudo pacman -S qt6-base qt6-declarative qt6-svg layer-shell-qt`.
+Check downloads with `sha256sum -c SHA256SUMS --ignore-missing`.
 
 ### Arch / CachyOS package
 
@@ -148,7 +167,7 @@ Remove: `scripts/uninstall.sh` and `sudo scripts/uninstall-daemon.sh`.
 ### Build a release archive yourself
 
 ```bash
-./build-release.sh               # uses this system's Qt → dist/xpanel-<version>-linux-x86_64.tar.gz
+./build-release.sh               # this system's Qt → dist/: AppImage, .tar.gz, SHA256SUMS
 ./build-release.sh --container   # builds in debian:trixie with Docker / Podman, like CI
 ```
 

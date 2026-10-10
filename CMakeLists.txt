@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.0.1 LANGUAGES CXX)
+project(XPanel VERSION 1.0.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -116,5 +116,5 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS daemon/xpanel-dae
 file(READ daemon/xpanel-daemon.service XPANEL_UNIT)
 string(REPLACE "/usr/local/bin/" "${CMAKE_INSTALL_FULL_BINDIR}/" XPANEL_UNIT "${XPANEL_UNIT}")
 file(WRITE ${CMAKE_BINARY_DIR}/xpanel-daemon.service "${XPANEL_UNIT}")
-install(FILES ${CMAKE_BINARY_DIR}/xpanel-daemon.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
-install(FILES packaging/xpanel.sysusers DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/sysusers.d RENAME xpanel.conf)
+install(FILES ${CMAKE_BINARY_DIR}/xpanel-daemon.service DESTINATION lib/systemd/system)
+install(FILES packaging/xpanel.sysusers DESTINATION lib/sysusers.d RENAME xpanel.conf)

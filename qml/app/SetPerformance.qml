@@ -7,7 +7,7 @@ CcPage {
     readonly property bool manual: device.value("opmode") === "manual"
 
     CcSection { title: "Operating Mode"; note: device.connected ? "" : device.error ? "No access to xpanel-daemon: " + device.error
-                                                                       : "xpanel-daemon is not running: install it with  sudo scripts/install-daemon.sh" }
+                                                                       : "xpanel-daemon is not running: install it with  " + device.installHint }
     CcRow { title: "Mode"; description: "Silent 13 W · Performance 17 W · Turbo 25 W (30 W on the charger) · Manual"
         CcChoice { enabledChoice: device.connected
                    options: [{ value: "silent", label: "Silent" }, { value: "performance", label: "Performance" },
