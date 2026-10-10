@@ -6,92 +6,92 @@
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
         <source>Game Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Libreria giochi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di controllo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Media Gallery</source>
-        <translation type="unfinished"></translation>
+        <translation>Galleria multimediale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>User Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Area utente</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Operating Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità operativa</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Charge limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite di carica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Lighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Illuminazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fan curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventole</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Eco Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità Eco</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>GPU clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Clock GPU</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>%1 → %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 → %2</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>xpanel-daemon connected</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon connesso</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>xpanel-daemon disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon disconnesso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>xpanel-daemon: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Started %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 avviato</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>LB / RB  switch</source>
-        <translation type="unfinished"></translation>
+        <translation>LB / RB  Cambia</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Ⓐ Select    Ⓑ Back    ◀ ▶ Change    ▲ ▼ Move    LB / RB Section</source>
-        <translation type="unfinished"></translation>
+        <translation>Ⓐ Seleziona    Ⓑ Indietro    ◀ ▶ Modifica    ▲ ▼ Sposta    LB / RB Sezione</translation>
     </message>
 </context>
 <context>
@@ -99,12 +99,12 @@
     <message>
         <location filename="../qml/Chooser.qml" line="+99"/>
         <source>Ⓐ Select    Ⓑ Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Ⓐ Seleziona    Ⓑ Indietro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Ⓐ Select    Ⓑ Back    ◀ ▶ Adjust</source>
-        <translation type="unfinished"></translation>
+        <translation>Ⓐ Seleziona    Ⓑ Indietro    ◀ ▶ Regola</translation>
     </message>
 </context>
 <context>
@@ -112,638 +112,638 @@
     <message>
         <location filename="../qml/app/ControlPage.qml" line="+19"/>
         <source>Gamepad</source>
-        <translation type="unfinished"></translation>
+        <translation>Gamepad</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+114"/>
         <location line="+54"/>
         <source>Mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Mouse</translation>
     </message>
     <message>
         <location line="-167"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastiera</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Numpad</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastierino num.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Combination</source>
-        <translation type="unfinished"></translation>
+        <translation>Combinazione</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+23"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Disattivato</translation>
     </message>
     <message>
         <location line="-12"/>
         <source>D-pad up</source>
-        <translation type="unfinished"></translation>
+        <translation>D-pad su</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>D-pad down</source>
-        <translation type="unfinished"></translation>
+        <translation>D-pad giù</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>D-pad left</source>
-        <translation type="unfinished"></translation>
+        <translation>D-pad sinistra</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>D-pad right</source>
-        <translation type="unfinished"></translation>
+        <translation>D-pad destra</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left paddle</source>
-        <translation type="unfinished"></translation>
+        <translation>Paddle sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right paddle</source>
-        <translation type="unfinished"></translation>
+        <translation>Paddle destro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left click</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right click</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic destro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Middle click</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic centrale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wheel up</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotellina su</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Wheel down</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotellina giù</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Indietro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Avanti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Invio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Backspace</source>
-        <translation type="unfinished"></translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Maiusc</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Su</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Giù</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinistra</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Destra</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Pag su</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Pag giù</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>Fine</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Num Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Invio num.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Meta+D (desktop)</source>
-        <translation type="unfinished"></translation>
+        <translation>Meta+D (desktop)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Screenshot</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>On-screen keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastiera su schermo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Volume up</source>
-        <translation type="unfinished"></translation>
+        <translation>Alza volume</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Volume down</source>
-        <translation type="unfinished"></translation>
+        <translation>Abbassa volume</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Muto</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>measuring…</source>
-        <translation type="unfinished"></translation>
+        <translation>misurazione in corso…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>done</source>
-        <translation type="unfinished"></translation>
+        <translation>completato</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>the Ally moved, try again</source>
-        <translation type="unfinished"></translation>
+        <translation>l'Ally è stato mosso, riprova</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>the motion sensor is busy</source>
-        <translation type="unfinished"></translation>
+        <translation>il sensore di movimento è occupato</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>no data from the motion sensor</source>
-        <translation type="unfinished"></translation>
+        <translation>nessun dato dal sensore di movimento</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>no motion sensor</source>
-        <translation type="unfinished"></translation>
+        <translation>nessun sensore di movimento</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Attivo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Pronto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Occupato</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Non trovato</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Non disponibile</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reading the motion sensor now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettura del sensore di movimento in corso.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Starts when Gyro function is on and a game has the controller.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si avvia quando la funzione Gyro è attiva e un gioco usa il controller.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Another program (Handheld Daemon, InputPlumber) is using the motion sensor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un altro programma (Handheld Daemon, InputPlumber) sta usando il sensore di movimento.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No motion sensor found. It needs the kernel&apos;s bmi323 IIO driver.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun sensore di movimento trovato. Serve il driver IIO bmi323 del kernel.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Needs xpanel-daemon (Linux).</source>
-        <translation type="unfinished"></translation>
+        <translation>Richiede xpanel-daemon (Linux).</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di controllo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Gamepad Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità Gamepad</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Desktop Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità Desktop</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Reset this mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina questa modalità</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>XPanel&apos;s input layer applies these settings live to the Ally controller (virtual Xbox 360 pad + keyboard / mouse).</source>
-        <translation type="unfinished"></translation>
+        <translation>Il livello di input di XPanel applica queste impostazioni in tempo reale al controller dell'Ally (pad Xbox 360 virtuale + tastiera / mouse).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>XPanel&apos;s input layer is not active (%1). The settings are saved and apply when it runs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il livello di input di XPanel non è attivo (%1). Le impostazioni vengono salvate e si applicano quando è in esecuzione.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>xpanel-daemon not running</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon non in esecuzione</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Key Mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Assegnazione tasti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Primary button: normal press. Secondary function: while a rear paddle is held.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsante principale: pressione normale. Funzione secondaria: mentre tieni premuto un paddle posteriore.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Primary: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Principale: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Secondary: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Secondaria: %1</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Button repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripetizione tasto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Hold to repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Tieni premuto per ripetere</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>A held button sends its function again and again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un tasto tenuto premuto invia la sua funzione ripetutamente.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Repeat interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo di ripetizione</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Left stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Stick sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+59"/>
         <source>Right stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Stick destro</translation>
     </message>
     <message>
         <location line="-55"/>
         <source>Stick function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funzione stick</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Stick</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>Scorrimento</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Sensitivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensibilità</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Dead zone (inner)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zona morta (interna)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Movement below this is ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>I movimenti al di sotto di questa soglia vengono ignorati.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Outer threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Soglia esterna</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>From here on the stick counts as fully pushed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Da qui in poi lo stick è considerato premuto a fondo.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Response curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva di risposta</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineare</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Precise</source>
-        <translation type="unfinished"></translation>
+        <translation>Preciso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Aggressive</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggressivo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Instant</source>
-        <translation type="unfinished"></translation>
+        <translation>Istantaneo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Anti-deadzone</source>
-        <translation type="unfinished"></translation>
+        <translation>Anti-zona morta</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Adds a small push so games with their own dead zone react sooner.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiunge una piccola spinta così i giochi con una zona morta propria reagiscono prima.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Grilletto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mirror triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Specchia grilletti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Use the left trigger settings for both triggers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa le impostazioni del grilletto sinistro per entrambi i grilletti.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Left trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Grilletto sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Grilletto destro</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>%1 — start</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — inizio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Pull needed before the trigger reacts.</source>
-        <translation type="unfinished"></translation>
+        <translation>Corsa necessaria prima che il grilletto reagisca.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>%1 — full at</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — completo a</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Pull at which the trigger counts as fully pressed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Corsa a cui il grilletto è considerato premuto del tutto.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Vibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Vibrazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left side</source>
-        <translation type="unfinished"></translation>
+        <translation>Lato sinistro</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Right side</source>
-        <translation type="unfinished"></translation>
+        <translation>Lato destro</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Gyro</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Ally&apos;s motion sensor as mouse or right stick. It runs only while a game has the controller (not while XPanel is open).</source>
-        <translation type="unfinished"></translation>
+        <translation>Il sensore di movimento dell'Ally come mouse o stick destro. Funziona solo mentre un gioco usa il controller (non quando XPanel è aperto).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Motion sensor</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensore di movimento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Gyro function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funzione Gyro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Off</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Turning axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Asse di rotazione</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Yaw: turn the Ally left / right. Roll: tilt it like a steering wheel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Imbardata: ruota l'Ally a sinistra / destra. Rollio: inclinalo come un volante.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Yaw</source>
-        <translation type="unfinished"></translation>
+        <translation>Imbardata</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Roll</source>
-        <translation type="unfinished"></translation>
+        <translation>Rollio</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Horizontal sensitivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensibilità orizzontale</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vertical sensitivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensibilità verticale</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Invert horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverti orizzontale</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Use this if the aim moves the wrong way left / right.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usalo se la mira si muove nel verso sbagliato a sinistra / destra.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Invert vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverti verticale</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Use this if the aim moves the wrong way up / down.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usalo se la mira si muove nel verso sbagliato su / giù.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Only while a button is held</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo con tasto premuto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Gyro works only while LT is held (aiming).</source>
-        <translation type="unfinished"></translation>
+        <translation>Il Gyro funziona solo mentre tieni premuto LT (mira).</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+2"/>
         <source>Calibrate</source>
-        <translation type="unfinished"></translation>
+        <translation>Calibra</translation>
     </message>
     <message>
         <location line="-2"/>
         <source>If the aim drifts: put the Ally on a flat table, do not touch it, and press Calibrate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se la mira deriva: appoggia l'Ally su un tavolo piano, non toccarlo e premi Calibra.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Last result: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ultimo risultato: %1.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>External Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller esterno</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Controllers connected by USB or Bluetooth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller collegati tramite USB o Bluetooth.</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+3"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>No external controller connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun controller esterno collegato</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>%1 — primary button</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — pulsante principale</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>%1 — secondary function</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — funzione secondaria</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
 </context>
 <context>
@@ -751,7 +751,7 @@
     <message>
         <location filename="../src/Desktop.cpp" line="+86"/>
         <source>Other desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Altro desktop</translation>
     </message>
 </context>
 <context>
@@ -759,17 +759,17 @@
     <message>
         <location line="+99"/>
         <source>in Steam Game Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>in Steam Game Mode</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>on this desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>su questo desktop</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>su %1</translation>
     </message>
 </context>
 <context>
@@ -777,67 +777,67 @@
     <message>
         <location filename="../src/DesktopTweaks.cpp" line="+187"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>%1 (XDG_CURRENT_DESKTOP=%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (XDG_CURRENT_DESKTOP=%2)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unset</source>
-        <translation type="unfinished"></translation>
+        <translation>non impostato</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>running (/run/xpanel/xpanel.sock)</source>
-        <translation type="unfinished"></translation>
+        <translation>in esecuzione (/run/xpanel/xpanel.sock)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>not reachable: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>non raggiungibile: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wayland overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Overlay Wayland</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>no Wayland</source>
-        <translation type="unfinished"></translation>
+        <translation>Wayland assente</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>X11 overlay (XWayland)</source>
-        <translation type="unfinished"></translation>
+        <translation>Overlay X11 (XWayland)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>no DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>nessun DISPLAY</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>TDP interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interfaccia TDP</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Fan curve interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interfaccia curva ventole</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Charge limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite di carica</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tool: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumento: %1</translation>
     </message>
 </context>
 <context>
@@ -845,7 +845,7 @@
     <message>
         <location filename="../src/DeviceClient.cpp" line="+42"/>
         <source>restart XPanel (it starts xpanel-daemon.exe), or reinstall it</source>
-        <translation type="unfinished"></translation>
+        <translation>riavvia XPanel (avvia xpanel-daemon.exe) oppure reinstallalo</translation>
     </message>
 </context>
 <context>
@@ -853,32 +853,32 @@
     <message>
         <location filename="../src/DeviceInfo.cpp" line="+73"/>
         <source>System (/)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema (/)</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>In carica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Discharging</source>
-        <translation type="unfinished"></translation>
+        <translation>In scarica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Pieno</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Not charging</source>
-        <translation type="unfinished"></translation>
+        <translation>Non in carica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Sconosciuto</translation>
     </message>
 </context>
 <context>
@@ -886,17 +886,17 @@
     <message>
         <location filename="../qml/EditPanel.qml" line="+24"/>
         <source>Edit Quick Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica Pannello rapido</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Ⓐ Add / Remove    Ⓨ Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Ⓐ Aggiungi / Rimuovi    Ⓨ Fine</translation>
     </message>
 </context>
 <context>
@@ -904,17 +904,17 @@
     <message>
         <location filename="../qml/app/FanCurveEditor.qml" line="+14"/>
         <source>Fan curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventole</translation>
     </message>
     <message>
         <location line="+225"/>
         <source>◀ ▶ point    ▲ ▼ fan speed    LB / RB temperature    Ⓐ or Ⓑ done</source>
-        <translation type="unfinished"></translation>
+        <translation>◀ ▶ punto    ▲ ▼ velocità ventola    LB / RB temperatura    Ⓐ o Ⓑ fine</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Drag the points. With a gamepad: Ⓐ to edit the curve.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trascina i punti. Con il gamepad: Ⓐ per modificare la curva.</translation>
     </message>
 </context>
 <context>
@@ -922,139 +922,140 @@
     <message>
         <location filename="../qml/app/GalleryPage.qml" line="+25"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Screenshots</source>
-        <translation type="unfinished"></translation>
+        <translation>Screenshot</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Pictures</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagini</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Videos</source>
-        <translation type="unfinished"></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Done selecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Fine selezione</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona tutto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Share (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Condividi (%1)</translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n file(s) copied to the clipboard</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n file copiato negli appunti</numerusform>
+            <numerusform>%n file copiati negli appunti</numerusform>
         </translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina (%1)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna</translation>
     </message>
     <message numerus="yes">
         <location line="+3"/>
         <source>%n item(s)  ·  ~/Pictures, ~/Videos</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n elemento  ·  ~/Pictures, ~/Videos</numerusform>
+            <numerusform>%n elementi  ·  ~/Pictures, ~/Videos</numerusform>
         </translation>
     </message>
     <message>
         <location line="+36"/>
         <source>No pictures or videos yet.
 Screenshots from the Quick Panel appear here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancora nessuna immagine o video.
+Gli screenshot del Pannello rapido compaiono qui.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Riproduci</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Share</source>
-        <translation type="unfinished"></translation>
+        <translation>Condividi</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Copied to the clipboard: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiato negli appunti: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show in folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra nella cartella</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Indietro</translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Move %n item(s) to the trash?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Spostare %n elemento nel cestino?</numerusform>
+            <numerusform>Spostare %n elementi nel cestino?</numerusform>
         </translation>
     </message>
     <message>
         <location line="+0"/>
         <source>You can restore them from the trash later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Puoi ripristinarli dal cestino in seguito.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to trash</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposta nel cestino</translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n item(s) moved to the trash</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n elemento spostato nel cestino</numerusform>
+            <numerusform>%n elementi spostati nel cestino</numerusform>
         </translation>
     </message>
 </context>
@@ -1063,7 +1064,7 @@ Screenshots from the Quick Panel appear here.</source>
     <message>
         <location filename="../src/GameWatcher.cpp" line="+33"/>
         <source>Steam app %1</source>
-        <translation type="unfinished"></translation>
+        <translation>App Steam %1</translation>
     </message>
 </context>
 <context>
@@ -1072,220 +1073,222 @@ Screenshots from the Quick Panel appear here.</source>
         <location filename="../qml/app/LibraryPage.qml" line="+31"/>
         <location line="+157"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location line="-145"/>
         <source>★ Favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>★ Preferiti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Game Platforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Piattaforme</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Installed apps</source>
-        <translation type="unfinished"></translation>
+        <translation>App</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Search…</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca…</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Grid view</source>
-        <translation type="unfinished"></translation>
+        <translation>Griglia</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>List view</source>
-        <translation type="unfinished"></translation>
+        <translation>Elenco</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+153"/>
         <source>Manage Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestisci libreria</translation>
     </message>
     <message>
         <location line="-152"/>
         <source>Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>Riscansiona</translation>
     </message>
     <message numerus="yes">
         <location line="+4"/>
         <source>%n game(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n gioco</numerusform>
+            <numerusform>%n giochi</numerusform>
         </translation>
     </message>
     <message>
         <location line="+58"/>
         <source>No favorites yet.
 Open a game and press Y or ★ to add it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancora nessun preferito.
+Apri un gioco e premi Y o ★ per aggiungerlo.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No games found.
 Steam games appear after you install them; other games: Manage Library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun gioco trovato.
+I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>▶  Play</source>
-        <translation type="unfinished"></translation>
+        <translation>▶  Gioca</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>★ Remove favorite</source>
-        <translation type="unfinished"></translation>
+        <translation>★ Rimuovi dai preferiti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>☆ Add favorite</source>
-        <translation type="unfinished"></translation>
+        <translation>☆ Aggiungi ai preferiti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove from library</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi dalla libreria</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Indietro</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Game Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di gioco</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Applied while the game runs; your previous settings come back when it ends. Settings you change during the game are kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Applicate mentre il gioco è in esecuzione; al termine tornano le impostazioni precedenti. Le impostazioni che modifichi durante il gioco vengono mantenute.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Use this profile when the game starts from Steam</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa questo profilo anche quando il gioco parte da Steam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Off: only when you start it with Play here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Off: solo quando lo avvii con «Gioca» qui.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Operating Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità operativa</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+18"/>
         <location line="+9"/>
         <source>Keep</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantieni</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Turbo</source>
-        <translation type="unfinished"></translation>
+        <translation>Turbo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuale</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Manual TDP</source>
-        <translation type="unfinished"></translation>
+        <translation>TDP manuale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Used when the Operating Mode above is Manual.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si applica quando la Modalità operativa sopra è Manuale.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Fan Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità ventole</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Quiet</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Su misura</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di controllo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Gamepad</source>
-        <translation type="unfinished"></translation>
+        <translation>Gamepad</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Fine</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add installed apps to the library (games are added by themselves).</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi alla libreria le app installate (i giochi vengono aggiunti automaticamente).</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>%1  ·  game</source>
-        <translation type="unfinished"></translation>
+        <translation>%1  ·  gioco</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>In library</source>
-        <translation type="unfinished"></translation>
+        <translation>In libreria</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi</translation>
     </message>
 </context>
 <context>
@@ -1293,103 +1296,103 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/Main.qml" line="+35"/>
         <source>Operating Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlli</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fan Curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventole</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastiera</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Real-time Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Monitor live</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Charge Limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite carica</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra desktop</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Illuminazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Refresh Rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Freq. schermo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Display Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo schermo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual TDP</source>
-        <translation type="unfinished"></translation>
+        <translation>TDP manuale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wi-Fi</source>
-        <translation type="unfinished"></translation>
+        <translation>Wi-Fi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Screenshot</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Turbo</source>
-        <translation type="unfinished"></translation>
+        <translation>Turbo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuale</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+49"/>
         <source>Gamepad</source>
-        <translation type="unfinished"></translation>
+        <translation>Gamepad</translation>
     </message>
     <message>
         <location line="-48"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1398,154 +1401,154 @@ Steam games appear after you install them; other games: Manage Library.</source>
         <location line="+7"/>
         <location line="+1"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Off</translation>
     </message>
     <message>
         <location line="-64"/>
         <source>Static</source>
-        <translation type="unfinished"></translation>
+        <translation>Statico</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Breathing</source>
-        <translation type="unfinished"></translation>
+        <translation>Respiro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Dual breathing</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppio respiro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Color cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciclo colori</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Rainbow</source>
-        <translation type="unfinished"></translation>
+        <translation>Arcobaleno</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Strobe</source>
-        <translation type="unfinished"></translation>
+        <translation>Stroboscopio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Battery level</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello batteria</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Follow mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Segui modalità</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Handheld</source>
-        <translation type="unfinished"></translation>
+        <translation>Handheld</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Esterno</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Estendi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Quiet</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Su misura</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>ON</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+7"/>
         <location line="+1"/>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>On</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Handheld only</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo handheld</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Alimentazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sleep</source>
-        <translation type="unfinished"></translation>
+        <translation>Sospendi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Riavvia</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shut down</source>
-        <translation type="unfinished"></translation>
+        <translation>Spegni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Log out</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit XPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci da XPanel</translation>
     </message>
     <message>
         <location line="+154"/>
         <source>Quick Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Pannello rapido</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>xpanel-daemon offline</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon offline</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Profile: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Profilo: %1</translation>
     </message>
     <message>
         <location line="+174"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ⓐ Seleziona   Ⓑ Chiudi   Ⓧ Centro di controllo   Ⓨ Modifica</translation>
     </message>
 </context>
 <context>
@@ -1553,32 +1556,32 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../src/NetworkControl.cpp" line="+51"/>
         <source>Connecting to %1…</source>
-        <translation type="unfinished"></translation>
+        <translation>Connessione a %1…</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Connected to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Connesso a %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Could not connect to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile connettersi a %1</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Connecting…</source>
-        <translation type="unfinished"></translation>
+        <translation>Connessione…</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Connesso</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Could not connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile connettersi</translation>
     </message>
 </context>
 <context>
@@ -1587,13 +1590,13 @@ Steam games appear after you install them; other games: Manage Library.</source>
         <location filename="../src/PanelController.cpp" line="+70"/>
         <location line="+218"/>
         <source>Control Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro di controllo</translation>
     </message>
     <message>
         <location line="-92"/>
         <location line="+94"/>
         <source>XPanel Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Monitor XPanel</translation>
     </message>
 </context>
 <context>
@@ -1601,65 +1604,65 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetAudio.qml" line="+10"/>
         <source>Speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>Altoparlante</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+8"/>
         <source>In use</source>
-        <translation type="unfinished"></translation>
+        <translation>In uso</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+8"/>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionato</translation>
     </message>
     <message>
         <location line="-8"/>
         <location line="+8"/>
         <source>Use</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Microfono</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Microphone level</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello microfono</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Mute microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Disattiva microfono</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>AI Noise-Canceling</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellazione rumore AI</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>AI Noise-Canceling microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>Microfono con cancellazione rumore AI</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Removes background noise from your voice (RNNoise).</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuove il rumore di fondo dalla tua voce (RNNoise).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Needs the RNNoise plugin: sudo pacman -S noise-suppression-for-voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Richiede il plugin RNNoise: sudo pacman -S noise-suppression-for-voice</translation>
     </message>
 </context>
 <context>
@@ -1667,97 +1670,97 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetBattery.qml" line="+9"/>
         <source>Battery Care</source>
-        <translation type="unfinished"></translation>
+        <translation>Cura della batteria</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Keeping the battery below 100% while plugged in makes it last longer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantenere la batteria sotto il 100% mentre è collegata all'alimentatore ne prolunga la durata.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Charge limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite di carica</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Full (100%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pieno (100%)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Balanced (90%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilanciato (90%)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Maximum lifespan (80%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Max durata (80%)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Battery health</source>
-        <translation type="unfinished"></translation>
+        <translation>Salute della batteria</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Health</source>
-        <translation type="unfinished"></translation>
+        <translation>Salute</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Full charge now compared with the design capacity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacità di carica completa attuale rispetto alla capacità di progetto.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Capacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacità</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>%1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 di %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Charge cycles</source>
-        <translation type="unfinished"></translation>
+        <translation>Cicli di carica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>not reported</source>
-        <translation type="unfinished"></translation>
+        <translation>non indicato</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Attuale</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Power options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di alimentazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>MCU power saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Risparmio energetico MCU</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The controller chip sleeps with the device. Off can help if the controller does not wake up.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il chip del controller va in sospensione insieme al dispositivo. Off può aiutare se il controller non si risveglia.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Boot sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Suono di avvio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The sound when the Ally starts.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il suono all'avvio dell'Ally.</translation>
     </message>
 </context>
 <context>
@@ -1765,111 +1768,111 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetCalibration.qml" line="+10"/>
         <source>Measuring…</source>
-        <translation type="unfinished"></translation>
+        <translation>Misurazione in corso…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Done. The offset is saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fatto. L'offset è stato salvato.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Ally moved. Try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>L'Ally è stato mosso. Riprova.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The motion sensor is used by another program.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il sensore di movimento è usato da un altro programma.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No data from the motion sensor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun dato dal sensore di movimento.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+16"/>
         <source>No motion sensor found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun sensore di movimento trovato.</translation>
     </message>
     <message>
         <location line="-14"/>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Calibrazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Gyro calibration measures the motion sensor&apos;s offset at rest, so the aim does not drift. Stick and trigger calibration come later; until then the dead zones and trigger ranges in Control Mode do that job.</source>
-        <translation type="unfinished"></translation>
+        <translation>La calibrazione Gyro misura l'offset a riposo del sensore di movimento, così la mira non deriva. La calibrazione di stick e grilletti arriverà più avanti; nel frattempo le zone morte e le corse dei grilletti in Modalità di controllo svolgono questo compito.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Left stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Stick sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+1"/>
         <source>Move the stick in full circles, then let it go.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muovi lo stick in cerchi completi, poi rilascialo.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Stick destro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Grilletto sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+1"/>
         <source>Pull the trigger fully a few times.</source>
-        <translation type="unfinished"></translation>
+        <translation>Premi a fondo il grilletto alcune volte.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Grilletto destro</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Avvia</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Gyro</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Put the Ally on a flat table and do not touch it, then press Start (about 1 second).</source>
-        <translation type="unfinished"></translation>
+        <translation>Appoggia l'Ally su un tavolo piano e non toccarlo, poi premi Avvia (circa 1 secondo).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Needs xpanel-daemon (Linux).</source>
-        <translation type="unfinished"></translation>
+        <translation>Richiede xpanel-daemon (Linux).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Stick and trigger limits for now</source>
-        <translation type="unfinished"></translation>
+        <translation>Limiti di stick e grilletti per ora</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Dead zones and trigger ranges in Control Mode work as a calibration.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le zone morte e le corse dei grilletti in Modalità di controllo funzionano come calibrazione.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri Modalità di controllo</translation>
     </message>
 </context>
 <context>
@@ -1878,81 +1881,81 @@ Steam games appear after you install them; other games: Manage Library.</source>
         <location filename="../qml/app/SetConnection.qml" line="+9"/>
         <location line="+1"/>
         <source>Wi-Fi</source>
-        <translation type="unfinished"></translation>
+        <translation>Wi-Fi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Scanning…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricerca…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Scan</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>open</source>
-        <translation type="unfinished"></translation>
+        <translation>aperta</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+19"/>
         <source>Disconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Disconnetti</translation>
     </message>
     <message>
         <location line="-19"/>
         <location line="+19"/>
         <location line="+22"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Connetti</translation>
     </message>
     <message>
         <location line="-34"/>
         <location line="+1"/>
         <source>Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Searching…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricerca…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Search devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca dispositivi</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>connesso</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>paired</source>
-        <translation type="unfinished"></translation>
+        <translation>associato</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Forget</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Password for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Password per %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wi-Fi password</source>
-        <translation type="unfinished"></translation>
+        <translation>Password Wi-Fi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
 </context>
 <context>
@@ -1960,157 +1963,157 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetDisplay.qml" line="+9"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Predefinito</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Native panel colours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colori nativi del pannello.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>RTS / RPG</source>
-        <translation type="unfinished"></translation>
+        <translation>RTS / RPG</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>A little cooler and crisper (7200 K).</source>
-        <translation type="unfinished"></translation>
+        <translation>Un po' più freddo e nitido (7200 K).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cinema</source>
-        <translation type="unfinished"></translation>
+        <translation>Cinema</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Warmer, film-like (5800 K).</source>
-        <translation type="unfinished"></translation>
+        <translation>Più caldo, effetto cinematografico (5800 K).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Eye Care</source>
-        <translation type="unfinished"></translation>
+        <translation>Cura degli occhi</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Less blue light (4500 K).</source>
-        <translation type="unfinished"></translation>
+        <translation>Meno luce blu (4500 K).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Night</source>
-        <translation type="unfinished"></translation>
+        <translation>Notte</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Very warm, for the evening (3400 K).</source>
-        <translation type="unfinished"></translation>
+        <translation>Molto caldo, per la sera (3400 K).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color presets</source>
-        <translation type="unfinished"></translation>
+        <translation>Preset colore</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Not available %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non disponibile %1.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Screen colour presets. They use KDE Night Color, so they apply to the whole screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Preset colore dello schermo. Usano il Colore notturno di KDE, quindi si applicano a tutto lo schermo.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Screen colour presets. They use GNOME Night Light (always on), so they apply to the whole screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Preset colore dello schermo. Usano la Luce notturna di GNOME (sempre attiva), quindi si applicano a tutto lo schermo.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionato</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Use</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Schermo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display mode, refresh rate and wide colour use KDE&apos;s display settings: in Steam Game Mode, use Steam&apos;s Display settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità schermo, frequenza di aggiornamento e gamma cromatica estesa usano le impostazioni dello schermo di KDE: in Steam Game Mode usa le impostazioni Display di Steam.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Display mode, refresh rate and wide colour use KDE&apos;s display settings: not available %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità schermo, frequenza di aggiornamento e gamma cromatica estesa usano le impostazioni dello schermo di KDE: non disponibile %1.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Display mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità schermo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ally screen only, external screen only, the same picture on both, or one desktop over both.</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo schermo dell'Ally, solo schermo esterno, la stessa immagine su entrambi o un desktop esteso su entrambi.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Connect an external screen to use the other modes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Collega uno schermo esterno per usare le altre modalità.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Handheld</source>
-        <translation type="unfinished"></translation>
+        <translation>Handheld</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Esterno</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Estendi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Refresh rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Frequenza di aggiornamento</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Wide color gamut</source>
-        <translation type="unfinished"></translation>
+        <translation>Gamma cromatica estesa</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>More saturated colours (KWin colour management).</source>
-        <translation type="unfinished"></translation>
+        <translation>Colori più saturi (gestione colore di KWin).</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Brightness — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità — %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità</translation>
     </message>
 </context>
 <context>
@@ -2118,52 +2121,52 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetFeedback.qml" line="+9"/>
         <source>Feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>Feedback</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi cosa correggere o aggiungere. Le note vengono salvate in %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Idea</source>
-        <translation type="unfinished"></translation>
+        <translation>Idea</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problema</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Altro</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Your feedback…</source>
-        <translation type="unfinished"></translation>
+        <translation>Il tuo feedback…</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Saved. Thank you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvato. Grazie.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Write something first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi prima qualcosa.</translation>
     </message>
 </context>
 <context>
@@ -2171,243 +2174,243 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetGeneral.qml" line="+15"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Predefinito di sistema</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Personalization</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizzazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+74"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingua</translation>
     </message>
     <message>
         <location line="-73"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si applica subito. Giapponese, coreano e cinese richiedono un font CJK nel sistema.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Launch animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Animazione di avvio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Short logo animation when Control Center opens.</source>
-        <translation type="unfinished"></translation>
+        <translation>Breve animazione del logo all'apertura del Centro di controllo.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Background pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Motivo di sfondo</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Fine diagonal lines behind the pages (applies on next open).</source>
-        <translation type="unfinished"></translation>
+        <translation>Sottili linee diagonali dietro le pagine (si applica alla prossima apertura).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quick Panel Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout del Pannello rapido</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Riquadri</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Choose and order the Quick Panel tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli e ordina i riquadri del Pannello rapido.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit Quick Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica Pannello rapido</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open the Quick Panel with</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri il Pannello rapido con</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left menu button</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsante menu sinistro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Right menu button</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsante menu destro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tray only</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo tray</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Device Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info dispositivo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modello</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Processor</source>
-        <translation type="unfinished"></translation>
+        <translation>Processore</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>%1 (%2 threads)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 thread)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Graphics</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafica</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Memoria</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Schermo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Serial number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero di serie</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>shown when xpanel-daemon runs</source>
-        <translation type="unfinished"></translation>
+        <translation>mostrato quando xpanel-daemon è in esecuzione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Kernel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kernel</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Device storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Archiviazione dispositivo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>%1  ·  %2  ·  %3 free of %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1  ·  %2  ·  %3 liberi su %4</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quick Panel and Control Center for the ROG Ally on Linux</source>
-        <translation type="unfinished"></translation>
+        <translation>Pannello rapido e Centro di controllo per ROG Ally su Linux</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Servizio</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No access: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun accesso: %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>xpanel-daemon (TDP, fan, charge limit, lighting)</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon (TDP, ventole, limite di carica, illuminazione)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>In esecuzione</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No access</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun accesso</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Not running</source>
-        <translation type="unfinished"></translation>
+        <translation>Non in esecuzione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello di input</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>XPanel&apos;s own controller handling (in xpanel-daemon).</source>
-        <translation type="unfinished"></translation>
+        <translation>La gestione dei controller propria di XPanel (in xpanel-daemon).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not running</source>
-        <translation type="unfinished"></translation>
+        <translation>non in esecuzione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>App Diagnostics</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagnostica app</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Checks the services and tools XPanel uses.</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla i servizi e gli strumenti usati da XPanel.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Esegui</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problema</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Japanese, Korean and Chinese need a CJK font on the system (for example Noto Sans CJK).</source>
-        <translation type="unfinished"></translation>
+        <translation>Giapponese, coreano e cinese richiedono un font CJK nel sistema (ad esempio Noto Sans CJK).</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
 </context>
 <context>
@@ -2415,178 +2418,178 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetLighting.qml" line="+43"/>
         <source>Lighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Illuminazione</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No access to xpanel-daemon: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun accesso a xpanel-daemon: %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>xpanel-daemon is not running.</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon non è in esecuzione.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Effect</source>
-        <translation type="unfinished"></translation>
+        <translation>Effetto</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Off</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Static</source>
-        <translation type="unfinished"></translation>
+        <translation>Statico</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Breathing</source>
-        <translation type="unfinished"></translation>
+        <translation>Respiro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dual breathing</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppio respiro</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Color cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciclo colori</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rainbow</source>
-        <translation type="unfinished"></translation>
+        <translation>Arcobaleno</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Strobe</source>
-        <translation type="unfinished"></translation>
+        <translation>Stroboscopio</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Follow the system</source>
-        <translation type="unfinished"></translation>
+        <translation>Segui il sistema</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Battery level: red when empty, green when full. Operating Mode: blue Silent, white Performance, red Turbo, your color in Manual.</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello batteria: rosso quando scarica, verde quando carica. Modalità operativa: blu Silenzioso, bianco Prestazioni, rosso Turbo, il tuo colore in Manuale.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Battery level</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello batteria</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Operating Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità operativa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Used in Manual mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usato in modalità Manuale.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hue</source>
-        <translation type="unfinished"></translation>
+        <translation>Tonalità</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Any color of the rainbow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualsiasi colore dell'arcobaleno.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Second color</source>
-        <translation type="unfinished"></translation>
+        <translation>Secondo colore</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The light breathes between the two colors.</source>
-        <translation type="unfinished"></translation>
+        <translation>La luce pulsa tra i due colori.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Second hue</source>
-        <translation type="unfinished"></translation>
+        <translation>Seconda tonalità</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direzione</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Which way the rainbow runs. Up and down may look the same on the rings.</source>
-        <translation type="unfinished"></translation>
+        <translation>In quale direzione scorre l'arcobaleno. Su e giù possono sembrare uguali sugli anelli.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Destra</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinistra</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Su</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Giù</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Bassa</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+3"/>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>Media</translation>
     </message>
     <message>
         <location line="-3"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Alta</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocità</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Slow</source>
-        <translation type="unfinished"></translation>
+        <translation>Lenta</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Fast</source>
-        <translation type="unfinished"></translation>
+        <translation>Veloce</translation>
     </message>
 </context>
 <context>
@@ -2594,232 +2597,232 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetPerformance.qml" line="+9"/>
         <source>Operating Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità operativa</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No access to xpanel-daemon: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun accesso a xpanel-daemon: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>xpanel-daemon is not running: install it with  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>xpanel-daemon non è in esecuzione: installalo con  %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Silent %1 W · Performance %2 W · Turbo %3 W (%4 W on the charger) · Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso %1 W · Prestazioni %2 W · Turbo %3 W (%4 W con il caricatore) · Manuale</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+75"/>
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestazioni</translation>
     </message>
     <message>
         <location line="-74"/>
         <source>Turbo</source>
-        <translation type="unfinished"></translation>
+        <translation>Turbo</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+7"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuale</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Attuale</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Applied power limits (SPL / SPPT / FPPT) and platform profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Limiti di potenza applicati (SPL / SPPT / FPPT) e profilo della piattaforma</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Used in Manual mode. SPPT / FPPT at 0 W = SPL + 5 W / + 10 W.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usato in modalità Manuale. SPPT / FPPT a 0 W = SPL + 5 W / + 10 W.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>SPL — sustained power</source>
-        <translation type="unfinished"></translation>
+        <translation>SPL — potenza sostenuta</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>SPPT — slow boost</source>
-        <translation type="unfinished"></translation>
+        <translation>SPPT — boost lento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>FPPT — fast boost</source>
-        <translation type="unfinished"></translation>
+        <translation>FPPT — boost rapido</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+1"/>
         <source>Eco Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità Eco</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Saves battery: CPU energy preference &quot;power&quot; and no CPU boost.</source>
-        <translation type="unfinished"></translation>
+        <translation>Risparmia batteria: preferenza energetica CPU &quot;power&quot; e nessun boost della CPU.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>GPU Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni GPU</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>GPU clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Clock GPU</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Auto lets the driver decide. A limit saves power and heat.</source>
-        <translation type="unfinished"></translation>
+        <translation>Con Auto decide il driver. Un limite fa risparmiare energia e riduce il calore.</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+10"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location line="-10"/>
         <source>Limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>GPU clock limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite clock GPU</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Fan</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventole</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Custom curve: 8 points of fan speed over temperature. Changes apply a moment after you let go.</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva personalizzata: 8 punti di velocità della ventola in base alla temperatura. Le modifiche vengono applicate un attimo dopo il rilascio.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fan Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità ventole</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+36"/>
         <source>Quiet</source>
-        <translation type="unfinished"></translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location line="-36"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Su misura</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Start from</source>
-        <translation type="unfinished"></translation>
+        <translation>Parti da</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Copies a preset into the curve you are editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copia un preset nella curva che stai modificando.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Balanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilanciato</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Separate GPU fan curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva GPU separata</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Off: one curve for both fans (CPU and GPU).</source>
-        <translation type="unfinished"></translation>
+        <translation>Off: una curva per entrambe le ventole (CPU e GPU).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica curva</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CPU fan</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventola CPU</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>GPU fan</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventola GPU</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Fan curve (both fans)</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventole (entrambe)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>GPU fan curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventola GPU</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>CPU fan curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva ventola CPU</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>GPU %1 °C   ·   Fan %2 rpm</source>
-        <translation type="unfinished"></translation>
+        <translation>GPU %1 °C   ·   Ventola %2 rpm</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>CPU %1 °C   ·   Fan %2 rpm</source>
-        <translation type="unfinished"></translation>
+        <translation>CPU %1 °C   ·   Ventola %2 rpm</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Live</source>
-        <translation type="unfinished"></translation>
+        <translation>Live</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Power / Fan</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenza / Ventole</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>SoC %1 W   ·   Battery %2 W   ·   Fan %3 rpm</source>
-        <translation type="unfinished"></translation>
+        <translation>SoC %1 W   ·   Batteria %2 W   ·   Ventola %3 rpm</translation>
     </message>
 </context>
 <context>
@@ -2827,77 +2830,77 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetShortcuts.qml" line="+8"/>
         <source>Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Scorciatoie da tastiera</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Global shortcuts, for an external keyboard. Write keys like  Meta+Shift+C  or  Ctrl+Alt+G.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scorciatoie globali, per una tastiera esterna. Scrivi i tasti come  Meta+Shift+C  o  Ctrl+Alt+G.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Global shortcuts use KDE&apos;s shortcut service: not available %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le scorciatoie globali usano il servizio di scorciatoie di KDE: non disponibile %1.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere.</source>
-        <translation type="unfinished"></translation>
+        <translation>I pulsanti dell'Ally funzionano ovunque.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere; for a keyboard key, bind the command  XPanel --toggle  (or  XPanel --app ) in your desktop&apos;s keyboard settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>I pulsanti dell'Ally funzionano ovunque; per un tasto della tastiera, associa il comando  XPanel --toggle  (o  XPanel --app ) nelle impostazioni della tastiera del tuo desktop.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open / close Quick Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri / chiudi Pannello rapido</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Open Control Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri Centro di controllo</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Applica</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>nessuna</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Not a valid key: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasto non valido: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>All KDE shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutte le scorciatoie KDE</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>XPanel&apos;s shortcuts also appear in KDE System Settings › Shortcuts › XPanel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le scorciatoie di XPanel compaiono anche in Impostazioni di sistema di KDE › Scorciatoie › XPanel.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri</translation>
     </message>
 </context>
 <context>
@@ -2905,174 +2908,174 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SetUpdate.qml" line="+13"/>
         <source>Update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornamento disponibile</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Up to date</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornato</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Newer than ASUS&apos;s public file</source>
-        <translation type="unfinished"></translation>
+        <translation>Più recente del file pubblico di ASUS</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Sconosciuto</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Update Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro aggiornamenti</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+2"/>
         <source>Checking…</source>
-        <translation type="unfinished"></translation>
+        <translation>Controllo in corso…</translation>
     </message>
     <message>
         <location line="-2"/>
         <source>Last check: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ultimo controllo: %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Not checked yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non ancora controllato.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+1"/>
         <source>Check for Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca aggiornamenti</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>ASUS support site, fwupd (LVFS), and the CachyOS / Arch repositories and AUR.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sito di supporto ASUS, fwupd (LVFS) e i repository di CachyOS / Arch e AUR.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>ROG Ally X firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware ROG Ally X</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>From the ASUS support site for your model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dal sito di supporto ASUS per il tuo modello.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>%1   ·   installed %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1   ·   installato %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ASUS: %1  (%2, %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>ASUS: %1  (%2, %3)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Download BIOS %1 (EZ Flash)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scarica BIOS %1 (EZ Flash)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Restart to BIOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Riavvia nel BIOS</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Restart now into the BIOS setup? Save your work first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Riavviare ora nel setup del BIOS? Salva prima il tuo lavoro.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Riavvia</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drivers &amp; firmware packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Driver e pacchetti firmware</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>On Linux the Ally drivers come with the kernel and these packages. They update with the system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Su Linux i driver dell'Ally arrivano con il kernel e questi pacchetti. Si aggiornano con il sistema.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>%1  ·  up to date</source>
-        <translation type="unfinished"></translation>
+        <translation>%1  ·  aggiornato</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Device firmware (fwupd)</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware del dispositivo (fwupd)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Firmware that the Linux Vendor Firmware Service (LVFS) can update.</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware che il Linux Vendor Firmware Service (LVFS) può aggiornare.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Firmware updates: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornamenti firmware: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Nothing new on LVFS for this device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Niente di nuovo su LVFS per questo dispositivo.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Refresh list</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna elenco</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Update firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna firmware</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>aggiornabile</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>System updates (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiornamenti di sistema (%1)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Install</source>
-        <translation type="unfinished"></translation>
+        <translation>Installa</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Opens a terminal: the update asks for your password.</source>
-        <translation type="unfinished"></translation>
+        <translation>Apre un terminale: l'aggiornamento chiede la tua password.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Update system</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna sistema</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>The system is up to date</source>
-        <translation type="unfinished"></translation>
+        <translation>Il sistema è aggiornato</translation>
     </message>
 </context>
 <context>
@@ -3080,57 +3083,57 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/SettingsPage.qml" line="+9"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Generali</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Update Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro aggiornamenti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Calibrazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Illuminazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Schermo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Connessione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Scorciatoie da tastiera</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>Feedback</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Battery Care</source>
-        <translation type="unfinished"></translation>
+        <translation>Cura della batteria</translation>
     </message>
 </context>
 <context>
@@ -3138,12 +3141,12 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/StatsStrip.qml" line="+19"/>
         <source>FAN</source>
-        <translation type="unfinished"></translation>
+        <translation>VENT</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>BAT</source>
-        <translation type="unfinished"></translation>
+        <translation>BATT</translation>
     </message>
 </context>
 <context>
@@ -3151,12 +3154,12 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../src/SystemControl.cpp" line="+289"/>
         <source>Monitor %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Monitor %1</translation>
     </message>
     <message>
         <location line="+147"/>
         <source>Both screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrambi gli schermi</translation>
     </message>
 </context>
 <context>
@@ -3164,87 +3167,87 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../src/main.cpp" line="+401"/>
         <source>Open Quick Panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri Pannello rapido</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Control Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro di controllo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Control Center pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagine del Centro di controllo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Game Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Libreria giochi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Control Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di controllo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Media Gallery</source>
-        <translation type="unfinished"></translation>
+        <translation>Galleria multimediale</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>User Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Area utente</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Settings › Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni › Prestazioni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Settings › Lighting</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni › Illuminazione</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Settings › Battery Care</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni › Cura della batteria</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open with Ally button</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri con il pulsante Ally</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Left menu button</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsante menu sinistro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right menu button</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulsante menu destro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No button (tray / shortcut only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun pulsante (solo tray / scorciatoia)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Quit XPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci da XPanel</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel Pannello rapido %1</translation>
     </message>
 </context>
 <context>
@@ -3252,117 +3255,117 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../src/UpdateCenter.cpp" line="+20"/>
         <source>Kernel: hid_asus_ally, asus-armoury, amdgpu, mt7921 drivers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kernel: driver hid_asus_ally, asus-armoury, amdgpu, mt7921</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Kernel headers (for DKMS modules)</source>
-        <translation type="unfinished"></translation>
+        <translation>Header del kernel (per i moduli DKMS)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Firmware files: AMD GPU, MediaTek Wi-Fi / Bluetooth, audio</source>
-        <translation type="unfinished"></translation>
+        <translation>File firmware: GPU AMD, Wi-Fi / Bluetooth MediaTek, audio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>AMD CPU microcode</source>
-        <translation type="unfinished"></translation>
+        <translation>Microcode CPU AMD</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Graphics driver (OpenGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Driver grafico (OpenGL)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Graphics driver (Vulkan, RADV)</source>
-        <translation type="unfinished"></translation>
+        <translation>Driver grafico (Vulkan, RADV)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Audio DSP firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware DSP audio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Audio device profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Profili dei dispositivi audio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bluetooth stack</source>
-        <translation type="unfinished"></translation>
+        <translation>Stack Bluetooth</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wi-Fi / network</source>
-        <translation type="unfinished"></translation>
+        <translation>Wi-Fi / rete</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Firmware updater</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumento di aggiornamento firmware</translation>
     </message>
     <message>
         <location line="+140"/>
         <source>Linux: download, put the .CAP file on a FAT32 USB stick, restart to BIOS, use EZ Flash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Linux: scarica, copia il file .CAP su una chiavetta USB FAT32, riavvia nel BIOS e usa EZ Flash.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Controller (MCU)</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller (MCU)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ASUS ships it only as a Windows tool. Linux needs version 313 or newer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ASUS lo fornisce solo come strumento per Windows. Linux richiede la versione 313 o successiva.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>ASUS ships it only as a Windows tool.</source>
-        <translation type="unfinished"></translation>
+        <translation>ASUS lo fornisce solo come strumento per Windows.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>ASUS support site</source>
-        <translation type="unfinished"></translation>
+        <translation>Sito di supporto ASUS</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Not reachable: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Non raggiungibile: %1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>No files listed for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun file elencato per %1</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Downloading %1…</source>
-        <translation type="unfinished"></translation>
+        <translation>Download di %1…</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Download failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Download non riuscito: %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Cannot write %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile scrivere %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Saved in %1. Copy the .CAP file to a FAT32 USB stick, then Restart to BIOS → EZ Flash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvato in %1. Copia il file .CAP su una chiavetta USB FAT32, poi Riavvia nel BIOS → EZ Flash.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Saved in %1 (unpack the zip yourself).</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvato in %1 (decomprimi tu lo zip).</translation>
     </message>
 </context>
 <context>
@@ -3370,67 +3373,67 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location filename="../qml/app/UserPage.qml" line="+23"/>
         <source>Local account: %1  ·  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Account locale: %1  ·  %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit profile (KDE)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica profilo (KDE)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Edit profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica profilo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>My Products</source>
-        <translation type="unfinished"></translation>
+        <translation>I miei prodotti</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>BIOS %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>BIOS %1 (%2)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>  ·  Serial %1</source>
-        <translation type="unfinished"></translation>
+        <translation>  ·  N. serie %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Device info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info dispositivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Controller  ·  %1  ·  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Controller  ·  %1  ·  %2</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Notifiche</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>What XPanel changed during this session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cosa ha modificato XPanel durante questa sessione.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>No notifications yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancora nessuna notifica</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>ASUS account</source>
-        <translation type="unfinished"></translation>
+        <translation>Account ASUS</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Member login, Registered Events and Redemption use ASUS online services that have no Linux version. XPanel keeps everything on this device.</source>
-        <translation type="unfinished"></translation>
+        <translation>Login membri, eventi registrati e riscatti usano servizi online ASUS che non hanno una versione Linux. XPanel conserva tutto su questo dispositivo.</translation>
     </message>
 </context>
 </TS>
