@@ -245,11 +245,11 @@ from XPanel's Game Library for now.
 
 ## Roadmap
 
-- **0.1** — ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
+- **1.0** — ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
   limit, lighting, controller layer, release archive and Arch package.
-- **0.2** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
+- **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
   for games started from Steam, restored when the game ends.
-- **0.3** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; a stricter daemon
+- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; a stricter daemon
   socket (group + peer credentials).
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 

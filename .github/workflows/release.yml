@@ -1,6 +1,6 @@
 name: Release
 
-# Push a tag like v0.1.0 (it must match project(VERSION) in CMakeLists.txt) to publish
+# Push a tag like v1.0.1 (it must match project(VERSION) in CMakeLists.txt) to publish
 # xpanel-<version>-linux-x86_64.tar.gz and its .sha256 as a GitHub Release.
 on:
   push:

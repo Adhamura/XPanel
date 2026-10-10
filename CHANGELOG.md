@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — first public release
+## 1.0.1 — first public release
 
 **Quick Panel** (Ally button, tray, shortcut): Operating Mode (Silent 13 W / Performance 17 W /
 Turbo 25 W, 30 W on the charger / Manual), Control Mode, fan mode, charge limit, lighting,
