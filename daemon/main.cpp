@@ -16,17 +16,23 @@
 //                                                    client on each change)
 //   client -> {"input": {"grab": true}}             (the pad drives XPanel, not the game;
 //                                                    ends by itself when that client goes)
+//   client -> {"input": {"calibrate": "gyro"}}      (~1 s at rest; result in "gyroCalibration",
+//                                                    offset saved as "gyroBias" [x, y, z] rad/s)
 //   daemon -> {"event": "special" | "nav" | "action", "name": "..."}   (input layer)
 // Key "control": the resolved Control Mode settings from the app (not echoed in "state").
 // Keys: opmode (silent|performance|turbo|manual), tdp / tdpSlow / tdpFast (W, manual;
-//       tdpSlow / tdpFast 0 = derived from tdp), fan (auto|quiet|max),
+//       tdpSlow / tdpFast 0 = derived from tdp), fan (auto|quiet|max|custom),
+//       fanCurve ({"cpu": [[°C, %] x 8], "gpu": [...]}, gpu optional; used by fan "custom", see FanCurve.h),
 //       charge (50..100, 100 = off), eco (bool), gpuClock (MHz, 0 = auto),
-//       lighting (off|static|breathing|colorcycle|rainbow), lightColor ("#rrggbb"),
-//       lightBrightness (0..3), lightSpeed (low|medium|high), bootSound, mcuPowersave (bool)
+//       lighting (off|static|breathing|dualbreathing|colorcycle|rainbow|strobe|battery|followmode),
+//       lightColor / lightColor2 ("#rrggbb"; lightColor2: dual breathing), lightBrightness (0..3),
+//       lightSpeed (low|medium|high), lightDirection (right|left|up|down: rainbow), bootSound, mcuPowersave (bool)
 // Read-only state keys include: model (ally|allyx|unknown), modelName, tdpMin/tdpMax (SPL),
 //       spptMin/spptMax, fpptMin/fpptMax (W), modeWatts {silent, performance, turbo, turboAc} (SPL W)
 
 #include "Hardware.h"
+#include "Aura.h"
+#include "FanCurve.h"
 #ifdef Q_OS_WIN
 #include "InputLayerStub.h"
 #else
@@ -35,6 +41,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QJsonArray>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -46,6 +53,7 @@
 #include <QSocketNotifier>
 #include <QTimer>
 
+#include <algorithm>
 #include <csignal>
 #include <cstdio>
 #include <cstring>
@@ -69,9 +77,11 @@ static const QString kSocketPath = qEnvironmentVariable("XPANEL_SOCKET", "/run/x
 static const QByteArray kGroup = qEnvironmentVariable("XPANEL_GROUP", "xpanel").toLocal8Bit();
 
 static const QStringList kOpModes = {"silent", "performance", "turbo", "manual"};
-static const QStringList kFans = {"auto", "quiet", "max"};
-static const QStringList kLights = {"off", "static", "breathing", "colorcycle", "rainbow"};
+static const QStringList kFans = {"auto", "quiet", "max", "custom"};
+static const QStringList kLights = {"off", "static", "breathing", "dualbreathing", "colorcycle", "rainbow", "strobe",
+                                    "battery", "followmode"};
 static const QStringList kSpeeds = {"low", "medium", "high"};
+static const QStringList kDirections = {"right", "left", "up", "down"};
 
 class Daemon : public QObject {
 public:
@@ -97,7 +107,13 @@ public:
         connect(&m_server, &QLocalServer::newConnection, this, &Daemon::onConnection);
 
         // Our own input layer: the Ally pad -> virtual Xbox pad / keyboard / mouse.
-        m_input.setControl(m_state["control"].toObject());
+        m_input.setControl(m_state.value("control").toObject());
+        m_input.setGyroBias(m_state["gyroBias"].toArray());
+        connect(&m_input, &InputLayer::gyroBiasChanged, this, [this](const QJsonArray &b) {
+            m_state["gyroBias"] = b;
+            save();
+            broadcast();
+        });
         auto sendEvent = [this](const QString &kind, const QString &name) {
             const QByteArray msg = QJsonDocument(QJsonObject{{"event", kind}, {"name", name}}).toJson(QJsonDocument::Compact) + "\n";
             for (QLocalSocket *c : std::as_const(m_clients)) c->write(msg);
@@ -123,6 +139,7 @@ private:
             {"charge", Hardware::readChargeLimit()}, {"lighting", "static"},
             {"tdpSlow", 0}, {"tdpFast", 0}, {"eco", false}, {"gpuClock", 0},
             {"lightColor", "#00c8ff"}, {"lightBrightness", 3}, {"lightSpeed", "medium"},
+            {"lightColor2", "#ff2d55"}, {"lightDirection", "right"},
             {"bootSound", Hardware::readAttr("boot_sound") == 1},
             {"mcuPowersave", Hardware::readAttr("mcu_powersave") == 1},
         };
@@ -174,9 +191,16 @@ private:
         if (key == "gpuClock") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 4000;
         if (key == "lightBrightness") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 3;
         if (key == "lightSpeed") return kSpeeds.contains(v.toString());
-        if (key == "lightColor") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
+        if (key == "fanCurve") return FanCurve::valid(v);
+        if (key == "lightDirection") return kDirections.contains(v.toString());
+        if (key == "lightColor" || key == "lightColor2") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
         if (key == "eco" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
+        if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
+            const QJsonArray a = v.toArray();
+            return v.isArray() && a.size() == 3
+                   && std::all_of(a.begin(), a.end(), [](const QJsonValue &x) { return x.isDouble() && qAbs(x.toDouble()) < 0.5; });
+        }
         if (key == "charge") return v.isDouble() && v.toInt() >= 50 && v.toInt() <= 100;
         return false;
     }
@@ -202,8 +226,22 @@ private:
 
     void applyLighting()
     {
-        Hardware::applyLighting(m_state["lighting"].toString(), m_state["lightColor"].toString(),
-                                m_state["lightBrightness"].toInt(), m_state["lightSpeed"].toString());
+        // battery level / Follow Operating Mode become a static colour for the current state
+        Aura::Params p;
+        p.effect = m_state["lighting"].toString();
+        p.color = m_state["lightColor"].toString();
+        p.color2 = m_state["lightColor2"].toString();
+        p.brightness = m_state["lightBrightness"].toInt();
+        p.speed = m_state["lightSpeed"].toString();
+        p.direction = m_state["lightDirection"].toString();
+        m_lightBattery = Hardware::batteryPercent();
+        p = Aura::resolve(p, m_lightBattery, m_state["opmode"].toString());
+        Hardware::applyLighting(p.effect, p.color, p.brightness, p.speed, p.color2, p.direction);
+    }
+
+    void applyFan()
+    {
+        Hardware::applyFan(m_state["fan"].toString(), m_state.value("fanCurve").toObject());
     }
 
     void applyTdp()
@@ -212,13 +250,13 @@ private:
         Hardware::applyCpu(m_state["eco"].toBool(), m_state["opmode"].toString());
         // A profile change can reset the fan curve: put ours back.
         if (m_state["fan"].toString() != "auto")
-            Hardware::applyFan(m_state["fan"].toString());
+            applyFan();
     }
 
     void applyAll()
     {
         applyTdp();
-        Hardware::applyFan(m_state["fan"].toString());
+        applyFan();
         Hardware::applyChargeLimit(m_state["charge"].toInt());
         applyLighting();
         Hardware::applyGpuClock(m_state["gpuClock"].toInt());
@@ -240,6 +278,9 @@ private:
             applyTdp();
             broadcast();
         }
+        // Battery level lighting: a new colour every 5 %
+        if (m_state["lighting"] == "battery" && Aura::batteryMoved(m_lightBattery, Hardware::batteryPercent()))
+            applyLighting();
     }
 
     // ---------- clients ----------
@@ -347,6 +388,10 @@ private:
             if (raw.size() > (1 << 17)) // "control" alone may be up to 64 KB (see valid())
                 continue;
             const QJsonObject req = QJsonDocument::fromJson(raw).object();
+            if (req["input"].toObject()["calibrate"].toString() == "gyro") {
+                m_input.calibrateGyro();
+                continue;
+            }
             if (req.contains("input")) {
                 const bool g = req["input"].toObject()["grab"].toBool(false);
                 m_grabOwner = g ? c : nullptr;
@@ -368,11 +413,13 @@ private:
             if (apply.contains("gpuClock")) Hardware::applyGpuClock(m_state["gpuClock"].toInt());
             if (apply.contains("bootSound")) Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);
             if (apply.contains("mcuPowersave")) Hardware::writeAttr("mcu_powersave", m_state["mcuPowersave"].toBool() ? 1 : 0);
-            if (apply.contains("fan")) Hardware::applyFan(m_state["fan"].toString());
+            if (apply.contains("fan") || (apply.contains("fanCurve") && m_state["fan"] == "custom")) applyFan();
             if (apply.contains("charge")) Hardware::applyChargeLimit(m_state["charge"].toInt());
-            if (apply.contains("control")) m_input.setControl(m_state["control"].toObject());
-            for (const char *k : {"lighting", "lightColor", "lightBrightness", "lightSpeed"})
+            if (apply.contains("control")) m_input.setControl(m_state.value("control").toObject());
+            if (apply.contains("gyroBias")) m_input.setGyroBias(m_state["gyroBias"].toArray());
+            for (const char *k : {"lighting", "lightColor", "lightColor2", "lightBrightness", "lightSpeed", "lightDirection"})
                 if (apply.contains(k)) { applyLighting(); break; }
+            if (apply.contains("opmode") && m_state["lighting"] == "followmode") applyLighting();
             if (changed) {
                 save();
                 broadcast();
@@ -393,6 +440,7 @@ private:
     QLocalSocket *m_grabOwner = nullptr;
     QTimer m_watch;
     bool m_lastAc = false;
+    int m_lightBattery = -1; // charge the battery-level colour was made for
 };
 
 #ifndef Q_OS_WIN

@@ -1,4 +1,5 @@
 #include "InputLayer.h"
+#include "Imu.h"
 #include "Model.h"
 
 #include <QDateTime>
@@ -107,6 +108,13 @@ InputLayer::InputLayer(QObject *parent) : QObject(parent)
     m_tick.setInterval(8); // 125 Hz (menu repeat, mouse / scroll, button repeat)
     connect(&m_tick, &QTimer::timeout, this, &InputLayer::tick);
     m_tick.start();
+    m_imu = new Imu(this);
+    connect(m_imu, &Imu::sample, this, &InputLayer::onGyro);
+    connect(m_imu, &Imu::stateChanged, this, &InputLayer::statusChanged);
+    m_calTimeout.setSingleShot(true);
+    connect(&m_calTimeout, &QTimer::timeout, this, [this] {
+        finishCalibration(m_imu->state() == Imu::State::Busy ? "busy" : "no data");
+    });
     scan();
 }
 
@@ -120,7 +128,8 @@ QJsonObject InputLayer::status() const
     QString st = "no device";
     if (m_pad >= 0 && m_vpad >= 0) st = "active";
     else if (!m_padNode.isEmpty()) st = "busy";
-    return {{"inputLayer", st}, {"inputPad", m_padNode}, {"inputGrab", m_grab}};
+    return {{"inputLayer", st}, {"inputPad", m_padNode}, {"inputGrab", m_grab},
+            {"gyro", m_imu->stateName()}, {"gyroMethod", m_imu->method()}, {"gyroCalibration", m_calResult}};
 }
 
 void InputLayer::scan()
@@ -212,6 +221,7 @@ bool InputLayer::openPad(const QString &node)
         createVirtual();
     qInfo("xpanel-daemon input: using %s (%s), virtual Xbox 360 pad ready", qPrintable(node),
           qPrintable(readFile(dev + "name")));
+    updateGyro();
     emit statusChanged();
     return true;
 }
@@ -321,6 +331,7 @@ void InputLayer::release()
 void InputLayer::setControl(const QJsonObject &control)
 {
     m_control = control;
+    updateGyro();
 }
 
 QJsonObject InputLayer::preset() const
@@ -346,6 +357,8 @@ void InputLayer::setGrab(bool grab)
             emitKey(m_vpad, -c - 1, 0); // negative = ABS code
         syn(m_vpad);
     }
+    m_rGyro = {};
+    updateGyro();
     emit statusChanged();
 }
 
@@ -422,6 +435,7 @@ void InputLayer::readPad()
                 delete m_padN; m_padN = nullptr;
                 ::close(m_pad); m_pad = -1;
                 m_savedModes.clear();
+                updateGyro();
                 emit statusChanged();
             }
             return;
@@ -579,6 +593,7 @@ void InputLayer::frame()
     const QJsonObject tl = p["lt"].toObject();
     const QJsonObject tr = p["trigger"].toObject()["mirror"].toBool(true) ? tl : p["rt"].toObject();
     const int lt = shapeTrigger(trigger(ABS_Z), tl), rt = shapeTrigger(trigger(ABS_RZ), tr);
+    m_ltHeld = trigger(ABS_Z) > 0.3; // gyro "only while LT is held", from the physical trigger
 
     // logical buttons held now
     QSet<QString> now;
@@ -632,8 +647,10 @@ void InputLayer::frame()
         const bool rStick = p["rstick"].toObject()["mode"].toString("stick") == "stick";
         emitKey(m_vpad, -ABS_X - 1, lStick ? int(lx * 32767) : 0);
         emitKey(m_vpad, -ABS_Y - 1, lStick ? int(ly * 32767) : 0);
-        emitKey(m_vpad, -ABS_RX - 1, rStick ? int(rx * 32767) : 0);
-        emitKey(m_vpad, -ABS_RY - 1, rStick ? int(ry * 32767) : 0);
+        m_rPhys = rStick ? Gyro::Stick{rx, ry} : Gyro::Stick{};
+        const Gyro::Stick r = Gyro::combine(m_rPhys, m_rGyro);
+        emitKey(m_vpad, -ABS_RX - 1, int(r.x * 32767));
+        emitKey(m_vpad, -ABS_RY - 1, int(r.y * 32767));
         if (ltAnalog) emitKey(m_vpad, -ABS_Z - 1, lt);
         if (rtAnalog) emitKey(m_vpad, -ABS_RZ - 1, rt);
         syn(m_vpad);
@@ -716,4 +733,137 @@ void InputLayer::tick()
         }
     }
     if (wrote) syn(m_vkbm);
+}
+
+// ---------------------------------------------------------------- gyro
+
+Gyro::Settings InputLayer::gyroSettings(QString *mode, bool *ratchet) const
+{
+    const QJsonObject g = preset()["gyro"].toObject();
+    if (mode) *mode = g["mode"].toString("off");
+    if (ratchet) *ratchet = g["ratchet"].toBool(false);
+    Gyro::Settings s;
+    s.sensX = qBound(10.0, g["sensX"].toDouble(100), 300.0);
+    s.sensY = qBound(10.0, g["sensY"].toDouble(100), 300.0);
+    s.axis = g["axis"].toString("yaw") == "roll" ? Gyro::TurnAxis::Roll : Gyro::TurnAxis::Yaw;
+    s.invertX = g["invertX"].toBool(false);
+    s.invertY = g["invertY"].toBool(false);
+    return s;
+}
+
+void InputLayer::updateGyro()
+{
+    QString mode;
+    gyroSettings(&mode, nullptr);
+    const bool on = m_calibrating || (mode != "off" && m_pad >= 0 && !m_grab);
+    if ((!on || mode != "rstick") && (m_rGyro.x != 0 || m_rGyro.y != 0)) {
+        m_rGyro = {};
+        writeRightStick();
+    }
+    if (on == m_imu->running())
+        return;
+    m_gyroMouse.reset();
+    m_imu->setRunning(on);
+    emit statusChanged();
+}
+
+void InputLayer::writeRightStick()
+{
+    if (m_vpad < 0 || m_grab)
+        return;
+    const Gyro::Stick r = Gyro::combine(m_rPhys, m_rGyro);
+    emitKey(m_vpad, -ABS_RX - 1, int(r.x * 32767));
+    emitKey(m_vpad, -ABS_RY - 1, int(r.y * 32767));
+    syn(m_vpad);
+}
+
+// One IMU sample: angular velocity in rad/s (device frame), dt seconds since the last one.
+void InputLayer::onGyro(double x, double y, double z, double dt)
+{
+    if (m_calibrating) {
+        const double v[3] = {x, y, z};
+        for (int i = 0; i < 3; ++i) {
+            m_calSum[i] += v[i];
+            m_calSq[i] += v[i] * v[i];
+        }
+        ++m_calN;
+        m_calTime += dt;
+        if (m_calTime >= 1.0 && m_calN >= 50)
+            finishCalibration({});
+    }
+    if (m_grab || m_pad < 0)
+        return;
+    QString mode;
+    bool ratchet = false;
+    const Gyro::Settings s = gyroSettings(&mode, &ratchet);
+    const bool live = mode != "off" && (!ratchet || m_ltHeld);
+    const Gyro::Aim aim = live ? Gyro::aimRate({x, y, z}, m_gyroBias, s) : Gyro::Aim{};
+
+    if (mode == "mouse" && live && m_vkbm >= 0) {
+        int dx = 0, dy = 0;
+        m_gyroMouse.add(aim, dt, s, &dx, &dy);
+        emitRel(m_vkbm, REL_X, dx);
+        emitRel(m_vkbm, REL_Y, dy);
+        if (dx || dy) syn(m_vkbm);
+    } else {
+        m_gyroMouse.reset();
+    }
+    const Gyro::Stick st = mode == "rstick" && live ? Gyro::toStick(aim, s) : Gyro::Stick{};
+    if (st.x != m_rGyro.x || st.y != m_rGyro.y) {
+        m_rGyro = st;
+        writeRightStick();
+    }
+}
+
+void InputLayer::calibrateGyro()
+{
+    if (m_calibrating)
+        return;
+    if (m_imu->state() == Imu::State::NoDevice) {
+        m_calResult = "no device";
+        emit statusChanged();
+        return;
+    }
+    m_calibrating = true;
+    std::fill(std::begin(m_calSum), std::end(m_calSum), 0.0);
+    std::fill(std::begin(m_calSq), std::end(m_calSq), 0.0);
+    m_calTime = 0;
+    m_calN = 0;
+    m_calResult = "running";
+    m_calTimeout.start(4000);
+    updateGyro();
+    emit statusChanged();
+}
+
+void InputLayer::finishCalibration(QString result)
+{
+    m_calibrating = false;
+    m_calTimeout.stop();
+    if (result.isEmpty()) {
+        double mean[3];
+        bool still = true;
+        for (int i = 0; i < 3; ++i) {
+            mean[i] = m_calSum[i] / m_calN;
+            const double sd = std::sqrt(std::max(0.0, m_calSq[i] / m_calN - mean[i] * mean[i]));
+            still = still && sd < 0.035 && std::abs(mean[i]) < 0.1; // ~2 deg/s noise, ~6 deg/s offset
+        }
+        if (still) {
+            m_gyroBias = {mean[0], mean[1], mean[2]};
+            m_calResult = "done";
+            qInfo("xpanel-daemon gyro: calibrated, offset %.4f %.4f %.4f rad/s (%d samples)", mean[0], mean[1], mean[2], m_calN);
+            emit gyroBiasChanged(QJsonArray{mean[0], mean[1], mean[2]}); // saved and broadcast by the daemon
+        } else {
+            result = "moved";
+        }
+    }
+    if (!result.isEmpty())
+        m_calResult = result;
+    updateGyro();
+    emit statusChanged();
+}
+
+void InputLayer::setGyroBias(const QJsonArray &bias)
+{
+    if (bias.size() == 3)
+        m_gyroBias = {bias[0].toDouble(), bias[1].toDouble(), bias[2].toDouble()};
 }

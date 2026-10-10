@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QObject>
 
@@ -12,6 +13,8 @@ public:
     explicit InputLayer(QObject *parent = nullptr) : QObject(parent) {}
     void setControl(const QJsonObject &) {}
     void setGrab(bool) {}
+    void calibrateGyro() {}
+    void setGyroBias(const QJsonArray &) {}
     QJsonObject status() const { return {{"inputLayer", "not available on Windows yet"}, {"inputGrab", false}}; }
 
 signals:
@@ -20,4 +23,5 @@ signals:
     void action(const QString &name);
     void unknownKey(int code);
     void statusChanged();
+    void gyroBiasChanged(const QJsonArray &bias);
 };

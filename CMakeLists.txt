@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.1.0 LANGUAGES CXX)
+project(XPanel VERSION 1.2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -68,7 +68,7 @@ qt_add_qml_module(XPanel
         qml/app/SettingsPage.qml qml/app/SetGeneral.qml qml/app/SetPerformance.qml qml/app/SetUpdate.qml
         qml/app/SetCalibration.qml qml/app/SetLighting.qml qml/app/SetAudio.qml
         qml/app/SetDisplay.qml qml/app/SetConnection.qml qml/app/SetShortcuts.qml qml/app/SetFeedback.qml
-        qml/app/SetBattery.qml
+        qml/app/SetBattery.qml qml/app/FanCurveEditor.qml qml/app/CcSwatches.qml
     RESOURCES ${XPANEL_ICONS}
 )
 
@@ -112,7 +112,7 @@ if(WIN32)
     target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
 else()
     add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/Hardware.cpp
-        daemon/InputLayer.h daemon/InputLayer.cpp)
+        daemon/InputLayer.h daemon/InputLayer.cpp daemon/Imu.h daemon/Imu.cpp daemon/GyroMath.h daemon/GyroMath.cpp)
 endif()
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)
 target_compile_definitions(xpanel-daemon PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")

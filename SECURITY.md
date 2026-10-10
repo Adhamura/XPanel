@@ -18,13 +18,14 @@ only says you have something to report, without details).
   50–100 %, lighting, GPU clock, control settings). Each value is validated. It runs no commands
   it receives and writes no paths it receives.
 - It writes only to the ASUS firmware attributes, the platform profile, hwmon fan curve,
-  `BAT0/charge_control_end_threshold`, the Aura hidraw node, cpufreq and the amdgpu clock files. It creates a uinput
-  virtual pad.
+  `BAT0/charge_control_end_threshold`, the Aura hidraw node, cpufreq, the amdgpu clock files and,
+  while gyro is on, the motion sensor's IIO buffer / trigger / sampling rate files (put back when
+  gyro stops). It reads the motion sensor (`/dev/iio:deviceN`) and creates a uinput virtual pad.
 - The systemd unit sandboxes it (`systemd-analyze security xpanel-daemon` rates it about 2.2,
   "OK", down from 8.9):
   - the file system is read-only except `/sys`, `/dev`, `/proc`, `/var/lib/xpanel` and
     `/run/xpanel` (`ProtectSystem=strict`), and home directories are hidden;
-  - only input, hidraw and uinput devices can be opened (`DevicePolicy=closed`);
+  - only input, hidraw, IIO (motion sensor) and uinput devices can be opened (`DevicePolicy=closed`);
   - root keeps only `CAP_DAC_OVERRIDE`, `CAP_DAC_READ_SEARCH` and `CAP_FOWNER`;
   - only local (UNIX / netlink) sockets, no namespaces, realtime or set-uid files, and the
     `@system-service` system call set.

@@ -29,13 +29,18 @@ QJsonObject limits();
 Tdp readTdp();
 bool applyTdp(const Tdp &t);
 
-bool applyFan(const QString &preset); // auto | quiet | max
+// auto | quiet | max | custom. "custom" takes the daemon's "fanCurve" value (FanCurve.h).
+bool applyFan(const QString &preset, const QJsonObject &curve = {});
 bool applyChargeLimit(int percent);   // 100 = no limit
 int readChargeLimit();
 
-// effect: off | static | breathing | colorcycle | rainbow ; color "#rrggbb" ;
-// brightness 0..3 ; speed: low | medium | high
-bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed);
+// effect: off | static | breathing | dualbreathing | colorcycle | rainbow | strobe (Aura.h) ;
+// color, color2 "#rrggbb" (color2: dual breathing) ; brightness 0..3 ; speed: low | medium | high ;
+// direction: right | left | up | down (rainbow). Empty color2 / direction = the defaults.
+// Battery level and Follow Operating Mode are resolved to a static colour by the caller (Aura::resolve).
+bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed,
+                   const QString &color2 = {}, const QString &direction = {});
+int batteryPercent();                 // 0..100, -1 = no battery
 
 // CPU energy preference + boost (amd-pstate-epp). eco = save power.
 bool applyCpu(bool eco, const QString &opmode);

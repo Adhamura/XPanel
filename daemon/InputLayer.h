@@ -1,6 +1,9 @@
 #pragma once
 
+#include "GyroMath.h"
+
 #include <QHash>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QObject>
 #include <QSet>
@@ -8,6 +11,7 @@
 
 #include <linux/input.h>
 
+class Imu;
 class QSocketNotifier;
 
 // XPanel's own input layer for the ROG Ally / Ally X (runs in xpanel-daemon, as root).
@@ -19,7 +23,8 @@ class QSocketNotifier;
 // - Creates two uinput devices: an Xbox 360 pad (045e:028e) and a keyboard + mouse.
 // - Applies the Control Mode settings sent by the XPanel app (key mapping with a secondary
 //   function while a rear paddle is held, button repeat, stick dead zones / curves,
-//   trigger ranges, vibration strength, Desktop mode mouse / scroll).
+//   trigger ranges, vibration strength, Desktop mode mouse / scroll, gyro as mouse or right
+//   stick from the built-in IMU, Imu.h).
 // - Reports the two menu buttons (left and right of the screen) and, while XPanel has the pad
 //   ("grab"), menu navigation to the app.
 // If the daemon stops, the kernel ends the grab and systemd restores the device permissions,
@@ -33,6 +38,8 @@ public:
     void setControl(const QJsonObject &control); // resolved Control Mode settings from the app
     void setGrab(bool grab);                     // true: the pad drives XPanel, not the game
     QJsonObject status() const;                  // for the daemon state
+    void calibrateGyro();                        // ~1 s at rest -> gyroBiasChanged()
+    void setGyroBias(const QJsonArray &bias);    // [x, y, z] rad/s, device frame
 
 signals:
     void special(const QString &name);      // quickpanel, left_button_long, right_button, right_button_long
@@ -40,6 +47,7 @@ signals:
     void action(const QString &name);       // functions the app runs: osk
     void unknownKey(int code);
     void statusChanged();
+    void gyroBiasChanged(const QJsonArray &bias); // new calibration, to be saved
 
 private:
     struct Out; // one output function
@@ -63,6 +71,13 @@ private:
     void emitKey(int fd, int code, int value);
     void syn(int fd);
     void navPress(const QString &name, bool down);
+
+    // gyro
+    Gyro::Settings gyroSettings(QString *mode, bool *ratchet) const; // of the active preset
+    void updateGyro(); // run the IMU only while gyro is on and the game has the pad (or calibrating)
+    void onGyro(double x, double y, double z, double dt);
+    void writeRightStick(); // physical right stick + gyro
+    void finishCalibration(QString result);
 
     QJsonObject preset() const;
     double shapeStick(double v, const QJsonObject &cfg) const; // -1..1 in, -1..1 out
@@ -100,4 +115,16 @@ private:
 
     // force feedback: virtual effect id -> physical effect id
     QHash<int, int> m_ffMap;
+
+    // gyro
+    Imu *m_imu = nullptr;
+    Gyro::Vec3 m_gyroBias;
+    Gyro::MouseAccumulator m_gyroMouse;
+    Gyro::Stick m_rPhys, m_rGyro; // right stick: shaped physical stick, gyro part
+    bool m_ltHeld = false;        // physical LT pulled (gyro "only while held")
+    bool m_calibrating = false;
+    double m_calSum[3] = {}, m_calSq[3] = {}, m_calTime = 0;
+    int m_calN = 0;
+    QString m_calResult;          // "" | running | done | moved | busy | no data | no device
+    QTimer m_calTimeout;
 };

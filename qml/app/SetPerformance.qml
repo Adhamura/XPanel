@@ -49,11 +49,64 @@ CcPage {
         CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
                    value: (device.rev, device.value("gpuClock") || 0); onMoved: (v) => device.setValue("gpuClock", v) } }
 
-    CcSection { title: "Fan" }
-    CcRow { title: "Fan curve"
+    CcSection { title: "Fan"; note: page.fanCustom ? "Custom curve: 8 points of fan speed over temperature. Changes apply a moment after you let go." : "" }
+    CcRow { title: "Fan Mode"
         CcChoice { enabledChoice: device.connected
-                   options: [{ value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" }, { value: "max", label: "Max" }]
-                   current: (device.rev, device.value("fan")); onPicked: (v) => device.setValue("fan", v) } }
+                   options: [{ value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" }, { value: "max", label: "Max" },
+                             { value: "custom", label: "Custom" }]
+                   current: (device.rev, device.value("fan")); onPicked: (v) => page.pickFan(v) } }
+
+    // ---- custom curve ----
+    readonly property bool fanCustom: (device.rev, device.value("fan") === "custom")
+    readonly property var fanCurve: (device.rev, device.value("fanCurve") || null)
+    readonly property bool separate: !!(fanCurve && fanCurve.gpu)
+    property string which: "cpu"                       // the curve the editor shows when they differ
+    readonly property string editedKey: separate ? which : "cpu"
+    // Presets: fan speed in % at 40 50 60 70 78 85 90 95 °C. Quiet is the built-in Quiet curve.
+    readonly property var presetTemps: [40, 50, 60, 70, 78, 85, 90, 95]
+    readonly property var presets: ({ quiet: [0, 8, 16, 25, 37, 51, 67, 82],
+                                      balanced: [10, 25, 40, 55, 70, 82, 92, 100],
+                                      performance: [25, 40, 55, 70, 82, 92, 100, 100] })
+    function presetCurve(name) { return presetTemps.map((t, i) => [t, presets[name][i]]) }
+    function pickFan(v) {
+        // the first time Custom is picked there is no curve yet: start from Balanced
+        if (v === "custom" && !fanCurve) device.setValue("fanCurve", { cpu: presetCurve("balanced") })
+        device.setValue("fan", v)
+    }
+    function saveCurve(pts) {
+        const o = { cpu: fanCurve ? fanCurve.cpu : presetCurve("balanced") }
+        if (separate) o.gpu = fanCurve.gpu
+        o[editedKey] = pts
+        device.setValue("fanCurve", o)
+    }
+    function setSeparate(on) {
+        const cpu = fanCurve ? fanCurve.cpu : presetCurve("balanced")
+        which = "cpu"
+        device.setValue("fanCurve", on ? { cpu: cpu, gpu: cpu.map(p => [p[0], p[1]]) } : { cpu: cpu })
+    }
+
+    CcRow { title: "Start from"; visible: page.fanCustom; description: "Copies a preset into the curve you are editing."
+        Row {
+            spacing: 8
+            CcButton { text: "Quiet"; enabledButton: device.connected; onClicked: page.saveCurve(page.presetCurve("quiet")) }
+            CcButton { text: "Balanced"; enabledButton: device.connected; onClicked: page.saveCurve(page.presetCurve("balanced")) }
+            CcButton { text: "Performance"; enabledButton: device.connected; onClicked: page.saveCurve(page.presetCurve("performance")) }
+        } }
+    CcRow { title: "Separate GPU fan curve"; visible: page.fanCustom
+            description: "Off: one curve for both fans (CPU and GPU)."
+        CcSwitch { enabledSwitch: device.connected; checked: page.separate; onToggled: (v) => page.setSeparate(v) } }
+    CcRow { title: "Edit curve"; visible: page.fanCustom && page.separate
+        CcChoice { options: [{ value: "cpu", label: "CPU fan" }, { value: "gpu", label: "GPU fan" }]
+                   current: page.which; onPicked: (v) => page.which = v } }
+    FanCurveEditor {
+        width: parent.width; visible: page.fanCustom
+        enabledEditor: device.connected
+        caption: !page.separate ? "Fan curve (both fans)" : (page.which === "gpu" ? "GPU fan curve" : "CPU fan curve")
+        liveTemp: page.editedKey === "gpu" ? sys.gpuTemp : sys.cpuTemp
+        liveText: (page.editedKey === "gpu" ? "GPU " + sys.gpuTemp : "CPU " + sys.cpuTemp) + " °C   ·   Fan " + sys.fanRpm + " rpm"
+        source: page.fanCurve ? page.fanCurve[page.editedKey] || page.fanCurve.cpu : null
+        onCommitted: (curve) => page.saveCurve(curve)
+    }
 
     CcSection { title: "Live" }
     CcRow { title: "CPU / GPU"

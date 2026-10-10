@@ -20,8 +20,10 @@ Environment=XPANEL_GROUP=xpanel
 
 # ---- Sandbox (see SECURITY.md) ----
 # What the daemon needs: write sysfs (asus-armoury TDP, platform_profile, hwmon fan,
-# charge limit, cpufreq, amdgpu clock), open and chmod the Ally's input / hidraw nodes,
-# create uinput devices, and write /var/lib/xpanel and /run/xpanel. Nothing else.
+# charge limit, cpufreq, amdgpu clock, IIO buffer / trigger / sampling rate of the motion
+# sensor), open and chmod the Ally's input / hidraw nodes, read the motion sensor
+# (/dev/iio:deviceN), create uinput devices, and write /var/lib/xpanel and /run/xpanel.
+# Nothing else.
 # If a setting stops working, `journalctl -u xpanel-daemon -b` names the file and the error.
 #
 # Files: everything read-only except /dev, /proc, /sys and the two directories above.
@@ -35,10 +37,11 @@ ProtectKernelLogs=yes
 ProtectClock=yes
 ProtectHostname=yes
 ProtectProc=invisible
-# Devices: input (event*, js*), hidraw (pad and Aura lighting) and uinput only.
+# Devices: input (event*, js*), hidraw (pad and Aura lighting), IIO (gyro) and uinput only.
 DevicePolicy=closed
 DeviceAllow=char-input rw
 DeviceAllow=char-hidraw rw
+DeviceAllow=char-iio rw
 DeviceAllow=/dev/uinput rw
 # Root, but only these capabilities: DAC_OVERRIDE / DAC_READ_SEARCH to open nodes the input
 # layer set to mode 0 (the Aura hidraw can be one of them), FOWNER for chmod.

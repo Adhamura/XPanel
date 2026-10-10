@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.2.0
+
+- **Gyro**: the Ally's motion sensor (BMI323, kernel IIO driver) as a **mouse** or added to the
+  **right stick** for aiming, set per mode in Control Mode › Gyro: sensitivity per axis, turning
+  axis Yaw or Roll, Invert horizontal / vertical, "Only while a button is held" (LT). Not yet
+  tested on hardware, please report how it feels and whether the directions are right.
+  - The daemon reads the sensor through the IIO buffer (200 Hz, the sensor's own trigger) or by
+    polling at 125 Hz, only while gyro is on and a game has the pad, and restores the sensor's
+    settings when it stops. If another program (hhd, InputPlumber) holds it, gyro shows "busy".
+  - Gyro calibration (Settings › Calibration or Control Mode): ~1 second at rest; the offset is
+    saved by the daemon (`gyroBias`). New daemon request `{"input": {"calibrate": "gyro"}}`;
+    new state keys `gyro` (no device / ready / active / busy), `gyroMethod`, `gyroCalibration`.
+  - systemd unit: `DeviceAllow=char-iio rw` for the sensor.
+- **Custom fan curve editor** (Settings › Performance › Fan Mode › Custom): an 8-point graph of
+  fan speed (%) over temperature (°C). Drag the points with touch or mouse, or use the gamepad:
+  Ⓐ to edit, ◀ ▶ pick a point, ▲ ▼ fan speed, LB / RB temperature, Ⓑ or Ⓐ done. Moving a point
+  moves its neighbours along so the curve never falls. Presets Quiet, Balanced and Performance
+  as a starting point, one curve for both fans or a separate GPU curve, the current CPU
+  temperature and fan speed shown next to the graph. Changes are applied a moment after you let go.
+  - Daemon: new fan mode `custom` and key `fanCurve` (`{"cpu": [[°C, %] x 8], "gpu": [...]}`, `gpu`
+    optional), checked strictly (8 points, 20..105 °C rising, 0..100 % never falling), saved with the
+    other settings and put back after TDP changes. Linux writes the 8 points to the hwmon
+    `asus_custom_fan_curve` (% converted to 0..255); Windows sends them through the ATKACPI fan
+    curve devices in the same byte layout as Quiet and Max.
+  - The Quick Panel fan tile and the per-game Fan Mode include Custom (the tile once a curve is
+    saved).
+- **More Aura effects**: Dual breathing (between two colors), Rainbow direction (right / left /
+  up / down), Strobe, Battery level (red to green with the charge, updated every 5 %) and Follow
+  Operating Mode (Silent blue, Performance white, Turbo red, Manual your color). New daemon keys
+  `lightColor2` and `lightDirection`; the effects are in the Quick Panel lighting tile too.
+  **The new effects are not yet tested on hardware**; Off, Static, Breathing, Color cycle and
+  Rainbow send exactly the same bytes as before.
+- Unit tests for the fan curve checks and the Aura packets (`tests/`).
+- Screenshot tool: the fake daemon can start from another state (`XPANEL_FAKE_STATE`) and pass on
+  scripted gamepad events.
+
 ## 1.1.0
 
 - **Original ROG Ally (Z1 / Z1 Extreme)**: Operating Modes with the Ally's own wattages, power

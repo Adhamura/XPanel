@@ -26,6 +26,8 @@ public:
 
     Q_INVOKABLE QVariant value(const QString &key) const;
     Q_INVOKABLE void setValue(const QString &key, const QVariant &value);
+    // measure the gyro offset (~1 s, the Ally lying still); result in value("gyroCalibration")
+    Q_INVOKABLE void calibrateGyro();
     // true: the Ally pad drives XPanel (menus), not the game
     void setGrab(bool grab);
 

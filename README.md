@@ -51,7 +51,15 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   is held, button repeat, stick and trigger curves, vibration strength, and a Desktop Mode that
   turns the pad into mouse and keyboard. Applied live, no InputPlumber or hhd needed.
 - **🔋 Battery care.** Charge limit (e.g. 80 %), battery health, capacity and charge cycles.
-- **🌈 Aura lighting.** Static, breathing, color cycle and rainbow on the stick rings.
+- **🌈 Aura lighting.** Static, breathing, dual breathing (two colors), color cycle, rainbow
+  (with a direction), strobe, and two effects that follow the system: battery level (red to
+  green) and Operating Mode (blue Silent, white Performance, red Turbo). The new effects are not
+  tested on hardware yet.
+- **🌀 Custom fan curve.** Settings › Performance › Fan Mode › Custom: an 8-point graph (fan
+  speed over temperature) you drag with touch or mouse, or edit with the D-pad (Ⓐ, ◀ ▶ point,
+  ▲ ▼ fan speed, LB / RB temperature). Start from Quiet, Balanced or Performance; one curve for
+  both fans or a separate GPU curve. Saved, re-applied after TDP changes, and added to the Quick
+  Panel fan tile once saved.
 - **🪶 Native and small.** About 7k lines of C++17 / QML. No Python, Electron or web runtime.
   A small root daemon on a local socket does the hardware work.
 
@@ -71,7 +79,8 @@ familiar Armoury Crate layout to the Linux desktop as one app:
     <td><img src="docs/screenshots/media-gallery.png" alt="Media Gallery"><br><b>Media Gallery</b> — screenshots and recordings: open, share, show in folder, delete</td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="docs/screenshots/update-center.png" width="50%" alt="Update Center"><br><b>Update Center</b> — system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
+    <td><img src="docs/screenshots/fan-curve.png" alt="Fan curve editor"><br><b>Fan Curve</b> — 8-point custom curve, editable by touch or gamepad, separate GPU curve</td>
+    <td><img src="docs/screenshots/update-center.png" alt="Update Center"><br><b>Update Center</b> — system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
   </tr>
 </table>
 
@@ -208,6 +217,12 @@ also opens from the gear icon, the tray menu, Meta+Shift+C or `XPanel --app [pag
 is `library`, `control`, `gallery`, `user`, `settings` or `settings/<section>`.
 Settings are kept in `~/.config/XPanel/config.json`.
 
+Fan curve graph (Settings › Performance › Fan Mode › Custom): drag a point with touch or mouse.
+With the pad, A on the graph starts editing, then ◀ ▶ pick a point, ▲ ▼ change its fan speed
+(5 %), LB / RB its temperature (1 °C; keyboard PgUp / PgDn), A or B ends. The fan tile on the
+Quick Panel cycles Auto → Quiet → Max → Custom (Custom once a curve is saved); the lighting tile
+cycles through all effects.
+
 ## How it works
 
 ```mermaid
@@ -238,15 +253,26 @@ flowchart LR
   The watt values per mode are our choice, close to the ASUS defaults on Windows; they and the
   fallback power ranges live in one table per model (`daemon/Model.h`, found by the DMI board
   name). Manual limits are clamped to the `min_value` / `max_value` the driver reports.
-- **Fan:** hwmon `asus_custom_fan_curve` (Auto = firmware curve, Quiet, Max).
+- **Fan:** hwmon `asus_custom_fan_curve` (Auto = firmware curve, Quiet, Max, Custom: 8 temperature /
+  duty points per fan from the `fanCurve` key; checked in `daemon/FanCurve.h`, temperatures
+  20..105 °C rising, duty 0..100 % never falling). Windows: the same 8 + 8 bytes through the
+  ATKACPI fan curve devices.
 - **Charge limit:** `BAT0/charge_control_end_threshold`.
 - **Lighting:** ASUS Aura HID output reports (report id `0x5A`) on the N-KEY hidraw node with
-  vendor usage page `0xFF31`.
+  vendor usage page `0xFF31`; the packets are built in `daemon/Aura.h`. Battery level and
+  Operating Mode lighting are a static color the daemon recomputes (every 5 % of charge, on a
+  mode change).
 - **Input layer:** the daemon grabs the Ally pad and N-KEY keyboard (USB `0b05:1b4c` on the
   Ally X, `0b05:1abe` on the Ally; nodes picked by their capabilities) with evdev and sends a
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
   While the Quick Panel is open, the pad drives XPanel instead of the game. The raw pad nodes are
   hidden from games while the daemon runs and restored by udev when it stops.
+- **Gyro:** the Bosch BMI323 through the kernel IIO driver (`/sys/bus/iio/devices/iio:deviceN`,
+  name `bmi323-imu`), rotated by its mount matrix. The daemon reads it through the IIO buffer
+  (`/dev/iio:deviceN`, the sensor's data-ready trigger, 200 Hz) or, without a trigger, by polling
+  `in_anglvel_*_raw` at 125 Hz — only while gyro is on and a game has the pad — and puts the
+  buffer and sampling rate back when it stops. The calibration offset is kept in the daemon's
+  state (`gyroBias`).
 - **Desktop:** KDE brightness D-Bus, KWin, kglobalaccel, `wpctl`, `kscreen-doctor`, `nmcli`,
   `bluetoothctl`, `spectacle`.
 
@@ -285,8 +311,17 @@ your own risk.
 `sudo systemctl restart xpanel-daemon`. If you stopped it, udev restores the normal controller
 (`sudo udevadm trigger --action=change --subsystem-match=input`).
 
-**Is gyro supported?** The gyro settings are saved, but not applied yet. Calibration is not
-available yet either. There is no FPS limiter (KDE has no global one).
+**Is gyro supported?** Yes, since 1.2 (not yet tested on hardware, please report how it feels).
+Control Mode › Gyro turns the Ally's motion sensor into a **mouse** or adds it to the **right
+stick** (aiming), per mode (Gamepad / Desktop), with horizontal and vertical sensitivity, a
+turning axis (Yaw: turn the Ally left / right; Roll: tilt it like a steering wheel), Invert
+horizontal / vertical, and "Only while a button is held" (gyro works only while LT is pulled).
+It runs only while a game has the controller, not while XPanel is open. If the aim drifts, put
+the Ally on a table and press Calibrate (Control Mode or Settings › Calibration). It needs the
+kernel's `bmi323` IIO driver (in mainline Linux); if Handheld Daemon or InputPlumber already uses
+the sensor, Control Mode shows it as busy. If the aim moves the wrong way, use the Invert
+switches (and please open an issue with your model). There is no FPS limiter (KDE has no global
+one).
 
 **Does the per-game profile apply when I start a game from Steam?** Yes. XPanel notices when Steam
 starts a game (native or Proton) and applies the profile you set under Game Library › the game ›
@@ -303,7 +338,9 @@ tray icon); if it was closed during a game, it restores your settings the next t
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — ✅ Original ROG Ally (Z1 / Z1 Extreme) power limits and controller (not yet tested on
   hardware); ✅ per-game profiles for games started from Steam, restored when the game ends.
-- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
+- **1.2** — ✅ Gyro (aim and mouse); ✅ custom fan curve editor; ✅ more Aura effects (dual
+  breathing, rainbow direction, strobe, battery level, follow Operating Mode). Not yet tested on
+  hardware.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).

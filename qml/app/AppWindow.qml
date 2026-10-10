@@ -104,6 +104,8 @@ Item {
         const it = w ? w.activeFocusItem : null
         // a text field keeps arrows and A for typing (on-screen keyboard); B leaves it
         const typing = it && (it instanceof TextInput || it instanceof TextEdit)
+        // a control that is being edited may take the keys that otherwise move or switch (fan curve graph)
+        if (it && typeof it.navKey === "function" && it.navKey(a)) return
         if (a === "lb") return switchTab(-1)
         if (a === "rb") return switchTab(1)
         if (a === "b") { if (typing) { moveFocus(true); return } return back() }

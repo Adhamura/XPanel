@@ -69,8 +69,10 @@ Item {
     ]
     readonly property var rgbModes: [
         { value: "off", label: "Off" }, { value: "static", label: "Static" },
-        { value: "breathing", label: "Breathing" }, { value: "colorcycle", label: "Color cycle" },
-        { value: "rainbow", label: "Rainbow" }
+        { value: "breathing", label: "Breathing" }, { value: "dualbreathing", label: "Dual breathing" },
+        { value: "colorcycle", label: "Color cycle" }, { value: "rainbow", label: "Rainbow" },
+        { value: "strobe", label: "Strobe" }, { value: "battery", label: "Battery level" },
+        { value: "followmode", label: "Follow mode" }
     ]
     // Display Mode: Ally screen only, external only, the same on both, or one desktop over both
     readonly property var displayModes: [
@@ -79,8 +81,13 @@ Item {
     ]
     readonly property var fanModes: [
         { value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" },
-        { value: "max", label: "Max" }
+        { value: "max", label: "Max" }, { value: "custom", label: "Custom" }
     ]
+    // Custom joins the cycle once a curve was saved (Settings > Performance)
+    function fanCycle() {
+        const saved = !!device.value("fanCurve")
+        return fanModes.filter(m => m.value !== "custom" || saved)
+    }
     function labelOf(list, v) {
         for (let i = 0; i < list.length; ++i) if (list[i].value === v) return list[i]
         return null
@@ -151,7 +158,7 @@ Item {
         case "opmode":   cycle("opmode", opModes); return
         case "charge":   cycle("charge", chargeModes); return
         case "rgb":      cycle("lighting", rgbModes); return
-        case "fan":      cycle("fan", fanModes); return
+        case "fan":      cycle("fan", fanCycle()); return
         case "tdp":      stepTdp(); return
         case "ctrlmode": {
             const i = ctrlModes.findIndex(m => m.value === config.get("control.preset", "gamepad"))
