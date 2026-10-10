@@ -124,6 +124,14 @@ if [ "$APPIMAGE" = 1 ]; then
     rm -rf "$APPDIR"
     DESTDIR="$APPDIR" cmake --install "$BUILD" --prefix /usr >/dev/null
     install -Dm755 packaging/appimage/appimage-install.sh "$APPDIR/usr/share/xpanel/appimage-install.sh"
+    # OpenGL on Wayland needs the client buffer integration plugins (wayland-egl). The Qt plugin
+    # of linuxdeploy does not bundle them, so copy them and let linuxdeploy fix their libraries.
+    DEPS_ONLY=()
+    if [ -n "$WAYLAND" ] && [ -d "$PLUGINS/wayland-graphics-integration-client" ]; then
+        mkdir -p "$APPDIR/usr/plugins"
+        cp -r "$PLUGINS/wayland-graphics-integration-client" "$APPDIR/usr/plugins/"
+        DEPS_ONLY=(--deploy-deps-only "$APPDIR/usr/plugins/wayland-graphics-integration-client")
+    fi
     (
         export PATH="$TOOLS:$PATH" APPIMAGE_EXTRACT_AND_RUN=1 QMAKE QML_SOURCES_PATHS="$PWD/qml"
         # svg: the QML icons are SVG, but with --as-needed XPanel does not link QtSvg itself,
@@ -135,12 +143,13 @@ if [ "$APPIMAGE" = 1 ]; then
             --executable "$APPDIR/usr/bin/XPanel" --executable "$APPDIR/usr/bin/xpanel-daemon" \
             --desktop-file "$APPDIR/usr/share/applications/xpanel.desktop" \
             --icon-file "$APPDIR/usr/share/icons/hicolor/scalable/apps/xpanel.svg" \
-            --custom-apprun packaging/appimage/AppRun \
+            --custom-apprun packaging/appimage/AppRun "${DEPS_ONLY[@]}" \
             --plugin qt --output appimage
     )
     # Plugins XPanel cannot work without: X11, SVG icons, and on Wayland the platform plugin
     # and layer-shell-qt's shell plugin (the panel overlay).
     NEED="platforms/libqxcb.so imageformats/libqsvg.so iconengines/libqsvgicon.so"
+    [ -n "$WAYLAND" ] && NEED="$NEED wayland-graphics-integration-client/libqt-plugin-wayland-egl.so"
     if [ -n "$WAYLAND" ] && objdump -p "$BUILD/bin/XPanel" | grep -q 'NEEDED.*LayerShellQt'; then
         NEED="$NEED wayland-shell-integration/liblayer-shell.so"
     fi

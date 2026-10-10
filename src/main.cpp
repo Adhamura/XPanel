@@ -37,7 +37,10 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickImageProvider>
+#include <QOpenGLContext>
 #include <QQuickView>
+#include <QQuickWindow>
+#include <QSGRendererInterface>
 #include <QSocketNotifier>
 #include <QSystemTrayIcon>
 
@@ -119,6 +122,21 @@ static QString serverName()
     if (dir.isEmpty())
         dir = "/run/user/" + QByteArray::number(getuid());
     return QString::fromLocal8Bit(dir) + "/xpanel.sock";
+#endif
+}
+
+// Qt Quick aborts when OpenGL cannot start (missing EGL driver or Qt plugin, broken GPU
+// driver). Check first and draw with the software renderer instead.
+static void chooseGraphics()
+{
+#ifndef Q_OS_WIN // Windows uses Direct3D
+    if (!qEnvironmentVariableIsEmpty("QT_QUICK_BACKEND") || !qEnvironmentVariableIsEmpty("QSG_RHI_BACKEND"))
+        return;
+    QOpenGLContext probe;
+    if (!probe.create()) {
+        qWarning("XPanel: OpenGL is not available, using software rendering");
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::Software);
+    }
 #endif
 }
 
@@ -218,6 +236,7 @@ int main(int argc, char **argv)
     app.setQuitOnLastWindowClosed(false);
     const QIcon appIcon(":/qml/icons/app.svg");
     app.setWindowIcon(appIcon);
+    chooseGraphics();
 
     Config config;
     DeviceClient device;
