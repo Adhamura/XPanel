@@ -1,4 +1,5 @@
 #include "UpdateCenter.h"
+#include "Desktop.h"
 #include "Proc.h"
 
 #include <QDateTime>
@@ -190,7 +191,7 @@ void UpdateCenter::checkAsus()
 
 void UpdateCenter::refreshFirmwareMetadata()
 {
-    QProcess::startDetached("konsole", {"--hold", "-e", "fwupdmgr", "refresh", "--force"});
+    Desktop::runInTerminal({"fwupdmgr", "refresh", "--force"});
 }
 
 void UpdateCenter::downloadBios(const QString &url, const QString &version)
@@ -222,7 +223,7 @@ void UpdateCenter::downloadBios(const QString &url, const QString &version)
             m_downloadStatus = code == 0 ? "Saved in " + dir + ". Copy the .CAP file to a FAT32 USB stick, then Restart to BIOS → EZ Flash."
                                          : "Saved in " + dir + " (unpack the zip yourself).";
             emit changed();
-            QProcess::startDetached("dolphin", {dir});
+            Desktop::showInFileManager(dir, false);
         });
     });
 }
@@ -241,10 +242,10 @@ void UpdateCenter::openUrl(const QString &url)
 void UpdateCenter::updatePackages()
 {
     const QString tool = QStandardPaths::findExecutable("paru").isEmpty() ? "sudo pacman -Syu" : "paru -Syu";
-    QProcess::startDetached("konsole", {"--hold", "-e", "sh", "-c", tool});
+    Desktop::runInTerminal({"sh", "-c", tool});
 }
 
 void UpdateCenter::updateFirmware()
 {
-    QProcess::startDetached("konsole", {"--hold", "-e", "fwupdmgr", "update"});
+    Desktop::runInTerminal({"fwupdmgr", "update"});
 }

@@ -5,6 +5,7 @@
 //   xpanel-daemon (root)   TDP, fan curve, charge limit, lighting   -> DeviceClient
 //   xpanel-daemon input    Ally buttons, menu navigation, Control Mode -> DeviceClient
 //   KDE / PipeWire / NM   brightness, volume, refresh rate, radios -> SystemControl
+//   Desktop               KDE Plasma, GNOME or Steam Game Mode: what works where -> Desktop.h
 //
 // Run modes:
 //   XPanel              start and open the panel (or toggle a running instance)
@@ -14,10 +15,13 @@
 //   XPanel --quit       stop the running instance
 //   XPanel --background start with only the tray icon (for autostart)
 //   XPanel --app [page] open the Control Center window (library, control, gallery, user, settings)
+//   XPanel --desktop    print the detected desktop (kde, gnome, gamescope, other)
+//   XPanel --is-game-mode  exit 0 in Steam Game Mode (gamescope), 1 elsewhere (systemd ExecCondition)
 //   XPanel --version
 
 #include "AudioControl.h"
 #include "Config.h"
+#include "Desktop.h"
 #include "DesktopTweaks.h"
 #include "DeviceClient.h"
 #include "DeviceInfo.h"
@@ -95,6 +99,18 @@ static PanelController::Backend chooseBackend()
     return PanelController::Backend::X11; // a plain frameless Qt window
 #else
     if (qEnvironmentVariable("XPANEL_BACKEND") == "x11") {
+        setenv("QT_QPA_PLATFORM", "xcb", 1);
+        return PanelController::Backend::X11;
+    }
+    // GNOME (Mutter has no layer-shell: a Wayland window cannot stay on top or place itself) and
+    // Steam Game Mode (gamescope composites X11 overlays): run on XWayland.
+    const Desktop::Kind desktop = Desktop::current();
+    // A systemd user service in Game Mode may lack DISPLAY: gamescope's own XWayland is :0
+    if (desktop == Desktop::Kind::Gamescope && qEnvironmentVariableIsEmpty("DISPLAY")
+        && QFile::exists("/tmp/.X11-unix/X0"))
+        setenv("DISPLAY", ":0", 1);
+    if ((desktop == Desktop::Kind::GNOME || desktop == Desktop::Kind::Gamescope)
+        && !qEnvironmentVariableIsEmpty("DISPLAY") && qEnvironmentVariable("XPANEL_BACKEND") != "wayland") {
         setenv("QT_QPA_PLATFORM", "xcb", 1);
         return PanelController::Backend::X11;
     }
@@ -202,6 +218,12 @@ int main(int argc, char **argv)
             printf("XPanel %s\n", XPANEL_VERSION);
             return 0;
         }
+        if (!strcmp(argv[i], "--desktop")) {
+            printf("%s\n", qPrintable(Desktop::id(Desktop::current())));
+            return 0;
+        }
+        if (!strcmp(argv[i], "--is-game-mode"))
+            return Desktop::current() == Desktop::Kind::Gamescope ? 0 : 1;
         if (!strcmp(argv[i], "--toggle")) command = "toggle";
         else if (!strcmp(argv[i], "--open")) command = "open";
         else if (!strcmp(argv[i], "--close")) command = "close";
@@ -213,7 +235,7 @@ int main(int argc, char **argv)
                 command += " " + QByteArray(argv[++i]);
         }
         else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
-            printf("Usage: XPanel [--toggle|--open|--close|--quit|--background|--app [page]|--version]\n");
+            printf("Usage: XPanel [--toggle|--open|--close|--quit|--background|--app [page]|--desktop|--is-game-mode|--version]\n");
             return 0;
         }
     }
@@ -335,6 +357,8 @@ int main(int argc, char **argv)
     engine.rootContext()->setContextProperty("profiles", &profiles);
     engine.rootContext()->setContextProperty("gallery", &gallery);
     engine.rootContext()->setContextProperty("tweaks", &tweaks);
+    DesktopInfo desktopInfo;
+    engine.rootContext()->setContextProperty("desktop", &desktopInfo);
     engine.rootContext()->setContextProperty("appVersion", QString(XPANEL_VERSION));
     QObject::connect(&engine, &QQmlEngine::quit, &app, &QApplication::quit);
 
@@ -386,7 +410,8 @@ int main(int argc, char **argv)
         if (r == QSystemTrayIcon::Trigger || r == QSystemTrayIcon::DoubleClick)
             panel.toggle();
     });
-    tray.show();
+    if (Desktop::caps().tray) // no tray in Steam Game Mode
+        tray.show();
 
     if (command.startsWith("app"))
         panel.openApp(QString::fromUtf8(command.mid(4)).trimmed());

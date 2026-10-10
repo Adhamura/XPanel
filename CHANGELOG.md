@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+- **GNOME and Steam Game Mode (experimental).** XPanel now finds out which desktop it runs in
+  (`src/Desktop.*`: KDE Plasma, GNOME, gamescope or other, from `XDG_CURRENT_DESKTOP`,
+  `GAMESCOPE_WAYLAND_DISPLAY` and the session name; `XPanel --desktop` prints it,
+  `XPANEL_DESKTOP=` overrides it) and hides what a desktop cannot do instead of showing buttons
+  that do nothing. KDE Plasma behaves as before.
+  - **GNOME:** the panel runs on XWayland (Mutter has no layer-shell), full screen and kept above.
+    Brightness of the internal screen through logind (`SetBrightness`, `/sys/class/backlight`),
+    external monitors through `ddcutil` when installed. Colour presets through Night Light
+    (always on), the Keyboard tile switches GNOME's screen keyboard, Screenshot uses
+    `gnome-screenshot`, Log out asks GNOME's session manager, Edit profile opens GNOME Settings.
+    Refresh rate, Display Mode, wide colour, Show Desktop and the KDE shortcut settings are hidden.
+  - **Steam Game Mode (gamescope):** the Quick Panel, Control Center and Real-time Monitor are
+    gamescope external overlays (X11 property `GAMESCOPE_EXTERNAL_OVERLAY`, one window at a time),
+    drawn over the game and driven with the pad through xpanel-daemon. No tray icon; brightness
+    through logind; KDE / desktop-only tiles hidden. New systemd user unit `xpanel.service`
+    (installed to `lib/systemd/user`, not enabled by default) starts XPanel in Game Mode only
+    (`ExecCondition=XPanel --is-game-mode`): `systemctl --user enable xpanel.service`, or the
+    AppImage's `--install --game-mode` / `scripts/install.sh --game-mode`.
+  - Other desktops: logind brightness, generic launchers.
+  - Terminals (Update Center) and the file manager (Media Gallery, BIOS download) follow the
+    desktop: Konsole / Dolphin on KDE, Console / Ptyxis / GNOME Terminal and
+    `org.freedesktop.FileManager1` (Nautilus …) elsewhere, `x-terminal-emulator` / `xdg-open` as
+    fallbacks. App Diagnostics shows the detected desktop.
+  - Build: optional libxcb (`libxcb1-dev`, CMake option `XPANEL_WITH_XCB`) for the gamescope overlay.
+  - Not yet tested on real GNOME or gamescope sessions with an Ally: please report how it works.
 - **ROG Xbox Ally (RC73YA, Ryzen Z2 A) and ROG Xbox Ally X (RC73XA, Ryzen AI Z2 Extreme)**:
   experimental, untested on hardware, please report. Detected by DMI board name (model ids
   `xboxally` / `xboxallyx`), on Linux and Windows.

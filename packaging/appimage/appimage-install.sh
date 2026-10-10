@@ -4,7 +4,8 @@
 #   /etc/systemd/system/xpanel-daemon.service    root service (sandboxed, see SECURITY.md)
 #   /usr/local/bin/xpanel                        command
 #   /usr/local/share/applications, icons         menu entry
-#   /etc/xdg/autostart/xpanel.desktop            tray icon at login
+#   /etc/xdg/autostart/xpanel.desktop            tray icon at login (KDE, GNOME, other desktops)
+#   /etc/systemd/user/xpanel.service             Steam Game Mode autostart (enabled with --game-mode)
 # These paths are writable on Arch / CachyOS, Fedora and Bazzite (/opt and /usr/local live in /var).
 set -eu
 APPDIR="$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd)"
@@ -12,7 +13,11 @@ DEST=/opt/xpanel
 SELF="${APPIMAGE:-$DEST/AppRun}"
 ACTION="$1"; shift
 DISABLE_HHD=0
-for a in "$@"; do [ "$a" = --disable-hhd ] && DISABLE_HHD=1; done
+GAME_MODE=0
+for a in "$@"; do
+    [ "$a" = --disable-hhd ] && DISABLE_HHD=1
+    [ "$a" = --game-mode ] && GAME_MODE=1
+done
 
 if [ "$(id -u)" != 0 ]; then
     echo "Run with sudo: sudo $SELF $ACTION"
@@ -23,12 +28,13 @@ have_systemd() { [ -d /run/systemd/system ]; }
 remove_files() {
     rm -f /etc/systemd/system/xpanel-daemon.service /usr/local/bin/xpanel \
           /usr/local/share/applications/xpanel.desktop /etc/xdg/autostart/xpanel.desktop \
-          /usr/local/share/icons/hicolor/scalable/apps/xpanel.svg
+          /usr/local/share/icons/hicolor/scalable/apps/xpanel.svg /etc/systemd/user/xpanel.service
 }
 
 if [ "$ACTION" = --uninstall ]; then
     if have_systemd; then
         systemctl disable --now xpanel-daemon.service 2>/dev/null || true
+        systemctl --global disable xpanel.service 2>/dev/null || true
     fi
     remove_files
     [ "$APPDIR" = "$DEST" ] || rm -rf "$DEST"
@@ -63,7 +69,8 @@ fi
 
 sed "s|^ExecStart=.*|ExecStart=$DEST/usr/bin/xpanel-daemon|" \
     "$DEST/usr/lib/systemd/system/xpanel-daemon.service" > /etc/systemd/system/xpanel-daemon.service
-mkdir -p /usr/local/bin /usr/local/share/applications /usr/local/share/icons/hicolor/scalable/apps /etc/xdg/autostart
+mkdir -p /usr/local/bin /usr/local/share/applications /usr/local/share/icons/hicolor/scalable/apps /etc/xdg/autostart \
+         /etc/systemd/user
 ln -sf "$DEST/AppRun" /usr/local/bin/xpanel
 install -m 644 "$DEST/usr/share/icons/hicolor/scalable/apps/xpanel.svg" /usr/local/share/icons/hicolor/scalable/apps/xpanel.svg
 sed "s|^Exec=XPanel |Exec=$DEST/AppRun |" "$DEST/usr/share/applications/xpanel.desktop" \
@@ -76,6 +83,24 @@ Exec=$DEST/AppRun --background
 Icon=xpanel
 X-KDE-autostart-phase=2
 DESKTOP
+# Steam Game Mode (gamescope-session) does not run XDG autostart: a systemd user unit instead.
+# ExecCondition skips it in desktop sessions, where the autostart entry above starts XPanel.
+cat > /etc/systemd/user/xpanel.service <<UNIT
+[Unit]
+Description=XPanel Quick Panel (Steam Game Mode)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecCondition=$DEST/AppRun --is-game-mode
+ExecStart=$DEST/AppRun --background
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target
+UNIT
 
 if [ "$DISABLE_HHD" = 1 ] && have_systemd; then
     for u in $(systemctl list-units --all --plain --no-legend 'hhd@*' | awk '{print $1}'); do
@@ -98,6 +123,12 @@ fi
 # Start the tray icon for the user who ran sudo (it also starts at every login).
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
     sudo -u "$SUDO_USER" setsid -f "$DEST/AppRun" --background >/dev/null 2>&1 < /dev/null || true
+fi
+if [ "$GAME_MODE" = 1 ] && have_systemd; then
+    systemctl --global enable xpanel.service
+    echo "    Steam Game Mode: XPanel starts with gamescope-session (xpanel.service, all users)"
+else
+    echo "    Steam Game Mode autostart: systemctl --user enable xpanel.service   (or install with --game-mode)"
 fi
 echo "Done. Open the Quick Panel with the left Ally button, or start \"XPanel Quick Panel\" from the menu."
 echo "Remove with: sudo xpanel --uninstall"

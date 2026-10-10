@@ -8,6 +8,12 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets Quick Network DBus Svg)
 if(NOT WIN32)
     find_package(LayerShellQt QUIET)
+    # libxcb: marks the panel as a gamescope overlay in Steam Game Mode (optional)
+    option(XPANEL_WITH_XCB "Use libxcb for the Steam Game Mode (gamescope) overlay when found" ON)
+    if(XPANEL_WITH_XCB)
+        find_path(XPANEL_XCB_INCLUDE_DIR xcb/xcb.h)
+        find_library(XPANEL_XCB_LIBRARY xcb)
+    endif()
 endif()
 
 include(GNUInstallDirs)
@@ -40,6 +46,7 @@ qt_add_executable(XPanel
     src/ProfileRules.h src/ProfileRules.cpp
     src/MediaGallery.h src/MediaGallery.cpp
     src/DesktopTweaks.h src/DesktopTweaks.cpp
+    src/Desktop.h src/Desktop.cpp
 )
 
 file(GLOB XPANEL_ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/icons/*.svg)
@@ -101,6 +108,15 @@ else()
     message(STATUS "XPanel: LayerShellQt not found, X11/xdg-shell fallback only")
 endif()
 
+if(XPANEL_WITH_XCB AND XPANEL_XCB_INCLUDE_DIR AND XPANEL_XCB_LIBRARY)
+    target_include_directories(XPanel PRIVATE ${XPANEL_XCB_INCLUDE_DIR})
+    target_link_libraries(XPanel PRIVATE ${XPANEL_XCB_LIBRARY})
+    target_compile_definitions(XPanel PRIVATE XPANEL_HAVE_XCB=1)
+    message(STATUS "XPanel: libxcb found, Steam Game Mode overlay enabled")
+elseif(NOT WIN32)
+    message(STATUS "XPanel: no libxcb (headers not found or XPANEL_WITH_XCB=OFF), no Steam Game Mode overlay")
+endif()
+
 # Hardware helper: TDP, fan curve, charge limit, lighting (no GUI libraries).
 # Linux: root service with the input layer. Windows: ASUS ACPI + HID backend in the user session.
 if(WIN32)
@@ -150,3 +166,10 @@ string(REPLACE "/usr/local/bin/" "${CMAKE_INSTALL_FULL_BINDIR}/" XPANEL_UNIT "${
 file(WRITE ${CMAKE_BINARY_DIR}/xpanel-daemon.service "${XPANEL_UNIT}")
 install(FILES ${CMAKE_BINARY_DIR}/xpanel-daemon.service DESTINATION lib/systemd/system)
 install(FILES packaging/xpanel.sysusers DESTINATION lib/sysusers.d RENAME xpanel.conf)
+# Steam Game Mode autostart (gamescope sessions skip XDG autostart). Not enabled by default:
+#   systemctl --user enable xpanel.service      (or --global for every user)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS packaging/xpanel.service)
+file(READ packaging/xpanel.service XPANEL_USER_UNIT)
+string(REPLACE "/usr/local/bin/" "${CMAKE_INSTALL_FULL_BINDIR}/" XPANEL_USER_UNIT "${XPANEL_USER_UNIT}")
+file(WRITE ${CMAKE_BINARY_DIR}/xpanel.service "${XPANEL_USER_UNIT}")
+install(FILES ${CMAKE_BINARY_DIR}/xpanel.service DESTINATION lib/systemd/user)

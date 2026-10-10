@@ -1,8 +1,9 @@
 #!/bin/sh
 # XPanel AppImage entry point.
 #   ./XPanel-x86_64.AppImage [--toggle|--open|--app [page]|...]   run XPanel
-#   sudo ./XPanel-x86_64.AppImage --install [--disable-hhd]      install to /opt/xpanel:
+#   sudo ./XPanel-x86_64.AppImage --install [--disable-hhd] [--game-mode]   install to /opt/xpanel:
 #                                       root service, menu entry, autostart
+#                                       (--game-mode: also start in Steam Game Mode)
 #   sudo ./XPanel-x86_64.AppImage --uninstall
 HERE="$(dirname "$(readlink -f "$0")")"
 case "${1:-}" in

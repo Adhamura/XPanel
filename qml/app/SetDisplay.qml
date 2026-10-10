@@ -1,7 +1,8 @@
 import QtQuick
 import "../Theme.js" as T
 
-// Settings > Display: screen colour presets (colour temperature through KWin).
+// Settings > Display: screen colour presets (colour temperature through KWin Night Color or
+// GNOME Night Light), display mode, refresh rate, brightness. KDE-only rows hide elsewhere.
 CcPage {
     id: page
     readonly property var presets: [
@@ -11,26 +12,31 @@ CcPage {
         { id: "eyecare", name: "Eye Care", note: "Less blue light (4500 K)." },
         { id: "night", name: "Night", note: "Very warm, for the evening (3400 K)." }
     ]
-    CcSection { title: "Color presets"; note: "Screen colour presets. They use KDE Night Color, so they apply to the whole screen." }
+    CcSection { title: "Color presets"
+                note: !desktop.colorPresets ? "Not available " + desktop.where + "."
+                      : desktop.kde ? "Screen colour presets. They use KDE Night Color, so they apply to the whole screen."
+                      : "Screen colour presets. They use GNOME Night Light (always on), so they apply to the whole screen." }
     Repeater {
-        model: page.presets
+        model: desktop.colorPresets ? page.presets : []
         CcRow { title: modelData.name; description: modelData.note
             CcButton { text: tweaks.colorPreset === modelData.id ? "Selected" : "Use"; primary: tweaks.colorPreset === modelData.id
                        onClicked: tweaks.setColorPreset(modelData.id) } }
     }
-    CcSection { title: "Display" }
-    CcRow { title: "Display mode"
+    CcSection { title: "Display"
+                note: desktop.displayMode ? "" : "Display mode, refresh rate and wide colour use KDE's display settings: "
+                      + (desktop.gamescope ? "in Steam Game Mode, use Steam's Display settings." : "not available " + desktop.where + ".") }
+    CcRow { visible: desktop.displayMode; title: "Display mode"
             description: sys.hasExternal ? "Ally screen only, external screen only, the same picture on both, or one desktop over both."
                                          : "Connect an external screen to use the other modes."
         CcChoice { enabledChoice: sys.hasExternal
                    options: [{ value: "handheld", label: "Handheld" }, { value: "external", label: "External" },
                              { value: "duplicate", label: "Duplicate" }, { value: "extend", label: "Extend" }]
                    current: sys.displayMode; onPicked: (v) => sys.setDisplayMode(v) } }
-    CcRow { title: "Refresh rate"
+    CcRow { visible: desktop.refreshRate; title: "Refresh rate"
         CcChoice { options: [{ value: 120, label: "120 Hz" }, { value: 60, label: "60 Hz" }]
                    current: sys.refreshRate > 90 ? 120 : 60
                    onPicked: (v) => { if ((v > 90) !== (sys.refreshRate > 90)) sys.toggleRefreshRate() } } }
-    CcRow { title: "Wide color gamut"; description: "More saturated colours (KWin colour management)."
+    CcRow { visible: desktop.wideColor; title: "Wide color gamut"; description: "More saturated colours (KWin colour management)."
         CcSwitch { checked: (config.rev, config.get("display.wcg", false)); onToggled: (v) => tweaks.setWideColor(v) } }
     // one row per active screen (Ally, external monitor, or both when extended)
     Repeater {

@@ -8,6 +8,8 @@ post_install() {
     Handheld Daemon (hhd) changes the same hardware; stop it first:
         sudo systemctl disable --now hhd@$USER
     Then start "XPanel Quick Panel" from the menu (it adds a tray icon).
+    Steam Game Mode (gamescope-session) does not run desktop autostart; enable:
+        systemctl --user enable xpanel.service
 MSG
 }
 post_upgrade() {
