@@ -74,6 +74,16 @@ target_link_libraries(XPanel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Quick 
 if(LayerShellQt_FOUND)
     target_link_libraries(XPanel PRIVATE LayerShellQt::Interface)
     target_compile_definitions(XPanel PRIVATE XPANEL_HAVE_LAYERSHELL=1)
+    # setWantsToBeOnActiveScreen() is new in Plasma 6.4's layer-shell-qt (Debian 13 has 6.3)
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_LIBRARIES LayerShellQt::Interface Qt6::Gui)
+    check_cxx_source_compiles("#include <LayerShellQt/Window>
+        int main() { LayerShellQt::Window *w = nullptr; if (w) w->setWantsToBeOnActiveScreen(true); return 0; }"
+        XPANEL_LAYERSHELL_ACTIVE_SCREEN)
+    unset(CMAKE_REQUIRED_LIBRARIES)
+    if(XPANEL_LAYERSHELL_ACTIVE_SCREEN)
+        target_compile_definitions(XPanel PRIVATE XPANEL_LAYERSHELL_ACTIVE_SCREEN=1)
+    endif()
     message(STATUS "XPanel: LayerShellQt found, Wayland overlay enabled")
 else()
     message(STATUS "XPanel: LayerShellQt not found, X11/xdg-shell fallback only")

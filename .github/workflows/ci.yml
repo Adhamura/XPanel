@@ -42,6 +42,7 @@ jobs:
           cmake --build build
           build/bin/XPanel --version
           build/bin/xpanel-daemon --version
+          grep -q '^XPANEL_LAYERSHELL_ACTIVE_SCREEN:INTERNAL=1$' build/CMakeCache.txt
       - name: Install into a staging dir
         run: |
           DESTDIR="$PWD/stage" cmake --install build
