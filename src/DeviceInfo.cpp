@@ -8,9 +8,12 @@
 #include <QSet>
 #include <QStorageInfo>
 #include <QSysInfo>
+#include <QThread>
 
+#ifndef Q_OS_WIN
 #include <pwd.h>
 #include <unistd.h>
+#endif
 
 static QString readFile(const QString &fn)
 {
@@ -29,7 +32,7 @@ QVariantMap DeviceInfo::info() const
     m["biosDate"] = readFile("/sys/class/dmi/id/bios_date");
     for (const QString &l : readFile("/proc/cpuinfo").split('\n'))
         if (l.startsWith("model name")) { m["cpu"] = l.section(':', 1).trimmed(); break; }
-    m["cores"] = QString::number(sysconf(_SC_NPROCESSORS_ONLN));
+    m["cores"] = QString::number(QThread::idealThreadCount());
     for (const QString &l : readFile("/proc/meminfo").split('\n'))
         if (l.startsWith("MemTotal:")) {
             m["ram"] = QString::number(l.section(' ', 1, 1, QString::SectionSkipEmpty).toDouble() / 1024 / 1024, 'f', 1) + " GB";
@@ -99,10 +102,14 @@ QVariantMap DeviceInfo::battery() const
 QVariantMap DeviceInfo::user() const
 {
     QVariantMap m;
+#ifdef Q_OS_WIN
+    m["login"] = qEnvironmentVariable("USERNAME");
+#else
     if (const passwd *pw = getpwuid(getuid())) {
         m["login"] = QString::fromLocal8Bit(pw->pw_name);
         m["name"] = QString::fromLocal8Bit(pw->pw_gecos).section(',', 0, 0);
     }
+#endif
     if (m["name"].toString().isEmpty())
         m["name"] = m["login"];
     for (const QString &p : {QDir::homePath() + "/.face.icon", QDir::homePath() + "/.face",

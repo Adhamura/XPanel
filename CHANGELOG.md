@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.4 — Windows (experimental)
+
+- **Windows 10 / 11 x64 installer**: `XPanel-<version>-Windows-x64-Setup.exe`. The same app and
+  daemon; on Windows the daemon runs in the user's session (started by XPanel) and uses the ASUS
+  System Control Interface (`\\.\ATKACPI`) for Operating Mode / TDP, fan, charge limit, boot sound
+  and MCU power save, the Windows HID API for Aura lighting, and the power plan for CPU boost /
+  energy preference. Quick Panel: tray icon or Win+Shift+Q; Control Center: Win+Shift+C.
+  Not yet on Windows: controller remapping and the Ally buttons, brightness / volume / refresh
+  rate, GPU clock. Not tested on hardware yet; please report what works.
+- `build-release.bat` builds the Windows installer (`--linux` builds the Linux files in WSL);
+  releases publish Linux and Windows files together, each smoke-tested first.
+
 ## 1.0.3
 
 - **Fixed**: the 1.0.2 AppImage showed no icons on the Quick Panel tiles: the Qt SVG plugins

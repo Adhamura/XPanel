@@ -45,8 +45,15 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#ifdef Q_OS_WIN
+#include <QAbstractNativeEventFilter>
+#include <QProcess>
+#include <functional>
+#include <windows.h>
+#else
 #include <sys/socket.h>
 #include <unistd.h>
+#endif
 
 
 // "image://theme/<name>": icons of installed apps from the desktop icon theme.
@@ -66,6 +73,7 @@ public:
 // Autostart and shortcuts can start us with a thin environment; fill in the basics.
 static void repairEnvironment()
 {
+#ifndef Q_OS_WIN
     const QByteArray runtime = "/run/user/" + QByteArray::number(getuid());
     if (qEnvironmentVariableIsEmpty("XDG_RUNTIME_DIR"))
         setenv("XDG_RUNTIME_DIR", runtime.constData(), 1);
@@ -73,10 +81,14 @@ static void repairEnvironment()
         setenv("DBUS_SESSION_BUS_ADDRESS", ("unix:path=" + runtime + "/bus").constData(), 1);
     if (qEnvironmentVariableIsEmpty("PATH"))
         setenv("PATH", "/usr/local/bin:/usr/bin:/bin", 1);
+#endif
 }
 
 static PanelController::Backend chooseBackend()
 {
+#ifdef Q_OS_WIN
+    return PanelController::Backend::X11; // a plain frameless Qt window
+#else
     if (qEnvironmentVariable("XPANEL_BACKEND") == "x11") {
         setenv("QT_QPA_PLATFORM", "xcb", 1);
         return PanelController::Backend::X11;
@@ -94,15 +106,20 @@ static PanelController::Backend chooseBackend()
 #endif
     setenv("QT_QPA_PLATFORM", "xcb", 1);
     return PanelController::Backend::X11;
+#endif
 }
 
 // Full path in the runtime dir, so every copy finds it, whatever TMPDIR is.
 static QString serverName()
 {
+#ifdef Q_OS_WIN
+    return "xpanel-app"; // named pipe, per user session
+#else
     QByteArray dir = qgetenv("XDG_RUNTIME_DIR");
     if (dir.isEmpty())
         dir = "/run/user/" + QByteArray::number(getuid());
     return QString::fromLocal8Bit(dir) + "/xpanel.sock";
+#endif
 }
 
 // Send a command to a running instance. Returns true when one answered.
@@ -119,6 +136,35 @@ static bool sendToRunning(const QByteArray &cmd)
     return true;
 }
 
+#ifdef Q_OS_WIN
+// Global hotkeys (the Ally's own buttons need the input layer, which is Linux-only so far).
+class HotkeyFilter : public QAbstractNativeEventFilter {
+public:
+    std::function<void(int)> onHotkey;
+    bool nativeEventFilter(const QByteArray &type, void *message, qintptr *) override
+    {
+        if (type != "windows_generic_MSG" && type != "windows_dispatcher_MSG")
+            return false;
+        const MSG *msg = static_cast<const MSG *>(message);
+        if (msg->message != WM_HOTKEY)
+            return false;
+        onHotkey(int(msg->wParam));
+        return true;
+    }
+};
+
+// xpanel-daemon runs in the user's session on Windows: start it when it is not running.
+static void startDaemon()
+{
+    QLocalSocket probe;
+    probe.connectToServer(qEnvironmentVariable("XPANEL_SOCKET", "xpanel"));
+    if (probe.waitForConnected(300))
+        return;
+    const QString exe = QCoreApplication::applicationDirPath() + "/xpanel-daemon.exe";
+    if (!QProcess::startDetached(exe, {}))
+        qWarning("XPanel: cannot start %s", qPrintable(exe));
+}
+#else
 // SIGTERM / SIGINT -> normal Qt quit (the daemon also ends our pad grab when we go).
 static int g_sigFd[2] = {-1, -1};
 static void onSignal(int)
@@ -126,6 +172,7 @@ static void onSignal(int)
     const char c = 1;
     (void)!::write(g_sigFd[0], &c, 1);
 }
+#endif
 
 int main(int argc, char **argv)
 {
@@ -153,7 +200,7 @@ int main(int argc, char **argv)
 
     repairEnvironment();
 
-    if (sendToRunning(command.isEmpty() ? "toggle" : command)) {
+    if (sendToRunning(command.isEmpty() ? QByteArray("toggle") : command)) {
         fprintf(stderr, "XPanel: sent '%s' to the running instance\n",
                 command.isEmpty() ? "toggle" : command.constData());
         return 0;
@@ -193,6 +240,17 @@ int main(int argc, char **argv)
         if (name == "osk") sys.openKeyboard();
     });
 
+#ifdef Q_OS_WIN
+    startDaemon();
+    HotkeyFilter hotkeys;
+    hotkeys.onHotkey = [&](int id) {
+        if (id == 1) panel.toggle();
+        else if (id == 2) panel.appOpen() ? panel.closeApp() : panel.openApp();
+    };
+    app.installNativeEventFilter(&hotkeys);
+    RegisterHotKey(nullptr, 1, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, 'Q'); // Quick Panel
+    RegisterHotKey(nullptr, 2, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, 'C'); // Control Center
+#else
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, g_sigFd) == 0) {
         auto *sn = new QSocketNotifier(g_sigFd[1], QSocketNotifier::Read, &app);
         QObject::connect(sn, &QSocketNotifier::activated, &app, &QApplication::quit);
@@ -200,10 +258,13 @@ int main(int argc, char **argv)
         std::signal(SIGINT, onSignal);
         std::signal(SIGHUP, onSignal);
     }
+#endif
 
     // Single instance + remote commands (XPanel --toggle from a KDE shortcut).
     QLocalServer server;
+#ifndef Q_OS_WIN
     QLocalServer::removeServer(serverName());
+#endif
     server.listen(serverName());
     QObject::connect(&server, &QLocalServer::newConnection, [&] {
         while (QLocalSocket *c = server.nextPendingConnection()) {

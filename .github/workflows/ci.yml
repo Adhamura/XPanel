@@ -29,6 +29,25 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  windows:
+    name: Build (Windows x64, Qt 6.8) + installer [experimental]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurplel/install-qt-action@v4
+        with: { version: "6.8.3", arch: win64_msvc2022_64, cache: true }
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Tools (Ninja, Inno Setup)
+        run: choco install ninja innosetup -y --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: packaging/windows/build-release.ps1 -Clean
+      - name: Smoke test (offscreen)
+        shell: pwsh
+        run: packaging/windows/smoke-test.ps1 build-release-win/stage/XPanel.exe
+      - uses: actions/upload-artifact@v4
+        with: { name: xpanel-windows-x64, path: "dist/*", if-no-files-found: error }
+
   arch:
     name: Build (Arch Linux, latest Qt) + install rules
     runs-on: ubuntu-latest

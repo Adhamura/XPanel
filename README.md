@@ -13,7 +13,7 @@ mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Pl
 [![CI](https://github.com/Adhamura/XPanel/actions/workflows/ci.yml/badge.svg)](https://github.com/Adhamura/XPanel/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Adhamura/XPanel?include_prereleases&sort=semver)](https://github.com/Adhamura/XPanel/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-informational)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20(experimental)-informational)
 ![Device](https://img.shields.io/badge/device-ROG%20Ally%20X-red)
 ![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma%206-1d99f3)
 ![Qt](https://img.shields.io/badge/Qt-6-41cd52)
@@ -108,9 +108,10 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 - Optional, for the matching tiles and settings: `wireplumber` (`wpctl`), NetworkManager,
   `bluez-utils`, `kscreen`, `spectacle`, `fwupd`, `pacman-contrib`.
 
-There is **no Windows build**: every feature talks to Linux kernel interfaces (sysfs, hidraw,
-uinput, systemd), so a Windows version would be a different program. On Windows, use Armoury
-Crate or G-Helper. There is **no 32-bit build** either: the Ally X is a 64-bit device.
+**Windows 10 / 11 x64 (experimental):** Operating Mode / TDP, fan, charge limit, Aura lighting
+and boot sound through the ASUS System Control Interface (installed on every Ally). Controller
+remapping, the Ally-button panel, brightness / volume sliders and the Linux-only tiles are not
+available on Windows yet. There is **no 32-bit build**: the Ally X is a 64-bit device.
 
 ## Install
 
@@ -131,6 +132,13 @@ adds a menu entry, autostart and the `xpanel` command; `--disable-hhd` stops hhd
 same hardware). Remove everything with `sudo xpanel --uninstall`.
 You can also just run the file (`./XPanel-*-x86_64.AppImage`) to try the app; hardware settings
 need the installed service.
+
+### Windows (experimental)
+
+Run **`XPanel-<version>-Windows-x64-Setup.exe`** from
+[**Releases**](https://github.com/Adhamura/XPanel/releases/latest). XPanel starts in the tray;
+open the Quick Panel with a click on the tray icon or **Win+Shift+Q**, the Control Center with
+**Win+Shift+C**. Close Armoury Crate while you use XPanel: both change the same settings.
 
 ### Release archive (uses your system's Qt)
 
@@ -171,7 +179,9 @@ Remove: `scripts/uninstall.sh` and `sudo scripts/uninstall-daemon.sh`.
 ./build-release.sh --container   # builds in debian:trixie with Docker / Podman, like CI
 ```
 
-On Windows, `build-release.bat` runs the same script inside WSL.
+On Windows, `build-release.bat` builds the Windows installer
+(`dist\XPanel-<version>-Windows-x64-Setup.exe`; needs Qt 6 for MSVC, Visual Studio 2022 C++
+tools, CMake, Ninja and Inno Setup 6), and `build-release.bat --linux` builds the Linux files in WSL.
 
 **Releases are automatic.** Bump `project(VERSION)` in `CMakeLists.txt`, add a `## <version>`
 section to `CHANGELOG.md` and merge to `main`: GitHub Actions builds the AppImage and the archive,
@@ -241,8 +251,10 @@ See the top of `daemon/main.cpp` for all keys.
 
 ## FAQ
 
-**Does it work on Windows?** No — on Windows, use Armoury Crate. XPanel exists because Linux has
-no Armoury Crate.
+**Does it work on Windows?** Partly, and experimentally: the installer sets Operating Mode / TDP,
+fan, charge limit, lighting and boot sound the way Armoury Crate does. Controller remapping and
+the Ally buttons are Linux-only for now. XPanel is made first for Linux, where there is no
+Armoury Crate.
 
 **Does it conflict with Handheld Daemon (hhd), InputPlumber or Decky TDP plugins?** Yes, they
 change the same hardware. `install-daemon.sh --disable-hhd` stops hhd, and `uninstall-daemon.sh`
