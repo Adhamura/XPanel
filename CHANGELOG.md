@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.5.0
 
 - **Feedback goes to GitHub.** **Settings › Feedback** (and a "Report a problem" row in
   **Settings › General**) now writes a report and opens a pre-filled GitHub issue (Idea: feature
