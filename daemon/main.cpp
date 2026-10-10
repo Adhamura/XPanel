@@ -36,6 +36,8 @@
 #include <QTimer>
 
 #include <csignal>
+#include <cstdio>
+#include <cstring>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -240,7 +242,7 @@ private:
     {
         while (c->canReadLine()) {
             const QByteArray raw = c->readLine().trimmed();
-            if (raw.size() > 4096)
+            if (raw.size() > (1 << 17)) // "control" alone may be up to 64 KB (see valid())
                 continue;
             const QJsonObject req = QJsonDocument::fromJson(raw).object();
             if (req.contains("input")) {
@@ -292,6 +294,11 @@ static int g_sig[2];
 
 int main(int argc, char **argv)
 {
+    for (int i = 1; i < argc; ++i)
+        if (!strcmp(argv[i], "--version")) {
+            printf("xpanel-daemon %s\n", XPANEL_VERSION);
+            return 0;
+        }
     QCoreApplication app(argc, argv);
     if (geteuid() != 0)
         qWarning("xpanel-daemon: not running as root, hardware writes will fail");

@@ -1,0 +1,51 @@
+name: Release
+
+# Push a tag like v0.1.0 (it must match project(VERSION) in CMakeLists.txt) to publish
+# xpanel-<version>-linux-x86_64.tar.gz and its .sha256 as a GitHub Release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+            ca-certificates git cmake ninja-build g++ file \
+            qt6-base-dev qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev \
+            liblayershellqtinterface-dev libgl-dev libxkbcommon-dev
+      - uses: actions/checkout@v4
+      - name: Check that the tag matches the project version
+        run: |
+          v=$(sed -n 's/^project(XPanel VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1; }
+      - name: Build release archive
+        run: ./build-release.sh --clean
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v=${GITHUB_REF_NAME#v}
+          awk -v v="$v" '$0 ~ "^## "v { on=1; next } /^## / { on=0 } on' CHANGELOG.md > notes.md
+          cat >> notes.md <<'NOTES'
+
+          ### Install
+          ```bash
+          tar xzf xpanel-*-linux-x86_64.tar.gz && cd xpanel-*-linux-x86_64
+          scripts/install.sh                             # app, tray icon, autostart
+          sudo scripts/install-daemon.sh --disable-hhd   # root service (stops hhd)
+          ```
+          Linux x86_64 only (ROG Ally X, KDE Plasma 6, Qt ≥ 6.8). On Windows, use Armoury Crate.
+          NOTES
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: XPanel ${{ github.ref_name }}
+          body_path: notes.md
+          files: |
+            dist/*.tar.gz
+            dist/*.sha256

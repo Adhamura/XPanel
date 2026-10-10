@@ -1,0 +1,11 @@
+name: Feature request
+description: An Armoury Crate feature you miss, or an idea
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes: {label: What would you like XPanel to do?, description: "If Armoury Crate on Windows has it, say where (page / setting)."}
+    validations: {required: true}
+  - type: textarea
+    id: why
+    attributes: {label: Why does it matter for you?}

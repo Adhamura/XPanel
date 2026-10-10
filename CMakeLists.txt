@@ -8,6 +8,9 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets Quick Network DBus Svg)
 find_package(LayerShellQt QUIET)
 
+include(GNUInstallDirs)
+option(XPANEL_BUILD_TOOLS "Build the developer tools (xpanel-mapper, xpanel-input-probe)" ON)
+
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(XPanel
@@ -28,7 +31,9 @@ qt_add_executable(XPanel
 
 file(GLOB XPANEL_ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/icons/*.svg)
 
-qt_policy(SET QTP0004 NEW)
+if(QT_KNOWN_POLICY_QTP0004) # Qt 6.8+
+    qt_policy(SET QTP0004 NEW)
+endif()
 qt_add_qml_module(XPanel
     URI XPanel
     VERSION 1.0
@@ -69,15 +74,27 @@ endif()
 add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Hardware.cpp
     daemon/InputLayer.h daemon/InputLayer.cpp)
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)
+target_compile_definitions(xpanel-daemon PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")
 target_link_libraries(xpanel-daemon PRIVATE Qt6::Core Qt6::Network)
 
 # Developer tool: map Ally X input codes to physical controls (tools/mapper)
-add_executable(xpanel-input-probe tools/mapper/probe_main.cpp)
-set_target_properties(xpanel-input-probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-qt_add_executable(xpanel-mapper tools/mapper/mapper_main.cpp)
-qt_add_resources(xpanel-mapper mapper_qml PREFIX /mapper BASE tools/mapper
-    FILES tools/mapper/Mapper.qml tools/mapper/AllyView.qml)
-set_target_properties(xpanel-mapper PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-target_link_libraries(xpanel-mapper PRIVATE Qt6::Core Qt6::Gui Qt6::Quick)
+if(XPANEL_BUILD_TOOLS)
+    add_executable(xpanel-input-probe tools/mapper/probe_main.cpp)
+    set_target_properties(xpanel-input-probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    qt_add_executable(xpanel-mapper tools/mapper/mapper_main.cpp)
+    qt_add_resources(xpanel-mapper mapper_qml PREFIX /mapper BASE tools/mapper
+        FILES tools/mapper/Mapper.qml tools/mapper/AllyView.qml)
+    set_target_properties(xpanel-mapper PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    target_link_libraries(xpanel-mapper PRIVATE Qt6::Core Qt6::Gui Qt6::Quick)
+endif()
 
-install(TARGETS XPanel xpanel-daemon RUNTIME DESTINATION bin)
+# Install: binaries, desktop entry, icon, systemd unit (ExecStart follows the install prefix).
+# Packagers: cmake -DCMAKE_INSTALL_PREFIX=/usr ... && DESTDIR=pkg cmake --install build
+install(TARGETS XPanel xpanel-daemon RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES packaging/xpanel.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES qml/icons/app.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps RENAME xpanel.svg)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS daemon/xpanel-daemon.service)
+file(READ daemon/xpanel-daemon.service XPANEL_UNIT)
+string(REPLACE "/usr/local/bin/" "${CMAKE_INSTALL_FULL_BINDIR}/" XPANEL_UNIT "${XPANEL_UNIT}")
+file(WRITE ${CMAKE_BINARY_DIR}/xpanel-daemon.service "${XPANEL_UNIT}")
+install(FILES ${CMAKE_BINARY_DIR}/xpanel-daemon.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)

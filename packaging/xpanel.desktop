@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=XPanel Quick Panel
+GenericName=Handheld Control Center
+Comment=Quick Panel and Control Center for the ROG Ally X: TDP, fan, charge limit, lighting, controls
+Exec=XPanel --toggle
+Icon=xpanel
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=rog;ally;asus;tdp;armoury;handheld;fan;rgb;
+Actions=ControlCenter;
+
+[Desktop Action ControlCenter]
+Name=Open Control Center
+Exec=XPanel --app
