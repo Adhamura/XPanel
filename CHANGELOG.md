@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- **ROG Xbox Ally (RC73YA, Ryzen Z2 A) and ROG Xbox Ally X (RC73XA, Ryzen AI Z2 Extreme)**:
+  experimental, untested on hardware, please report. Detected by DMI board name (model ids
+  `xboxally` / `xboxallyx`), on Linux and Windows.
+  - Operating Modes (SPL): Xbox Ally Silent 10 W, Performance 15 W, Turbo 20 W; Xbox Ally X
+    Silent 13 W, Performance 17 W, Turbo 25 W on battery and 35 W on the charger (ASUS).
+  - Power limit ranges: the Xbox Ally X uses the kernel's `asus-armoury` ranges (SPL 7–35,
+    SPPT 13/14–45, FPPT 19–55 W); the Xbox Ally, which `asus-armoury` does not list yet, the
+    Ryzen Z2 A's 6–20 W.
+  - Controller: the same USB device as the Ally X (`0b05:1b4c`), so the input layer and Aura
+    lighting work as there. New button codes: holding the left (Xbox) button (`KEY_F21`) and the
+    right button (`KEY_F22`); back buttons as `KEY_F14` / `KEY_F15` (also on the keyboard node)
+    are the paddles.
+- The daemon never takes a USB product id 0 as the controller.
+- Tests: `tst_model` (model detection, controller ids, table consistency).
+
 ## 1.2.0
 
 - **Gyro**: the Ally's motion sensor (BMI323, kernel IIO driver) as a **mouse** or added to the

@@ -1,6 +1,6 @@
 // xpanel-input-probe - root helper for the XPanel button mapper.
 //
-// Stops InputPlumber (it grabs the Ally devices), reads every ROG Ally X / Ally input node
+// Stops InputPlumber (it grabs the Ally devices), reads every ROG Ally / Ally X / Xbox Ally input node
 // (evdev + hidraw, USB 0b05:1b4c or 0b05:1abe) and writes each event as one JSON line on stdout.
 // Starts InputPlumber again on exit: normal end, SIGTERM/SIGINT/SIGHUP, or when the
 // reader goes away (stdout broken pipe, checked by a heartbeat every second).
@@ -103,7 +103,7 @@ std::string absName(int c) { return g_absNames.count(c) ? g_absNames[c] : "ABS_"
 
 bool isAlly(const std::string &vendor, const std::string &product)
 {
-    // ROG Ally X 0b05:1b4c, ROG Ally (RC71L) 0b05:1abe
+    // ROG Ally X and ROG Xbox Ally / Xbox Ally X 0b05:1b4c, ROG Ally (RC71L) 0b05:1abe
     auto lower = [](std::string s) { for (char &c : s) c = char(std::tolower(static_cast<unsigned char>(c))); return s; };
     const std::string p = lower(product);
     return lower(vendor) == "0b05" && (p == "1b4c" || p == "1abe");

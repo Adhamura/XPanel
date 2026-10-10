@@ -6,6 +6,8 @@
 
 ### The Armoury Crate experience for the ROG Ally X and ROG Ally — on Linux.
 
+<sub>ROG Xbox Ally and ROG Xbox Ally X: experimental, untested on hardware.</sub>
+
 Press the Ally button: a **Quick Panel** slides in with Operating Mode, fan, charge limit,
 lighting and more. Open the full **Control Center** for your game library, controller
 mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Plasma.
@@ -14,7 +16,7 @@ mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Pl
 [![Release](https://img.shields.io/github/v/release/Adhamura/XPanel?include_prereleases&sort=semver)](https://github.com/Adhamura/XPanel/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20(experimental)-informational)
-![Device](https://img.shields.io/badge/device-ROG%20Ally%20X%20%7C%20ROG%20Ally-red)
+![Device](https://img.shields.io/badge/device-ROG%20Ally%20X%20%7C%20ROG%20Ally%20%7C%20ROG%20Xbox%20Ally%20(experimental)-red)
 ![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma%206-1d99f3)
 ![Qt](https://img.shields.io/badge/Qt-6-41cd52)
 
@@ -113,6 +115,11 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 - **ROG Ally X** (RC72LA) or **ROG Ally** (RC71L, Z1 / Z1 Extreme). The original Ally has its
   own Operating Mode wattages, power limits and controller support, but is not yet tested on
   hardware: please [report issues](https://github.com/Adhamura/XPanel/issues/new/choose).
+- **ROG Xbox Ally** (RC73YA, Ryzen Z2 A) and **ROG Xbox Ally X** (RC73XA, Ryzen AI Z2 Extreme):
+  **experimental, untested on hardware** — please report what works and what doesn't. Detected
+  by DMI board name; their controller is the same USB device as the Ally X's (`0b05:1b4c`).
+  The Xbox Ally X has `asus-armoury` power ranges in the kernel; for the Xbox Ally XPanel uses
+  the Ryzen Z2 A's 6–20 W.
 - **Linux x86_64** with **KDE Plasma 6** (Wayland or X11). Developed on CachyOS; Arch, Fedora
   KDE and other Plasma 6 distros should work.
 - A kernel with the **`asus-armoury`** driver (e.g. the CachyOS kernel) for TDP and BIOS settings.
@@ -263,7 +270,8 @@ flowchart LR
   Operating Mode lighting are a static color the daemon recomputes (every 5 % of charge, on a
   mode change).
 - **Input layer:** the daemon grabs the Ally pad and N-KEY keyboard (USB `0b05:1b4c` on the
-  Ally X, `0b05:1abe` on the Ally; nodes picked by their capabilities) with evdev and sends a
+  Ally X and the ROG Xbox Ally / Xbox Ally X, `0b05:1abe` on the Ally; nodes picked by their
+  capabilities, never a virtual device or an external pad) with evdev and sends a
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
   While the Quick Panel is open, the pad drives XPanel instead of the game. The raw pad nodes are
   hidden from games while the daemon runs and restored by udev when it stops.
@@ -323,6 +331,17 @@ the sensor, Control Mode shows it as busy. If the aim moves the wrong way, use t
 switches (and please open an issue with your model). There is no FPS limiter (KDE has no global
 one).
 
+**Does it work on the ROG Xbox Ally / ROG Xbox Ally X?** Experimentally, untested on hardware.
+XPanel recognizes both (board names RC73YA / RC73XA) and uses their own Operating Mode wattages
+(Xbox Ally: Silent 10 W, Performance 15 W, Turbo 20 W; Xbox Ally X: Silent 13 W, Performance
+17 W, Turbo 25 W, 35 W on the charger) and power limits. The controller is the Ally X's. The
+Xbox button and the right menu button work like the Ally's two menu buttons (one opens the Quick
+Panel, the other the Control Center), holding the Xbox button opens the on-screen keyboard, and
+the back buttons are the paddles. Lighting uses the same Aura commands as the Ally (on Windows,
+turn off Settings › Personalization › Dynamic Lighting if it takes over the rings). Some values
+are taken from other projects (InputPlumber, hhd) and not measured: please [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose) with what
+you see, including `cat /sys/class/dmi/id/board_name` and `xpanel-daemon` log lines.
+
 **Does the per-game profile apply when I start a game from Steam?** Yes. XPanel notices when Steam
 starts a game (native or Proton) and applies the profile you set under Game Library › the game ›
 Game Options (Operating Mode, Manual TDP, Fan Mode, Control Mode); the Quick Panel shows
@@ -341,7 +360,8 @@ tray icon); if it was closed during a game, it restores your settings the next t
 - **1.2** — ✅ Gyro (aim and mouse); ✅ custom fan curve editor; ✅ more Aura effects (dual
   breathing, rainbow direction, strobe, battery level, follow Operating Mode). Not yet tested on
   hardware.
-- **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
+- **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds: ✅ ROG Xbox
+  Ally and ROG Xbox Ally X (experimental, untested on hardware).
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).
 

@@ -43,10 +43,15 @@ const QHash<int, QString> kRawButtons = {
     {BTN_TL, "LB"}, {BTN_TR, "RB"}, {BTN_SELECT, "View"}, {BTN_START, "Menu"},
     {BTN_THUMBL, "L3"}, {BTN_THUMBR, "R3"}, {BTN_MODE, "Guide"},
     {KEY_F17, "Left paddle"}, {KEY_F18, "Right paddle"},
+    // back buttons as InputPlumber reads them on the Ally family, ROG Xbox Ally (X) included
+    {KEY_F14, "Left paddle"}, {KEY_F15, "Right paddle"},
 };
-// Special buttons the app handles
+// Special buttons the app handles. ROG Xbox Ally (X): left (Xbox / Game Bar) = KEY_F16, held =
+// KEY_F21; right (Command Center) = KEY_PROG1, held = KEY_F22 (InputPlumber capability map
+// ally_type2.yaml, hhd rog_ally/base.py). Untested on hardware.
 const QHash<int, QString> kRawSpecial = {
     {KEY_F16, "left_button"}, {KEY_PROG1, "right_button"},
+    {KEY_F21, "left_button_long"}, {KEY_F22, "right_button_long"},
 };
 
 // "pad:<name>" -> Xbox pad button code
@@ -156,7 +161,8 @@ void InputLayer::scan()
             continue;
         const bool pad = testBit(probe, EV_ABS, ABS_X) && testBit(probe, EV_KEY, BTN_SOUTH);
         const bool keys = !pad && (testBit(probe, EV_KEY, KEY_F16) || testBit(probe, EV_KEY, KEY_PROG1)
-                                   || testBit(probe, EV_KEY, KEY_DELETE));
+                                   || testBit(probe, EV_KEY, KEY_DELETE) || testBit(probe, EV_KEY, KEY_F21)
+                                   || testBit(probe, EV_KEY, KEY_F22));
         ::close(probe);
         if (pad && m_pad < 0)
             openPad(e);
@@ -485,6 +491,12 @@ void InputLayer::readKeyboard(int fd)
             }
             if ((e.code == KEY_F17 || e.code == KEY_F18) && !padHasIt) {
                 if (e.code == KEY_F17 && e.value) emit special("right_button_long");
+                continue;
+            }
+            // back buttons that arrive on the keyboard node: paddles of the pad we hold
+            if ((e.code == KEY_F14 || e.code == KEY_F15) && !padHasIt && m_pad >= 0) {
+                if (e.value) m_keysDown.insert(e.code); else m_keysDown.remove(e.code);
+                frame();
                 continue;
             }
             if (e.value) m_kbdDown.insert(e.code); else m_kbdDown.remove(e.code);

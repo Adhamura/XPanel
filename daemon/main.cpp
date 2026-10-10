@@ -27,7 +27,7 @@
 //       lighting (off|static|breathing|dualbreathing|colorcycle|rainbow|strobe|battery|followmode),
 //       lightColor / lightColor2 ("#rrggbb"; lightColor2: dual breathing), lightBrightness (0..3),
 //       lightSpeed (low|medium|high), lightDirection (right|left|up|down: rainbow), bootSound, mcuPowersave (bool)
-// Read-only state keys include: model (ally|allyx|unknown), modelName, tdpMin/tdpMax (SPL),
+// Read-only state keys include: model (ally|allyx|xboxally|xboxallyx|unknown), modelName, tdpMin/tdpMax (SPL),
 //       spptMin/spptMax, fpptMin/fpptMax (W), modeWatts {silent, performance, turbo, turboAc} (SPL W)
 
 #include "Hardware.h"
