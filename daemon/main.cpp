@@ -3,7 +3,8 @@
 // Owns the settings that need root on the ROG Ally / Ally X (TDP, fan curve,
 // charge limit, lighting), keeps them in /var/lib/xpanel/state.json, applies them
 // at start, and applies them again when the charger state changes or when
-// something else (firmware, another tool) changes the TDP.
+// something else (firmware, another tool) changes the TDP. The numbers that differ
+// between the models (Operating Mode watts, power ranges) are in Model.h.
 //
 // Protocol: UNIX socket /run/xpanel/xpanel.sock, one JSON object per line.
 // Access: root and members of the group "xpanel" (XPANEL_GROUP); checked per connection with
@@ -22,6 +23,8 @@
 //       charge (50..100, 100 = off), eco (bool), gpuClock (MHz, 0 = auto),
 //       lighting (off|static|breathing|colorcycle|rainbow), lightColor ("#rrggbb"),
 //       lightBrightness (0..3), lightSpeed (low|medium|high), bootSound, mcuPowersave (bool)
+// Read-only state keys include: model (ally|allyx|unknown), modelName, tdpMin/tdpMax (SPL),
+//       spptMin/spptMax, fpptMin/fpptMax (W), modeWatts {silent, performance, turbo, turboAc} (SPL W)
 
 #include "Hardware.h"
 #ifdef Q_OS_WIN
@@ -142,13 +145,32 @@ private:
         }
     }
 
+    // Accepted watts for a manual limit: the firmware's range now, widened by the model's
+    // ranges on both power sources, so a value set on the charger survives a restart on battery
+    // (Hardware::applyTdp() clamps to what the firmware takes at the moment).
+    static Model::Range tdpRange(const QString &key)
+    {
+        const QString k = key == "tdp" ? "tdp" : (key == "tdpSlow" ? "sppt" : "fppt");
+        const QJsonObject l = Hardware::limits();
+        const Model::Info &m = Hardware::model();
+        auto pick = [&key](const Model::Ranges &r) { return key == "tdp" ? r.spl : (key == "tdpSlow" ? r.sppt : r.fppt); };
+        const Model::Range ac = pick(m.ac), bat = pick(m.battery);
+        return {qMin(l[k + "Min"].toInt(), qMin(ac.min, bat.min)), qMax(l[k + "Max"].toInt(), qMax(ac.max, bat.max))};
+    }
+
     static bool valid(const QString &key, const QJsonValue &v)
     {
         if (key == "opmode") return kOpModes.contains(v.toString());
         if (key == "fan") return kFans.contains(v.toString());
         if (key == "lighting") return kLights.contains(v.toString());
-        if (key == "tdp") return v.isDouble() && v.toInt() >= 5 && v.toInt() <= 40;
-        if (key == "tdpSlow" || key == "tdpFast") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 60;
+        if (key == "tdp" || key == "tdpSlow" || key == "tdpFast") {
+            if (!v.isDouble())
+                return false;
+            // tdpSlow / tdpFast: 0 = derived from tdp; below the minimum is raised when applied
+            const int w = v.toInt();
+            const Model::Range r = tdpRange(key);
+            return w >= (key == "tdp" ? r.min : 0) && w <= r.max;
+        }
         if (key == "gpuClock") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 4000;
         if (key == "lightBrightness") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 3;
         if (key == "lightSpeed") return kSpeeds.contains(v.toString());
@@ -160,17 +182,16 @@ private:
     }
 
     // ---------- applying ----------
-    // Watts for each mode on the Ally X. Turbo is higher on the charger.
+    // Watts for each mode, from the model table (daemon/Model.h). Turbo is higher on the charger.
     Hardware::Tdp wantedTdp() const
     {
         const QString mode = m_state["opmode"].toString();
-        const bool ac = Hardware::onAc();
         Hardware::Tdp t;
-        if (mode == "silent") t = {13, 15, 20, "low-power"};
-        else if (mode == "performance") t = {17, 22, 30, "balanced"};
-        else if (mode == "turbo") t = ac ? Hardware::Tdp{30, 35, 43, "performance"}
-                                         : Hardware::Tdp{25, 30, 35, "performance"};
-        else {
+        if (mode == "silent" || mode == "performance" || mode == "turbo") {
+            const Model::Watts w = Model::modeWatts(Hardware::model(), mode, Hardware::onAc());
+            t = {w.spl, w.sppt, w.fppt,
+                 mode == "silent" ? "low-power" : (mode == "performance" ? "balanced" : "performance")};
+        } else {
             const int w = m_state["tdp"].toInt();
             const int slow = m_state["tdpSlow"].toInt(), fast = m_state["tdpFast"].toInt();
             t = {w, slow > 0 ? slow : w + 5, fast > 0 ? fast : w + 10,
@@ -235,6 +256,9 @@ private:
         s["sppt"] = t.sppt;
         s["fppt"] = t.fppt;
         s["profile"] = t.profile;
+        const Model::Info &m = Hardware::model();
+        s["modeWatts"] = QJsonObject{{"silent", m.silent.spl}, {"performance", m.performance.spl},
+                                     {"turbo", m.turboBattery.spl}, {"turboAc", m.turboAc.spl}};
         for (const QJsonObject &extra : {Hardware::limits(), Hardware::gpuRange(), m_info})
             for (auto it = extra.begin(); it != extra.end(); ++it)
                 s[it.key()] = it.value();

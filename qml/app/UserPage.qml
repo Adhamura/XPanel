@@ -26,7 +26,8 @@ CcPage {
     }
 
     CcSection { title: "My Products" }
-    CcRow { title: page.info.vendor + " " + page.info.model
+    CcRow { title: (device.rev, device.value("model") && device.value("model") !== "unknown"
+                    ? "ASUS " + device.value("modelName") : page.info.vendor + " " + page.info.model)
             description: "BIOS " + page.info.bios + " (" + page.info.biosDate + ")" +
                          (device.value("serial") ? "  ·  Serial " + device.value("serial") : "")
         CcButton { text: "Device info"; onClicked: { app.settingsPage = "general"; app.tab = "settings" } } }

@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- **Original ROG Ally (Z1 / Z1 Extreme)**: Operating Modes with the Ally's own wattages, power
+  limits from the firmware, controller and buttons. Not yet tested on hardware, please report
+  issues.
+  - Operating Modes (SPL / SPPT / FPPT): Silent 10 / 13 / 16 W, Performance 15 / 20 / 25 W,
+    Turbo 25 / 30 / 35 W on battery and 30 / 35 / 43 W on the charger. The Ally X keeps its values.
+  - The model is found by the DMI board name (`RC71…` Ally, `RC72…` Ally X), else by the
+    controller's USB id; the daemon reports it as `model` / `modelName`.
+  - The Manual SPPT / FPPT sliders use the ranges the firmware reports (new daemon state keys
+    `spptMin`/`spptMax`/`fpptMin`/`fpptMax`); the daemon accepts manual values within them.
+  - Input layer: the Ally pad (xpad, `0b05:1abe`) and its N-KEY keyboard are found by their USB
+    id and capabilities instead of their names, XPanel's own virtual devices are skipped, stick
+    and trigger ranges come from the device, and the menu buttons on the N-KEY keyboard
+    (`KEY_F16`, `KEY_PROG1`) open the Quick Panel / Control Center.
+  - Windows: the power limits and Operating Modes follow the model too.
+
 ## 1.0.5
 
 - **Fixed**: the 1.0.4 AppImage crashed at start on Wayland (KDE Plasma, SteamOS / Bazzite desktop

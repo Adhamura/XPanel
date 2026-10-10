@@ -101,13 +101,14 @@ endif()
 # Hardware helper: TDP, fan curve, charge limit, lighting (no GUI libraries).
 # Linux: root service with the input layer. Windows: ASUS ACPI + HID backend in the user session.
 if(WIN32)
-    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/HardwareWin.cpp daemon/InputLayerStub.h)
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/HardwareWin.cpp
+        daemon/InputLayerStub.h)
     set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON)
     target_sources(xpanel-daemon PRIVATE packaging/windows/xpanel.rc)
     target_compile_definitions(xpanel-daemon PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
 else()
-    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Hardware.cpp
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/Hardware.cpp
         daemon/InputLayer.h daemon/InputLayer.cpp)
 endif()
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)

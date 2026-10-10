@@ -1,8 +1,10 @@
 #include "InputLayer.h"
+#include "Model.h"
 
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QSocketNotifier>
 
@@ -11,14 +13,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <algorithm>
 #include <cerrno>
 #include <cmath>
 #include <cstring>
 
 namespace {
-
-const char *kVendor = "0b05";
-const char *kProduct = "1b4c";
 
 QString readFile(const QString &fn)
 {
@@ -125,18 +125,34 @@ QJsonObject InputLayer::status() const
 
 void InputLayer::scan()
 {
-    if (m_pad >= 0 && m_kbd >= 0)
-        return;
     const QDir dir("/sys/class/input");
     for (const QString &e : dir.entryList({"event*"}, QDir::Dirs | QDir::System)) {
+        if ((m_pad >= 0 && e == m_padNode)
+            || std::any_of(m_kbds.cbegin(), m_kbds.cend(), [&e](const Keyboard &k) { return k.node == e; }))
+            continue; // ours already
         const QString base = dir.absoluteFilePath(e) + "/device/";
-        if (readFile(base + "id/vendor") != kVendor || readFile(base + "id/product") != kProduct)
+        // The built-in controller (any supported model), never a virtual device: XPanel's own
+        // keyboard / mouse carries the ASUS id on BUS_VIRTUAL, and its pad is a uinput device too.
+        const quint16 vendor = readFile(base + "id/vendor").toUShort(nullptr, 16);
+        const quint16 product = readFile(base + "id/product").toUShort(nullptr, 16);
+        if (!Model::isController(vendor, product))
             continue;
         const QString name = readFile(base + "name");
-        if (m_pad < 0 && name.contains("Gamepad"))
+        if (readFile(base + "id/bustype").toUShort(nullptr, 16) == BUS_VIRTUAL || name.startsWith("XPanel")
+            || QFileInfo(base).canonicalFilePath().contains("/devices/virtual/"))
+            continue;
+        // What the node is, from its capabilities (names differ between the models and drivers).
+        const int probe = ::open(("/dev/input/" + e).toLocal8Bit().constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+        if (probe < 0)
+            continue;
+        const bool pad = testBit(probe, EV_ABS, ABS_X) && testBit(probe, EV_KEY, BTN_SOUTH);
+        const bool keys = !pad && (testBit(probe, EV_KEY, KEY_F16) || testBit(probe, EV_KEY, KEY_PROG1)
+                                   || testBit(probe, EV_KEY, KEY_DELETE));
+        ::close(probe);
+        if (pad && m_pad < 0)
             openPad(e);
-        else if (m_kbd < 0 && name.contains("N-KEY"))
-            openKeyboard(e); // checks for a keyboard (the N-KEY mouse node is skipped)
+        else if (keys)
+            openKeyboard(e); // the N-KEY keyboard nodes (the N-KEY mouse node has none of these keys)
     }
 }
 
@@ -184,34 +200,51 @@ bool InputLayer::openPad(const QString &node)
     // start from the real stick / trigger positions
     for (int code : {ABS_X, ABS_Y, ABS_RX, ABS_RY, ABS_Z, ABS_RZ, ABS_HAT0X, ABS_HAT0Y}) {
         input_absinfo ai {};
-        if (ioctl(m_pad, EVIOCGABS(code), &ai) == 0)
+        if (ioctl(m_pad, EVIOCGABS(code), &ai) == 0) {
             m_abs[code] = ai.value;
+            // Ally X (hid-asus): sticks 0..65535, triggers 0..1023; Ally (xpad): sticks
+            // -32768..32767, triggers 0..255
+            if (ai.maximum > ai.minimum)
+                m_absRange[code] = {ai.minimum, ai.maximum};
+        }
     }
     if (m_vpad < 0)
         createVirtual();
-    qInfo("xpanel-daemon input: using %s (Ally X gamepad), virtual Xbox 360 pad ready", qPrintable(node));
+    qInfo("xpanel-daemon input: using %s (%s), virtual Xbox 360 pad ready", qPrintable(node),
+          qPrintable(readFile(dev + "name")));
     emit statusChanged();
     return true;
 }
 
 bool InputLayer::openKeyboard(const QString &node)
 {
-    // the N-KEY keyboard: Ctrl+Alt+Del here = Quick Panel held
-    const int probe = ::open(("/dev/input/" + node).toLocal8Bit().constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
-    if (probe < 0) return false;
-    const bool isKeyboard = testBit(probe, EV_KEY, KEY_DELETE);
-    ::close(probe);
-    if (!isKeyboard) return false;
+    // an N-KEY keyboard node: Ctrl+Alt+Del here = Quick Panel held; on the original Ally the
+    // menu buttons (KEY_F16, KEY_PROG1) arrive here too
     QString why;
     const int fd = grabNode(node, &why);
     if (fd < 0) return false;
-    m_kbd = fd;
-    m_kbdNode = node;
-    m_kbdN = new QSocketNotifier(m_kbd, QSocketNotifier::Read, this);
-    connect(m_kbdN, &QSocketNotifier::activated, this, &InputLayer::readKeyboard);
+    Keyboard k;
+    k.fd = fd;
+    k.node = node;
+    k.notifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
+    connect(k.notifier, &QSocketNotifier::activated, this, [this, fd] { readKeyboard(fd); });
+    m_kbds.append(k);
     if (m_vkbm < 0)
         createVirtual();
     return true;
+}
+
+void InputLayer::closeKeyboard(int fd)
+{
+    for (int i = 0; i < m_kbds.size(); ++i) {
+        if (m_kbds[i].fd != fd) continue;
+        m_kbds[i].notifier->setEnabled(false);
+        m_kbds[i].notifier->deleteLater(); // may be called from its own activated()
+        ioctl(fd, EVIOCGRAB, 0);
+        ::close(fd);
+        m_kbds.removeAt(i);
+        return;
+    }
 }
 
 bool InputLayer::createVirtual()
@@ -276,10 +309,9 @@ void InputLayer::release()
         ::chmod(it.key().toLocal8Bit().constData(), it.value());
     m_savedModes.clear();
     delete m_padN; m_padN = nullptr;
-    delete m_kbdN; m_kbdN = nullptr;
     delete m_vpadN; m_vpadN = nullptr;
     if (m_pad >= 0) { ioctl(m_pad, EVIOCGRAB, 0); ::close(m_pad); m_pad = -1; }
-    if (m_kbd >= 0) { ioctl(m_kbd, EVIOCGRAB, 0); ::close(m_kbd); m_kbd = -1; }
+    while (!m_kbds.isEmpty()) closeKeyboard(m_kbds.first().fd);
     if (m_vpad >= 0) { ioctl(m_vpad, UI_DEV_DESTROY); ::close(m_vpad); m_vpad = -1; }
     if (m_vkbm >= 0) { ioctl(m_vkbm, UI_DEV_DESTROY); ::close(m_vkbm); m_vkbm = -1; }
 }
@@ -416,18 +448,28 @@ void InputLayer::readPad()
     }
 }
 
-void InputLayer::readKeyboard()
+void InputLayer::readKeyboard(int fd)
 {
     input_event ev[64];
     for (;;) {
-        const ssize_t n = ::read(m_kbd, ev, sizeof(ev));
+        const ssize_t n = ::read(fd, ev, sizeof(ev));
         if (n <= 0) {
-            if (n < 0 && errno == ENODEV) { delete m_kbdN; m_kbdN = nullptr; ::close(m_kbd); m_kbd = -1; }
+            if (n < 0 && errno == ENODEV) closeKeyboard(fd);
             return;
         }
         for (size_t i = 0; i < size_t(n) / sizeof(input_event); ++i) {
             const input_event &e = ev[i];
             if (e.type != EV_KEY || e.value == 2) continue;
+            // Original Ally (hid-asus): the menu buttons come from the N-KEY device, not the pad.
+            // Left = KEY_F16, right (ROG) = KEY_PROG1, right held = KEY_F17 then KEY_F18.
+            if (kRawSpecial.contains(e.code)) {
+                if (e.value) emit special(kRawSpecial[e.code]);
+                continue;
+            }
+            if (e.code == KEY_F17 || e.code == KEY_F18) {
+                if (e.code == KEY_F17 && e.value) emit special("right_button_long");
+                continue;
+            }
             if (e.value) m_kbdDown.insert(e.code); else m_kbdDown.remove(e.code);
             // Quick Panel held: the firmware sends Ctrl+Alt+Del. Never pass that on.
             const bool combo = m_kbdDown.contains(KEY_LEFTCTRL) && m_kbdDown.contains(KEY_LEFTALT);
@@ -497,9 +539,21 @@ double InputLayer::shapeStick(double r, const QJsonObject &c) const
     return anti + (1.0 - anti) * t;
 }
 
-int InputLayer::shapeTrigger(int raw, const QJsonObject &c) const
+double InputLayer::axis(int code) const
 {
-    const double p = raw / 1023.0;
+    const QPair<int, int> r = m_absRange.value(code, {0, 65535});
+    const double mid = (r.first + double(r.second)) / 2.0, half = (r.second - double(r.first)) / 2.0;
+    return qBound(-1.0, (m_abs.value(code, int(mid)) - mid) / half, 1.0);
+}
+
+double InputLayer::trigger(int code) const
+{
+    const QPair<int, int> r = m_absRange.value(code, {0, 1023});
+    return qBound(0.0, (m_abs.value(code, r.first) - double(r.first)) / (r.second - double(r.first)), 1.0);
+}
+
+int InputLayer::shapeTrigger(double p, const QJsonObject &c) const
+{
     const double start = c["start"].toDouble(5) / 100.0, end = qMax(start + 0.01, c["end"].toDouble(96) / 100.0);
     return int(std::lround(255.0 * qBound(0.0, (p - start) / (end - start), 1.0)));
 }
@@ -509,8 +563,8 @@ int InputLayer::shapeTrigger(int raw, const QJsonObject &c) const
 void InputLayer::frame()
 {
     const QJsonObject p = preset();
-    // sticks: raw 0..65535, centre 32768
-    auto norm = [this](int code) { return qBound(-1.0, (m_abs.value(code, 32768) - 32768) / 32767.0, 1.0); };
+    // sticks -1..1, triggers 0..1, from the pad's own ranges
+    auto norm = [this](int code) { return axis(code); };
     double lx = norm(ABS_X), ly = norm(ABS_Y), rx = norm(ABS_RX), ry = norm(ABS_RY);
     auto shape = [this](double &x, double &y, const QJsonObject &c) {
         const double r = std::hypot(x, y);
@@ -521,7 +575,7 @@ void InputLayer::frame()
     shape(rx, ry, p["rstick"].toObject());
     const QJsonObject tl = p["lt"].toObject();
     const QJsonObject tr = p["trigger"].toObject()["mirror"].toBool(true) ? tl : p["rt"].toObject();
-    const int lt = shapeTrigger(m_abs.value(ABS_Z), tl), rt = shapeTrigger(m_abs.value(ABS_RZ), tr);
+    const int lt = shapeTrigger(trigger(ABS_Z), tl), rt = shapeTrigger(trigger(ABS_RZ), tr);
 
     // logical buttons held now
     QSet<QString> now;
@@ -627,7 +681,7 @@ void InputLayer::tick()
     // sticks as mouse / scroll
     if (m_pad < 0 || m_vkbm < 0) return;
     const QJsonObject p = preset();
-    auto norm = [this](int code) { return qBound(-1.0, (m_abs.value(code, 32768) - 32768) / 32767.0, 1.0); };
+    auto norm = [this](int code) { return axis(code); };
     bool wrote = false;
     for (const auto &st : {qMakePair(QString("lstick"), qMakePair(ABS_X, ABS_Y)), qMakePair(QString("rstick"), qMakePair(ABS_RX, ABS_RY))}) {
         const QJsonObject c = p[st.first].toObject();

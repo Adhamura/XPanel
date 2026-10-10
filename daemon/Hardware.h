@@ -4,6 +4,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "Model.h"
+
 // Direct hardware access for the ROG Ally / Ally X (runs as root).
 //   TDP:       /sys/firmware/acpi/platform_profile + asus-armoury ppt_pl1/2/3
 //   Fan:       hwmon "asus_custom_fan_curve"
@@ -19,7 +21,11 @@ struct Tdp {
 };
 
 bool onAc();
-QJsonObject limits();              // {tdpMin, tdpMax}
+// The model this runs on (DMI board name, else the built-in controller's USB id).
+const Model::Info &model();
+// Power limit ranges in W: {tdpMin, tdpMax} (SPL), {spptMin, spptMax}, {fpptMin, fpptMax}.
+// From the firmware where it reports them, else the model's ranges for the current power source.
+QJsonObject limits();
 Tdp readTdp();
 bool applyTdp(const Tdp &t);
 
@@ -39,6 +45,6 @@ QJsonObject gpuRange();                 // {gpuMin, gpuMax} MHz
 // asus-armoury enumeration attributes (boot_sound, mcu_powersave)
 int readAttr(const QString &name);
 bool writeAttr(const QString &name, int value);
-QJsonObject deviceInfo();               // product, bios, serial (root only)
+QJsonObject deviceInfo();               // product, board, bios, serial (root only), model, modelName
 
 } // namespace Hardware
