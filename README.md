@@ -51,7 +51,15 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   is held, button repeat, stick and trigger curves, vibration strength, and a Desktop Mode that
   turns the pad into mouse and keyboard. Applied live, no InputPlumber or hhd needed.
 - **🔋 Battery care.** Charge limit (e.g. 80 %), battery health, capacity and charge cycles.
-- **🌈 Aura lighting.** Static, breathing, color cycle and rainbow on the stick rings.
+- **🌈 Aura lighting.** Static, breathing, dual breathing (two colors), color cycle, rainbow
+  (with a direction), strobe, and two effects that follow the system: battery level (red to
+  green) and Operating Mode (blue Silent, white Performance, red Turbo). The new effects are not
+  tested on hardware yet.
+- **🌀 Custom fan curve.** Settings › Performance › Fan Mode › Custom: an 8-point graph (fan
+  speed over temperature) you drag with touch or mouse, or edit with the D-pad (Ⓐ, ◀ ▶ point,
+  ▲ ▼ fan speed, LB / RB temperature). Start from Quiet, Balanced or Performance; one curve for
+  both fans or a separate GPU curve. Saved, re-applied after TDP changes, and added to the Quick
+  Panel fan tile once saved.
 - **🪶 Native and small.** About 7k lines of C++17 / QML. No Python, Electron or web runtime.
   A small root daemon on a local socket does the hardware work.
 
@@ -208,6 +216,12 @@ also opens from the gear icon, the tray menu, Meta+Shift+C or `XPanel --app [pag
 is `library`, `control`, `gallery`, `user`, `settings` or `settings/<section>`.
 Settings are kept in `~/.config/XPanel/config.json`.
 
+Fan curve graph (Settings › Performance › Fan Mode › Custom): drag a point with touch or mouse.
+With the pad, A on the graph starts editing, then ◀ ▶ pick a point, ▲ ▼ change its fan speed
+(5 %), LB / RB its temperature (1 °C; keyboard PgUp / PgDn), A or B ends. The fan tile on the
+Quick Panel cycles Auto → Quiet → Max → Custom (Custom once a curve is saved); the lighting tile
+cycles through all effects.
+
 ## How it works
 
 ```mermaid
@@ -238,10 +252,15 @@ flowchart LR
   The watt values per mode are our choice, close to the ASUS defaults on Windows; they and the
   fallback power ranges live in one table per model (`daemon/Model.h`, found by the DMI board
   name). Manual limits are clamped to the `min_value` / `max_value` the driver reports.
-- **Fan:** hwmon `asus_custom_fan_curve` (Auto = firmware curve, Quiet, Max).
+- **Fan:** hwmon `asus_custom_fan_curve` (Auto = firmware curve, Quiet, Max, Custom: 8 temperature /
+  duty points per fan from the `fanCurve` key; checked in `daemon/FanCurve.h`, temperatures
+  20..105 °C rising, duty 0..100 % never falling). Windows: the same 8 + 8 bytes through the
+  ATKACPI fan curve devices.
 - **Charge limit:** `BAT0/charge_control_end_threshold`.
 - **Lighting:** ASUS Aura HID output reports (report id `0x5A`) on the N-KEY hidraw node with
-  vendor usage page `0xFF31`.
+  vendor usage page `0xFF31`; the packets are built in `daemon/Aura.h`. Battery level and
+  Operating Mode lighting are a static color the daemon recomputes (every 5 % of charge, on a
+  mode change).
 - **Input layer:** the daemon grabs the Ally pad and N-KEY keyboard (USB `0b05:1b4c` on the
   Ally X, `0b05:1abe` on the Ally; nodes picked by their capabilities) with evdev and sends a
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
@@ -318,7 +337,9 @@ tray icon); if it was closed during a game, it restores your settings the next t
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — ✅ Original ROG Ally (Z1 / Z1 Extreme) power limits and controller (not yet tested on
   hardware); ✅ per-game profiles for games started from Steam, restored when the game ends.
-- **1.2** — ✅ Gyro (aim and mouse; not yet tested on hardware), custom fan curve editor, more Aura effects.
+- **1.2** — ✅ Gyro (aim and mouse); ✅ custom fan curve editor; ✅ more Aura effects (dual
+  breathing, rainbow direction, strobe, battery level, follow Operating Mode). Not yet tested on
+  hardware.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).

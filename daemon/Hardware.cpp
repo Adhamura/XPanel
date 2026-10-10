@@ -1,4 +1,6 @@
 #include "Hardware.h"
+#include "Aura.h"
+#include "FanCurve.h"
 
 #include <QDir>
 #include <QFile>
@@ -72,17 +74,6 @@ QString findAuraHidraw()
     }
     return {};
 }
-
-QByteArray packet(std::initializer_list<int> bytes)
-{
-    QByteArray b(64, '\0');
-    int i = 0;
-    for (int v : bytes)
-        b[i++] = char(v);
-    return b;
-}
-
-struct Color { int r, g, b; };
 
 } // namespace
 
@@ -169,7 +160,7 @@ bool applyTdp(const Tdp &t)
     return ok;
 }
 
-bool applyFan(const QString &preset)
+bool applyFan(const QString &preset, const QJsonObject &curve)
 {
     const QString hw = findHwmon("asus_custom_fan_curve");
     if (hw.isEmpty())
@@ -178,6 +169,8 @@ bool applyFan(const QString &preset)
     static const int temps[8] = {40, 50, 60, 70, 78, 85, 90, 95};
     static const int quiet[8] = {0, 20, 40, 65, 95, 130, 170, 210};
     static const int maxed[8] = {255, 255, 255, 255, 255, 255, 255, 255};
+    // custom: fan 1 (CPU) and fan 3 follow the "cpu" curve, fan 2 (GPU) the "gpu" curve
+    const FanCurve::Curve cpuCurve = FanCurve::cpu(curve), gpuCurve = FanCurve::gpu(curve);
     bool ok = true;
     for (int fan = 1; fan <= 3; ++fan) {
         const QString en = QString("%1/pwm%2_enable").arg(hw).arg(fan);
@@ -187,10 +180,15 @@ bool applyFan(const QString &preset)
             ok &= writeFile(en, "2"); // firmware curve
             continue;
         }
-        const int *duty = preset == "max" ? maxed : quiet;
+        const FanCurve::Curve &mine = fan == 2 ? gpuCurve : cpuCurve;
         for (int p = 0; p < 8; ++p) {
-            ok &= writeFile(QString("%1/pwm%2_auto_point%3_temp").arg(hw).arg(fan).arg(p + 1), QString::number(temps[p]));
-            ok &= writeFile(QString("%1/pwm%2_auto_point%3_pwm").arg(hw).arg(fan).arg(p + 1), QString::number(duty[p]));
+            int temp = temps[p], duty = preset == "max" ? maxed[p] : quiet[p];
+            if (preset == "custom") {
+                temp = mine[size_t(p)].temp;
+                duty = FanCurve::toPwm(mine[size_t(p)].percent);
+            }
+            ok &= writeFile(QString("%1/pwm%2_auto_point%3_temp").arg(hw).arg(fan).arg(p + 1), QString::number(temp));
+            ok &= writeFile(QString("%1/pwm%2_auto_point%3_pwm").arg(hw).arg(fan).arg(p + 1), QString::number(duty));
         }
         ok &= writeFile(en, "1"); // use the custom curve
     }
@@ -209,8 +207,26 @@ bool applyChargeLimit(int percent)
                      QString::number(qBound(50, percent, 100)));
 }
 
-bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed)
+int batteryPercent()
 {
+    const QString v = readFile("/sys/class/power_supply/BAT0/capacity");
+    return v.isEmpty() ? -1 : qBound(0, v.toInt(), 100);
+}
+
+bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed,
+                   const QString &color2, const QString &direction)
+{
+    Aura::Params p;
+    p.effect = effect;
+    p.color = color;
+    p.brightness = brightness;
+    p.speed = speed;
+    if (!color2.isEmpty()) p.color2 = color2;
+    if (!direction.isEmpty()) p.direction = direction;
+    const QList<QByteArray> cmds = Aura::packets(p);
+    if (cmds.isEmpty())
+        return false;
+
     const QString dev = findAuraHidraw();
     if (dev.isEmpty()) {
         qWarning("xpanel-daemon: Aura HID device not found");
@@ -222,33 +238,8 @@ bool applyLighting(const QString &effect, const QString &color, int brightness, 
         return false;
     }
 
-    QList<QByteArray> cmds;
-    // Handshake: report 0x5A followed by "ASUS Tech.Inc."
-    cmds << packet({0x5A, 'A', 'S', 'U', 'S', ' ', 'T', 'e', 'c', 'h', '.', 'I', 'n', 'c', '.'});
-
-    // modes: 0x00 static, 0x01 breathing, 0x02 colour cycle, 0x03 rainbow wave
-    int hwMode = 0x00;
-    if (effect == "breathing") hwMode = 0x01;
-    else if (effect == "colorcycle") hwMode = 0x02;
-    else if (effect == "rainbow") hwMode = 0x03;
-    else if (effect != "static" && effect != "off") { ::close(fd); return false; }
-    const int speedByte = speed == "low" ? 0xE1 : (speed == "high" ? 0xF5 : 0xEB);
-    const int spd = hwMode == 0x00 ? 0x00 : speedByte;
-    const unsigned rgb = color.mid(1).toUInt(nullptr, 16);
-    Color c{int(rgb >> 16) & 0xFF, int(rgb >> 8) & 0xFF, int(rgb) & 0xFF};
-    if (hwMode == 0x03) c = {0, 0, 0};
-    int level = effect == "off" ? 0 : qBound(0, brightness, 3); // 0 off .. 3 high
-
-    cmds << packet({0x5A, 0xBA, 0xC5, 0xC4, level});
-    if (level > 0) {
-        // zone 0 = all four zones
-        cmds << packet({0x5A, 0xB3, 0x00, hwMode, c.r, c.g, c.b, spd, 0x00, 0x00, 0, 0, 0});
-        cmds << packet({0x5A, 0xB5}); // set
-        cmds << packet({0x5A, 0xB4}); // apply
-    }
-
     bool ok = true;
-    for (const QByteArray &b : std::as_const(cmds)) {
+    for (const QByteArray &b : cmds) {
         if (::write(fd, b.constData(), b.size()) != b.size())
             ok = false;
         QThread::msleep(4);

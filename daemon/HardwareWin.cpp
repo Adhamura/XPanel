@@ -8,6 +8,8 @@
 //   CPU: processor boost and energy preference of the active power plan (powercfg).
 // Armoury Crate changes the same settings: it must not run at the same time.
 #include "Hardware.h"
+#include "Aura.h"
+#include "FanCurve.h"
 
 #include <QHash>
 #include <QProcess>
@@ -206,15 +208,6 @@ quint16 controllerPid()
     return found;
 }
 
-QByteArray packet(std::initializer_list<int> bytes)
-{
-    QByteArray b(64, '\0');
-    int i = 0;
-    for (int v : bytes)
-        b[i++] = char(v);
-    return b;
-}
-
 // Output report (as hidraw write() on Linux); feature report if the collection has none.
 bool sendReport(const Hid &d, QByteArray report)
 {
@@ -289,7 +282,7 @@ bool applyTdp(const Tdp &want)
     return ok;
 }
 
-bool applyFan(const QString &preset)
+bool applyFan(const QString &preset, const QJsonObject &custom)
 {
     if (preset == "auto") // setting the thermal policy again restores the firmware curve
         return devs(kThermalPolicy, quint32(policyFor(g_tdp.profile)));
@@ -297,9 +290,22 @@ bool applyFan(const QString &preset)
     static const char temps[8] = {40, 50, 60, 70, 78, 85, 90, 95};
     static const char quiet[8] = {0, 8, 16, 25, 37, 51, 67, 82};
     static const char maxed[8] = {100, 100, 100, 100, 100, 100, 100, 100};
-    const QByteArray curve = QByteArray(temps, 8) + QByteArray(preset == "max" ? maxed : quiet, 8);
-    const bool cpu = devsBytes(kCpuFanCurve, curve);
-    const bool gpu = devsBytes(kGpuFanCurve, curve);
+    auto bytes = [](const FanCurve::Curve &c) {
+        QByteArray t, d;
+        for (const FanCurve::Point &p : c) {
+            t.append(char(p.temp));
+            d.append(char(p.percent));
+        }
+        return t + d;
+    };
+    QByteArray cpuCurve = QByteArray(temps, 8) + QByteArray(preset == "max" ? maxed : quiet, 8);
+    QByteArray gpuCurve = cpuCurve;
+    if (preset == "custom") { // same layout: 8 temperatures, 8 duty values in %
+        cpuCurve = bytes(FanCurve::cpu(custom));
+        gpuCurve = bytes(FanCurve::gpu(custom));
+    }
+    const bool cpu = devsBytes(kCpuFanCurve, cpuCurve);
+    const bool gpu = devsBytes(kGpuFanCurve, gpuCurve);
     return cpu || gpu;
 }
 
@@ -314,34 +320,32 @@ bool applyChargeLimit(int percent)
     return devs(kChargeLimit, quint32(qBound(50, percent, 100)));
 }
 
-bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed)
+int batteryPercent()
 {
+    SYSTEM_POWER_STATUS s{};
+    return GetSystemPowerStatus(&s) && s.BatteryLifePercent <= 100 ? int(s.BatteryLifePercent) : -1;
+}
+
+bool applyLighting(const QString &effect, const QString &color, int brightness, const QString &speed,
+                   const QString &color2, const QString &direction)
+{
+    Aura::Params p;
+    p.effect = effect;
+    p.color = color;
+    p.brightness = brightness;
+    p.speed = speed;
+    if (!color2.isEmpty()) p.color2 = color2;
+    if (!direction.isEmpty()) p.direction = direction;
+    const QList<QByteArray> cmds = Aura::packets(p);
+    if (cmds.isEmpty())
+        return false;
     const Hid d = openAura();
     if (d.h == INVALID_HANDLE_VALUE) {
         qWarning("xpanel-daemon: Aura HID device not found");
         return false;
     }
-    QList<QByteArray> cmds;
-    cmds << packet({0x5A, 'A', 'S', 'U', 'S', ' ', 'T', 'e', 'c', 'h', '.', 'I', 'n', 'c', '.'});
-    int hwMode = 0x00;
-    if (effect == "breathing") hwMode = 0x01;
-    else if (effect == "colorcycle") hwMode = 0x02;
-    else if (effect == "rainbow") hwMode = 0x03;
-    else if (effect != "static" && effect != "off") { CloseHandle(d.h); return false; }
-    const int speedByte = speed == "low" ? 0xE1 : (speed == "high" ? 0xF5 : 0xEB);
-    const int spd = hwMode == 0x00 ? 0x00 : speedByte;
-    const unsigned rgb = color.mid(1).toUInt(nullptr, 16);
-    int r = int(rgb >> 16) & 0xFF, g = int(rgb >> 8) & 0xFF, b = int(rgb) & 0xFF;
-    if (hwMode == 0x03) r = g = b = 0;
-    const int level = effect == "off" ? 0 : qBound(0, brightness, 3);
-    cmds << packet({0x5A, 0xBA, 0xC5, 0xC4, level});
-    if (level > 0) {
-        cmds << packet({0x5A, 0xB3, 0x00, hwMode, r, g, b, spd, 0x00, 0x00, 0, 0, 0});
-        cmds << packet({0x5A, 0xB5});
-        cmds << packet({0x5A, 0xB4});
-    }
     bool ok = true;
-    for (const QByteArray &c : std::as_const(cmds)) {
+    for (const QByteArray &c : cmds) {
         ok &= sendReport(d, c);
         QThread::msleep(4);
     }

@@ -68,7 +68,7 @@ qt_add_qml_module(XPanel
         qml/app/SettingsPage.qml qml/app/SetGeneral.qml qml/app/SetPerformance.qml qml/app/SetUpdate.qml
         qml/app/SetCalibration.qml qml/app/SetLighting.qml qml/app/SetAudio.qml
         qml/app/SetDisplay.qml qml/app/SetConnection.qml qml/app/SetShortcuts.qml qml/app/SetFeedback.qml
-        qml/app/SetBattery.qml
+        qml/app/SetBattery.qml qml/app/FanCurveEditor.qml qml/app/CcSwatches.qml
     RESOURCES ${XPANEL_ICONS}
 )
 

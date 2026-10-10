@@ -175,7 +175,7 @@ Item {
                 title: "Fan Mode"
                 CcChoice {
                     options: [{ value: "", label: "Keep" }, { value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" },
-                              { value: "max", label: "Max" }]
+                              { value: "max", label: "Max" }, { value: "custom", label: "Custom" }]
                     current: details.game ? (config.rev, page.profile(details.game.id).fan || "") : ""
                     onPicked: (v) => page.setProfile(details.game.id, "fan", v)
                 }
