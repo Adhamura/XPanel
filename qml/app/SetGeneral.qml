@@ -24,7 +24,9 @@ CcPage {
 
     CcSection { title: "Device Info" }
     Repeater {
-        model: [["Model", page.info.vendor + " " + page.info.model], ["Processor", page.info.cpu + " (" + page.info.cores + " threads)"],
+        model: [["Model", (device.rev, device.value("model") && device.value("model") !== "unknown"
+                                       ? device.value("modelName") + "  (" + page.info.model + ")" : page.info.vendor + " " + page.info.model)],
+                ["Processor", page.info.cpu + " (" + page.info.cores + " threads)"],
                 ["Graphics", page.info.gpu], ["Memory", page.info.ram], ["Display", page.info.display],
                 ["BIOS", page.info.bios + "  (" + page.info.biosDate + ")"],
                 ["Serial number", device.value("serial") || "shown when xpanel-daemon runs"],

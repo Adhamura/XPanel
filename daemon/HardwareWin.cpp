@@ -37,9 +37,7 @@ constexpr quint32 kChargeLimit = 0x00120057;
 constexpr quint32 kBootSound = 0x00130022;
 constexpr quint32 kMcuPowersave = 0x001200E2;
 
-// Ally X limits (the Linux driver reports these itself; here they are fixed).
-constexpr int kSplMin = 7, kSplMax = 30, kSpptMax = 35, kFpptMax = 43;
-
+// Power limit ranges: the model's (Model.h). The Linux driver reports them itself; here they are fixed.
 Hardware::Tdp g_tdp; // what was applied last (the firmware cannot be read back reliably)
 
 HANDLE acpi()
@@ -129,7 +127,8 @@ struct Hid {
     USHORT outLen = 0, featLen = 0;
 };
 
-// The N-KEY collection with vendor usage page 0xFF31 takes the lighting commands.
+// The N-KEY collection with vendor usage page 0xFF31 takes the lighting commands
+// (any ASUS product id: the Ally and the Ally X have it).
 Hid openAura()
 {
     Hid r;
@@ -171,6 +170,40 @@ Hid openAura()
     }
     SetupDiDestroyDeviceInfoList(set);
     return r;
+}
+
+// The built-in controller's USB product id (0 = none found), from the HID device paths
+// ("\\?\hid#vid_0b05&pid_1abe&mi_02#...").
+quint16 controllerPid()
+{
+    GUID hidGuid;
+    HidD_GetHidGuid(&hidGuid);
+    const HDEVINFO set = SetupDiGetClassDevsW(&hidGuid, nullptr, nullptr, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+    if (set == INVALID_HANDLE_VALUE)
+        return 0;
+    quint16 found = 0;
+    SP_DEVICE_INTERFACE_DATA ifd{};
+    ifd.cbSize = sizeof(ifd);
+    for (DWORD i = 0; !found && SetupDiEnumDeviceInterfaces(set, nullptr, &hidGuid, i, &ifd); ++i) {
+        DWORD size = 0;
+        SetupDiGetDeviceInterfaceDetailW(set, &ifd, nullptr, 0, &size, nullptr);
+        if (size == 0)
+            continue;
+        QByteArray buf(int(size), '\0');
+        auto *detail = reinterpret_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W *>(buf.data());
+        detail->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
+        if (!SetupDiGetDeviceInterfaceDetailW(set, &ifd, detail, size, nullptr, nullptr))
+            continue;
+        const QString path = QString::fromWCharArray(detail->DevicePath).toLower();
+        const int at = path.indexOf(QLatin1String("vid_0b05&pid_"));
+        if (at < 0)
+            continue;
+        const quint16 pid = path.mid(at + 13, 4).toUShort(nullptr, 16);
+        if (Model::isController(Model::kAsusVendor, pid))
+            found = pid;
+    }
+    SetupDiDestroyDeviceInfoList(set);
+    return found;
 }
 
 QByteArray packet(std::initializer_list<int> bytes)
@@ -219,9 +252,20 @@ bool onAc()
     return GetSystemPowerStatus(&s) && s.ACLineStatus == 1;
 }
 
+const Model::Info &model()
+{
+    static const Model::Info m = [] {
+        const QSettings bios("HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\BIOS", QSettings::NativeFormat);
+        return Model::detect(bios.value("BaseBoardProduct").toString(), controllerPid());
+    }();
+    return m;
+}
+
 QJsonObject limits()
 {
-    return {{"tdpMin", kSplMin}, {"tdpMax", kSplMax}};
+    const Model::Ranges &r = onAc() ? model().ac : model().battery;
+    return {{"tdpMin", r.spl.min}, {"tdpMax", r.spl.max}, {"spptMin", r.sppt.min}, {"spptMax", r.sppt.max},
+            {"fpptMin", r.fppt.min}, {"fpptMax", r.fppt.max}};
 }
 
 Tdp readTdp()
@@ -231,10 +275,11 @@ Tdp readTdp()
 
 bool applyTdp(const Tdp &want)
 {
+    const Model::Ranges &r = onAc() ? model().ac : model().battery;
     Tdp t = want;
-    t.spl = qBound(kSplMin, t.spl, kSplMax);
-    t.sppt = qBound(t.spl, t.sppt, kSpptMax);
-    t.fppt = qBound(t.sppt, t.fppt, kFpptMax);
+    t.spl = qBound(r.spl.min, t.spl, r.spl.max);
+    t.sppt = qBound(qMax(t.spl, r.sppt.min), t.sppt, r.sppt.max);
+    t.fppt = qBound(qMax(t.sppt, r.fppt.min), t.fppt, r.fppt.max);
     // The thermal policy resets the power limits: set it first.
     bool ok = devs(kThermalPolicy, quint32(policyFor(t.profile)));
     ok &= devs(kPptSpl, quint32(t.spl));
@@ -354,6 +399,8 @@ QJsonObject deviceInfo()
         {"bios", bios.value("BIOSVersion").toString()},
         {"biosDate", bios.value("BIOSReleaseDate").toString()},
         {"serial", QString()},
+        {"model", QString::fromLatin1(model().id)},
+        {"modelName", QString::fromLatin1(model().name)},
     };
 }
 

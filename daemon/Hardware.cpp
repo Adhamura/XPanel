@@ -99,12 +99,45 @@ bool onAc()
     return false;
 }
 
+namespace {
+// The built-in controller's USB product id (0 = none found).
+quint16 controllerPid()
+{
+    const QDir dir("/sys/bus/usb/devices");
+    for (const QString &e : dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        const QString p = dir.absoluteFilePath(e);
+        const quint16 vendor = readFile(p + "/idVendor").toUShort(nullptr, 16);
+        const quint16 product = readFile(p + "/idProduct").toUShort(nullptr, 16);
+        if (Model::isController(vendor, product))
+            return product;
+    }
+    return 0;
+}
+
+// The firmware's range for one asus-armoury power attribute, else the model's.
+Model::Range range(const char *name)
+{
+    const int lo = attr(name, "min_value"), hi = attr(name, "max_value");
+    if (hi > 0 && hi >= lo)
+        return {lo, hi};
+    const Model::Ranges &r = onAc() ? model().ac : model().battery;
+    if (!strcmp(name, "ppt_pl2_sppt")) return r.sppt;
+    if (!strcmp(name, "ppt_pl3_fppt")) return r.fppt;
+    return r.spl;
+}
+} // namespace
+
+const Model::Info &model()
+{
+    static const Model::Info m = Model::detect(readFile("/sys/class/dmi/id/board_name"), controllerPid());
+    return m;
+}
+
 QJsonObject limits()
 {
-    QJsonObject o;
-    o["tdpMin"] = attr("ppt_pl1_spl", "min_value");
-    o["tdpMax"] = attr("ppt_pl1_spl", "max_value");
-    return o;
+    const Model::Range spl = range("ppt_pl1_spl"), sppt = range("ppt_pl2_sppt"), fppt = range("ppt_pl3_fppt");
+    return {{"tdpMin", spl.min}, {"tdpMax", spl.max}, {"spptMin", sppt.min}, {"spptMax", sppt.max},
+            {"fpptMin", fppt.min}, {"fpptMax", fppt.max}};
 }
 
 Tdp readTdp()
@@ -120,7 +153,8 @@ Tdp readTdp()
 bool applyTdp(const Tdp &t)
 {
     auto clampAttr = [](const char *name, int v) {
-        return qBound(attr(name, "min_value"), v, attr(name, "max_value"));
+        const Model::Range r = range(name);
+        return qBound(r.min, v, r.max);
     };
     bool ok = true;
     // The profile first: the firmware may reset the limits when it changes.
@@ -314,6 +348,8 @@ QJsonObject deviceInfo()
         {"bios", readFile("/sys/class/dmi/id/bios_version")},
         {"biosDate", readFile("/sys/class/dmi/id/bios_date")},
         {"serial", readFile("/sys/class/dmi/id/product_serial")},
+        {"model", QString::fromLatin1(model().id)},
+        {"modelName", QString::fromLatin1(model().name)},
     };
 }
 

@@ -4,7 +4,7 @@
 
 # XPanel
 
-### The Armoury Crate experience for the ROG Ally X — on Linux.
+### The Armoury Crate experience for the ROG Ally X and ROG Ally — on Linux.
 
 Press the Ally button: a **Quick Panel** slides in with Operating Mode, fan, charge limit,
 lighting and more. Open the full **Control Center** for your game library, controller
@@ -14,7 +14,7 @@ mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Pl
 [![Release](https://img.shields.io/github/v/release/Adhamura/XPanel?include_prereleases&sort=semver)](https://github.com/Adhamura/XPanel/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20(experimental)-informational)
-![Device](https://img.shields.io/badge/device-ROG%20Ally%20X-red)
+![Device](https://img.shields.io/badge/device-ROG%20Ally%20X%20%7C%20ROG%20Ally-red)
 ![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma%206-1d99f3)
 ![Qt](https://img.shields.io/badge/Qt-6-41cd52)
 
@@ -39,7 +39,8 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 - **🎮 One button, everything there.** The Ally's menu button opens a Quick Panel over your game,
   fully driven by the gamepad (D-pad, A, B, LB/RB). No mouse, no Steam overlay needed.
 - **⚡ Operating Modes like on Windows.** Silent 13 W · Performance 17 W · Turbo 25 W
-  (**30 W on the charger**) · Manual with separate SPL / SPPT / FPPT.
+  (**30 W on the charger**) · Manual with separate SPL / SPPT / FPPT. On the original ROG Ally:
+  Silent 10 W · Performance 15 W · Turbo 25 W (30 W on the charger), as ASUS sets them.
 - **🔌 Settings that stay set.** The daemon re-applies your mode when you plug or unplug the
   charger, and when the firmware or another tool changes the TDP behind your back.
 - **🗂️ A real Control Center.** Game Library with per-game mode, TDP and control preset; Media
@@ -99,8 +100,9 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 
 ## Requirements
 
-- **ROG Ally X** (RC72LA). The original ROG Ally is not supported yet (different controller IDs
-  and power limits); test reports are welcome.
+- **ROG Ally X** (RC72LA) or **ROG Ally** (RC71L, Z1 / Z1 Extreme). The original Ally has its
+  own Operating Mode wattages, power limits and controller support, but is not yet tested on
+  hardware: please [report issues](https://github.com/Adhamura/XPanel/issues/new/choose).
 - **Linux x86_64** with **KDE Plasma 6** (Wayland or X11). Developed on CachyOS; Arch, Fedora
   KDE and other Plasma 6 distros should work.
 - A kernel with the **`asus-armoury`** driver (e.g. the CachyOS kernel) for TDP and BIOS settings.
@@ -111,7 +113,7 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 **Windows 10 / 11 x64 (experimental):** Operating Mode / TDP, fan, charge limit, Aura lighting
 and boot sound through the ASUS System Control Interface (installed on every Ally). Controller
 remapping, the Ally-button panel, brightness / volume sliders and the Linux-only tiles are not
-available on Windows yet. There is **no 32-bit build**: the Ally X is a 64-bit device.
+available on Windows yet. There is **no 32-bit build**: the Ally is a 64-bit device.
 
 ## Install
 
@@ -209,7 +211,7 @@ Settings are kept in `~/.config/XPanel/config.json`.
 
 ```mermaid
 flowchart LR
-    pad["Ally X controller"] -->|evdev grab| daemon
+    pad["Ally controller"] -->|evdev grab| daemon
     subgraph user ["Your session"]
         app["XPanel<br/>Quick Panel · Control Center · tray"]
     end
@@ -232,12 +234,15 @@ flowchart LR
 
 - **Operating Mode / TDP:** `/sys/firmware/acpi/platform_profile` and
   `/sys/class/firmware-attributes/asus-armoury/attributes/ppt_pl{1,2,3}_*`.
-  The watt values per mode are our choice, close to the ASUS defaults on Windows.
+  The watt values per mode are our choice, close to the ASUS defaults on Windows; they and the
+  fallback power ranges live in one table per model (`daemon/Model.h`, found by the DMI board
+  name). Manual limits are clamped to the `min_value` / `max_value` the driver reports.
 - **Fan:** hwmon `asus_custom_fan_curve` (Auto = firmware curve, Quiet, Max).
 - **Charge limit:** `BAT0/charge_control_end_threshold`.
 - **Lighting:** ASUS Aura HID output reports (report id `0x5A`) on the N-KEY hidraw node with
   vendor usage page `0xFF31`.
-- **Input layer:** the daemon grabs the Ally X pad (USB `0b05:1b4c`) with evdev and sends a
+- **Input layer:** the daemon grabs the Ally pad and N-KEY keyboard (USB `0b05:1b4c` on the
+  Ally X, `0b05:1abe` on the Ally; nodes picked by their capabilities) with evdev and sends a
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
   While the Quick Panel is open, the pad drives XPanel instead of the game. The raw pad nodes are
   hidden from games while the daemon runs and restored by udev when it stops.
@@ -289,8 +294,8 @@ from XPanel's Game Library for now.
 
 - **1.0** — ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
   limit, lighting, controller layer, release archive and Arch package.
-- **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
-  for games started from Steam, restored when the game ends.
+- **1.1** — ✅ Original ROG Ally (Z1 / Z1 Extreme) power limits and controller (not yet tested on
+  hardware); per-game profiles for games started from Steam, restored when the game ends.
 - **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
