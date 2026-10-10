@@ -6,139 +6,139 @@
     <message>
         <location filename="../src/AppUpdate.cpp" line="+154"/>
         <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub исчерпал лимит проверок обновлений. Повторите попытку через час.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No connection to GitHub. Check the network and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет связи с GitHub. Проверьте сеть и повторите попытку.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The download was stopped (or redirected to a server other than GitHub).</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка была остановлена (или перенаправлена на сервер, не относящийся к GitHub).</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>GitHub answered with error %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>GitHub ответил ошибкой %1.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>The update address is not allowed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес обновления не разрешён: %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>GitHub&apos;s answer has no release version.</source>
-        <translation type="unfinished"></translation>
+        <translation>В ответе GitHub нет версии релиза.</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>This release has no file for this installation (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>В этом релизе нет файла для данной установки (%1).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>В этом релизе нет файла SHA256SUMS, поэтому проверить загрузку невозможно. Ничего не установлено.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The release file is not on GitHub: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Файла релиза нет на GitHub: %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Cannot create the folder %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать папку %1.</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+28"/>
         <location line="+21"/>
         <source>Cannot write %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось записать %1: %2</translation>
     </message>
     <message>
         <location line="-43"/>
         <source>Downloading %1 …</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка %1 …</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Download failed: %1</source>
-        <translation type="unfinished">Ошибка загрузки: %1</translation>
+        <translation>Ошибка загрузки: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Checking the download …</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка загруженного файла …</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Cannot download SHA256SUMS: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить SHA256SUMS: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>SHA256SUMS does not list %1. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>В SHA256SUMS нет %1. Ничего не установлено.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Загруженный файл повреждён: его контрольная сумма SHA-256 не совпадает с релизом. Ничего не установлено.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>XPanel %1 was saved as %2. The old file was kept.</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1 сохранён как %2. Старый файл оставлен.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot start the installer %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить установщик %1.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The installer is running. XPanel closes now and starts again when it is done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Установщик работает. XPanel сейчас закроется и запустится снова после завершения.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>pkexec не установлен. Выполните эту команду в терминале, чтобы установить XPanel %1:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Installing XPanel %1. Enter your password when asked …</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка XPanel %1. Введите пароль, когда он будет запрошен …</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>XPanel %1 is installed. Restart XPanel to use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1 установлен. Перезапустите XPanel, чтобы использовать его.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрос пароля был отменён или здесь недоступен (в игровом режиме Steam его нет). Выполните эту команду в терминале:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
-        <translation type="unfinished"></translation>
+        <translation>Установщик завершился с ошибкой %1. Выполните эту команду в терминале, чтобы узнать причину:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>pkexec could not be started. Run this command in a terminal:</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить pkexec. Выполните эту команду в терминале:</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Cannot start %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить %1.</translation>
     </message>
 </context>
 <context>
@@ -226,7 +226,7 @@
     <message>
         <location line="+1"/>
         <source>XPanel %1 is available: Settings › Update Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступен XPanel %1: Настройки › Центр обновлений</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2276,37 +2276,37 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-17"/>
         <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть браузер. Используйте QR-код или нажмите «Копировать» и вставьте текст на github.com.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыто в браузере. Текст слишком длинный для ссылки и там сокращён; полный текст скопирован в буфер обмена.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opened in your browser. Submit the issue there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыто в браузере. Отправьте обращение там.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировано в буфер обмена.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Saved to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранено в %1</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Откроется обращение (issue) на GitHub — нужна учётная запись GitHub. Ничего не отправляется, пока вы не отправите его там.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
-        <translation type="unfinished"></translation>
+        <translation>В игровом режиме Steam браузер часто недоступен: отсканируйте QR-код телефоном.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2331,7 +2331,7 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="+2"/>
         <source>Short title</source>
-        <translation type="unfinished"></translation>
+        <translation>Краткий заголовок</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2341,57 +2341,57 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="+1"/>
         <source>Include device info</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сведения об устройстве</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подставляет модель, BIOS, дистрибутив, окружение рабочего стола и версии. Никогда не добавляет серийный номер, имя пользователя или файлы. Версия XPanel включается всегда.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Added to the report</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавлено в отчёт</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Send on GitHub</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправить на GitHub</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show QR code</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать QR-код</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save locally</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить локально</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Scan with your phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсканируйте телефоном</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваш текст слишком длинный для QR-кода. Код открывает отчёт только с заголовком и сведениями об устройстве; полный текст скопирован в буфер обмена.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
-        <translation type="unfinished"></translation>
+        <translation>Откроется обращение на GitHub с вашим текстом. Отправьте его там со своей учётной записью GitHub.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location line="-96"/>
@@ -2610,17 +2610,17 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="+1"/>
         <source>Report a problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщить о проблеме</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Send feedback to the developer on GitHub.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправьте отзыв разработчику на GitHub.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open Feedback</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть обратную связь</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3197,27 +3197,27 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-10"/>
         <source>Install in a terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить в терминале</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy command</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать команду</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Copied</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировано</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверять обновления автоматически</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
-        <translation type="unfinished"></translation>
+        <translation>Раз в сутки XPanel запрашивает у api.github.com последний релиз. Больше ничего не отправляется.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3279,57 +3279,57 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-134"/>
         <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлено в /opt/xpanel: обновление запросит ваш пароль, затем заменит XPanel и перезапустит xpanel-daemon.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
-        <translation type="unfinished"></translation>
+        <translation>AppImage: новая версия сохраняется рядом с этим файлом (старая остаётся).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Запускается установщик (Windows запросит разрешение), затем XPanel снова запустится.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Installed by your package manager: update XPanel with it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлено менеджером пакетов: обновляйте XPanel с его помощью.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Эта копия собрана из исходного кода или распакована из архива: скачайте новую версию со страницы релиза.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Checking GitHub …</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка GitHub …</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Installed version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Установленная версия %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Version %1 is available (skipped).</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступна версия %1 (пропущена).</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Version %1 is available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступна версия %1.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>XPanel is up to date (latest release: %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel обновлён до последней версии (последний релиз: %1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Check now</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить сейчас</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -3379,7 +3379,7 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-98"/>
         <source>XPanel %1</source>
-        <translation type="unfinished"></translation>
+        <translation>XPanel %1</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -3394,17 +3394,17 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-99"/>
         <source>Restart XPanel</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезапустить XPanel</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Updating…</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление…</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Update now</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить сейчас</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -3424,17 +3424,17 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="-97"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропущено</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Skip this version</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропустить эту версию</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Release page</source>
-        <translation type="unfinished"></translation>
+        <translation>Страница релиза</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -3616,12 +3616,12 @@ Steam games appear after you install them; other games: Manage Library.</source>
     <message>
         <location line="+19"/>
         <source>XPanel %1 is available</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступен XPanel %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open Settings › Update Center to install it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Откройте Настройки › Центр обновлений, чтобы установить его.</translation>
     </message>
 </context>
 <context>
