@@ -53,6 +53,10 @@ Item {
                     Rectangle { anchors.fill: parent; color: "transparent"; border.color: T.accent; border.width: 3; visible: parent.activeFocus }
                     Text { x: 28; anchors.verticalCenter: parent.verticalCenter; text: modelData.title
                            color: parent.sel ? "#ffffff" : T.dim; font.pixelSize: 19; font.bold: parent.sel }
+                    // a new XPanel version is waiting in the Update Center
+                    Rectangle { visible: modelData.id === "update" && appUpdate.available && !appUpdate.skipped
+                                width: 10; height: 10; radius: 5; color: T.accent
+                                anchors.right: parent.right; anchors.rightMargin: 24; anchors.verticalCenter: parent.verticalCenter }
                     MouseArea { anchors.fill: parent; onClicked: { parent.forceActiveFocus(); app.settingsPage = modelData.id } }
                 }
             }

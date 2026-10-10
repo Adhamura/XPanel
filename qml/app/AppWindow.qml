@@ -76,6 +76,7 @@ Item {
         function onErrorChanged() { if (device.error) app.note(qsTr("xpanel-daemon: %1").arg(device.error)) }
     }
     Connections { target: library; function onLaunched(id) { app.note(qsTr("Started %1").arg(id)) } }
+    Connections { target: appUpdate; function onUpdateFound(version) { app.note(qsTr("XPanel %1 is available: Settings › Update Center").arg(version)) } }
 
     // ---------- gamepad / keyboard navigation ----------
     function focusFirst() {

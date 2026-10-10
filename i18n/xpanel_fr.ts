@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr" sourcelanguage="en">
 <context>
+    <name>AppUpdate</name>
+    <message>
+        <location filename="../src/AppUpdate.cpp" line="+154"/>
+        <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>No connection to GitHub. Check the network and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download was stopped (or redirected to a server other than GitHub).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>GitHub answered with error %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>The update address is not allowed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>GitHub&apos;s answer has no release version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>This release has no file for this installation (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The release file is not on GitHub: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Cannot create the folder %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+28"/>
+        <location line="+21"/>
+        <source>Cannot write %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Downloading %1 …</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Download failed: %1</source>
+        <translation type="unfinished">Échec du téléchargement&#xa0;: %1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Checking the download …</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Cannot download SHA256SUMS: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>SHA256SUMS does not list %1. Nothing was installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>XPanel %1 was saved as %2. The old file was kept.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cannot start the installer %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer is running. XPanel closes now and starts again when it is done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installing XPanel %1. Enter your password when asked …</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>XPanel %1 is installed. Restart XPanel to use it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>pkexec could not be started. Run this command in a terminal:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Cannot start %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AppWindow</name>
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
@@ -82,6 +222,11 @@
         <location line="+2"/>
         <source>Started %1</source>
         <translation>%1 lancé</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel %1 is available: Settings › Update Center</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1546,7 +1691,7 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Profil&#xa0;: %1</translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+180"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Sélectionner   Ⓑ Fermer   Ⓧ Centre de contrôle   Ⓨ Modifier</translation>
     </message>
@@ -2204,7 +2349,7 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+7"/>
         <source>Send on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2244,7 +2389,7 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-99"/>
+        <location line="-96"/>
         <source>Write something first.</source>
         <translation>Écrivez d’abord quelque chose.</translation>
     </message>
@@ -3001,7 +3146,7 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
 <context>
     <name>SetUpdate</name>
     <message>
-        <location filename="../qml/app/SetUpdate.qml" line="+13"/>
+        <location filename="../qml/app/SetUpdate.qml" line="+25"/>
         <source>Update available</source>
         <translation>Mise à jour disponible</translation>
     </message>
@@ -3021,28 +3166,56 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+91"/>
         <source>Update Center</source>
         <translation>Centre de mises à jour</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-77"/>
+        <location line="+77"/>
         <location line="+2"/>
         <source>Checking…</source>
         <translation>Vérification…</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-85"/>
+        <location line="+83"/>
         <source>Last check: %1</source>
         <translation>Dernière vérification&#xa0;: %1</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-83"/>
+        <location line="+83"/>
         <source>Not checked yet.</source>
         <translation>Pas encore vérifié.</translation>
     </message>
     <message>
+        <location line="-10"/>
+        <source>Install in a terminal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Copied</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Check for updates automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <location line="+1"/>
         <source>Check for Updates</source>
         <translation>Rechercher des mises à jour</translation>
@@ -3093,12 +3266,68 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Redémarrer</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-66"/>
+        <location line="+67"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-134"/>
+        <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installed by your package manager: update XPanel with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Checking GitHub …</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Installed version %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Version %1 is available (skipped).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Version %1 is available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel is up to date (latest release: %1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Check now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+117"/>
         <source>Drivers &amp; firmware packages</source>
         <translation>Pilotes et paquets de firmware</translation>
     </message>
@@ -3143,7 +3372,12 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Mettre à jour le firmware</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-98"/>
+        <source>XPanel %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>updatable</source>
         <translation>mise à jour possible</translation>
     </message>
@@ -3153,7 +3387,22 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Mises à jour du système (%1)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-99"/>
+        <source>Restart XPanel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Updating…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Update now</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+100"/>
         <source>Install</source>
         <translation>Installer</translation>
     </message>
@@ -3168,7 +3417,22 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <translation>Mettre à jour le système</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="-97"/>
+        <source>Skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Skip this version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>The system is up to date</source>
         <translation>Le système est à jour</translation>
     </message>
@@ -3260,7 +3524,7 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+405"/>
+        <location filename="../src/main.cpp" line="+408"/>
         <source>Open Quick Panel</source>
         <translation>Ouvrir le panneau rapide</translation>
     </message>
@@ -3343,6 +3607,16 @@ Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: G
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
         <translation>Panneau rapide XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>XPanel %1 is available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Settings › Update Center to install it.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

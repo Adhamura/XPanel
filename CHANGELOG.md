@@ -14,6 +14,19 @@
   **Save locally** keeps the old notes file. The QR code is made by
   [qrcodegen](https://github.com/nayuki/QR-Code-generator) (Project Nayuki, MIT), bundled in
   `third_party/qrcodegen/`.
+- **XPanel updates itself.** Settings › Update Center has a new **XPanel** section: installed and
+  latest version, release notes, **Check now**, **Update now**, **Skip this version** and
+  **Check for updates automatically** (on by default: one request to `api.github.com` a minute after
+  the start and then once a day; a new version shows up as a tray message, in the User Center and
+  as a dot on Settings and on the Quick Panel's gear). Updates are downloaded from the GitHub release and checked against
+  its `SHA256SUMS` before anything is installed. The installed AppImage (`/opt/xpanel`) updates
+  through `pkexec <AppImage> --install` (or shows the `sudo` command when there is no password
+  prompt, e.g. in Steam Game Mode), a portable AppImage saves the new file next to itself, Windows
+  runs the new Setup silently and starts XPanel again; release archives, packages and source builds
+  link the release page. **Restart XPanel** switches to the new version. `src/AppUpdate.*`,
+  `src/UpdateLogic.h` (unit-tested). The AppImage installer now restarts `xpanel-daemon` on
+  every `--install` and recognizes the user under `pkexec`; the Windows installer starts XPanel
+  again after an update.
 
 ## 1.4.0
 

@@ -286,6 +286,32 @@ section to `CHANGELOG.md` and merge to `main`: GitHub Actions builds the AppImag
 starts the AppImage on a virtual screen to catch missing plugins or QML errors, and publishes the
 release `v<version>` with the changelog section as notes.
 
+### Updates
+
+XPanel looks for a new release **once a day** (and a minute after it starts): it asks
+`api.github.com` for this repository's latest release. Nothing else is sent (no ID, no
+statistics), and **Settings › Update Center › Check for updates automatically** turns it off;
+"Check now" still works. When there is a new version, the tray shows a message, the User Center
+lists it and Settings gets a dot; the Update Center shows the release notes, **Update now** and
+**Skip this version**. How it updates depends on how XPanel was installed:
+
+- **AppImage installed with `--install`** (`/opt/xpanel`): downloads the new AppImage and runs
+  `pkexec <new AppImage> --install` (the system asks for your password), which replaces
+  `/opt/xpanel`, rewrites the services and restarts `xpanel-daemon`; then **Restart XPanel**.
+  `--game-mode` is passed again when it was used before. Without a password prompt (Steam Game
+  Mode has no polkit agent) or without `pkexec`, it shows the `sudo … --install` command to run in
+  a terminal, with a Copy button.
+- **AppImage you just run**: saves the new AppImage next to the old one (which is kept), then
+  **Restart XPanel** starts the new file.
+- **Windows**: runs the new Setup silently (Windows asks for permission); XPanel closes and starts
+  again when the installer is done.
+- **Release archive, Arch package or source build**: no automatic install; the Update Center
+  shows the new version and links the release page (packages: update with your package manager).
+
+Every download comes from `github.com` / `*.githubusercontent.com` over HTTPS (redirects
+included) and is checked against the release's **`SHA256SUMS`**; a file that does not match, or
+is not listed, is not installed.
+
 ## Using XPanel
 
 | Pad | Keyboard | Action |
@@ -408,6 +434,10 @@ the `xpanel` group (checked per connection), and only accepts a fixed, validated
 system, only the controller, motion sensor and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
 See [SECURITY.md](SECURITY.md) for details. As with any tool that changes power limits: use at
 your own risk.
+
+**How do I update XPanel?** Settings › Update Center › XPanel › Update now (see
+[Updates](#updates)); it checks GitHub once a day and you can turn that off. Arch package and
+source builds update the usual way.
 
 **Settings say "No access to xpanel-daemon".** Your user is not in the `xpanel` group:
 `sudo usermod -aG xpanel $USER`. It works right away, no new login needed.

@@ -19,6 +19,11 @@ qt_add_executable(tst_gyro tst_gyro.cpp ../daemon/GyroMath.h ../daemon/GyroMath.
 target_include_directories(tst_gyro PRIVATE ../daemon)
 target_link_libraries(tst_gyro PRIVATE Qt6::Core Qt6::Test)
 add_test(NAME gyro COMMAND tst_gyro)
+
+qt_add_executable(tst_appupdate tst_appupdate.cpp ../src/UpdateLogic.h)
+target_include_directories(tst_appupdate PRIVATE ../src)
+target_link_libraries(tst_appupdate PRIVATE Qt6::Core Qt6::Test)
+add_test(NAME appupdate COMMAND tst_appupdate)
 # Daemon logic shared with the app tests: header-only, Qt Core only.
 foreach(t fancurve aura model)
     qt_add_executable(tst_${t} tst_${t}.cpp ../daemon/FanCurve.h ../daemon/Aura.h ../daemon/Model.h)

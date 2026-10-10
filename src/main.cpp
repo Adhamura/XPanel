@@ -19,6 +19,7 @@
 //   XPanel --is-game-mode  exit 0 in Steam Game Mode (gamescope), 1 elsewhere (systemd ExecCondition)
 //   XPanel --version
 
+#include "AppUpdate.h"
 #include "AudioControl.h"
 #include "Config.h"
 #include "Desktop.h"
@@ -337,6 +338,7 @@ int main(int argc, char **argv)
     AudioControl audio;
     NetworkControl network;
     UpdateCenter updates;
+    AppUpdate appUpdate(&config); // XPanel's own updates from GitHub releases
     GameLibrary library(&config);
     GameWatcher watcher;
     watcher.setTitleLookup([&library](const QString &id) { return library.titleOf(id); });
@@ -361,6 +363,7 @@ int main(int argc, char **argv)
     engine.rootContext()->setContextProperty("audio", &audio);
     engine.rootContext()->setContextProperty("network", &network);
     engine.rootContext()->setContextProperty("updates", &updates);
+    engine.rootContext()->setContextProperty("appUpdate", &appUpdate);
     engine.rootContext()->setContextProperty("library", &library);
     engine.rootContext()->setContextProperty("profiles", &profiles);
     engine.rootContext()->setContextProperty("gallery", &gallery);
@@ -455,6 +458,15 @@ int main(int argc, char **argv)
     });
     if (Desktop::caps().tray) // no tray in Steam Game Mode
         tray.show();
+    // A new XPanel release found by the daily check: a tray message (the Control Center adds it
+    // to the User Center notifications; Settings shows a dot). A click opens the Update Center.
+    QObject::connect(&appUpdate, &AppUpdate::updateFound, &app, [&](const QString &version, bool automatic) {
+        if (automatic && tray.isVisible() && QSystemTrayIcon::supportsMessages())
+            tray.showMessage(QCoreApplication::translate("Tray", "XPanel %1 is available").arg(version),
+                             QCoreApplication::translate("Tray", "Open Settings › Update Center to install it."),
+                             appIcon, 10000);
+    });
+    QObject::connect(&tray, &QSystemTrayIcon::messageClicked, &app, [&] { panel.openApp("settings/update"); });
 
     if (command.startsWith("app"))
         panel.openApp(QString::fromUtf8(command.mid(4)).trimmed());

@@ -43,6 +43,7 @@ qt_add_executable(XPanel
     src/AudioControl.h src/AudioControl.cpp
     src/NetworkControl.h src/NetworkControl.cpp
     src/UpdateCenter.h src/UpdateCenter.cpp
+    src/AppUpdate.h src/AppUpdate.cpp src/UpdateLogic.h
     src/GameLibrary.h src/GameLibrary.cpp
     src/GameWatcher.h src/GameWatcher.cpp
     src/ProfileManager.h src/ProfileManager.cpp

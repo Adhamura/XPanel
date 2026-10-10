@@ -391,7 +391,12 @@ Item {
                 sourceSize: Qt.size(width * 2, height * 2)
                 anchors.verticalCenter: parent.verticalCenter
                 opacity: gearMouse.pressed ? 0.6 : 1
-                MouseArea { id: gearMouse; anchors.fill: parent; anchors.margins: -12 * root.s; onClicked: panel.openApp("settings") }
+                MouseArea { id: gearMouse; anchors.fill: parent; anchors.margins: -12 * root.s
+                            onClicked: panel.openApp(appUpdate.available && !appUpdate.skipped ? "settings/update" : "settings") }
+                // a new XPanel version is available
+                Rectangle { visible: appUpdate.available && !appUpdate.skipped
+                            width: 10 * root.s; height: width; radius: width / 2; color: T.accent
+                            anchors.right: parent.right; anchors.top: parent.top; anchors.margins: -2 * root.s }
             }
         }
         // edit corner (the small triangle at the top right)

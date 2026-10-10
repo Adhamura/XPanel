@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de" sourcelanguage="en">
 <context>
+    <name>AppUpdate</name>
+    <message>
+        <location filename="../src/AppUpdate.cpp" line="+154"/>
+        <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
+        <translation>GitHubs Limit für Update-Prüfungen ist erreicht. Versuche es in einer Stunde erneut.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>No connection to GitHub. Check the network and try again.</source>
+        <translation>Keine Verbindung zu GitHub. Prüfe das Netzwerk und versuche es erneut.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download was stopped (or redirected to a server other than GitHub).</source>
+        <translation>Der Download wurde abgebrochen (oder auf einen anderen Server als GitHub umgeleitet).</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>GitHub answered with error %1.</source>
+        <translation>GitHub antwortete mit Fehler %1.</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>The update address is not allowed: %1</source>
+        <translation>Die Update-Adresse ist nicht erlaubt: %1</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>GitHub&apos;s answer has no release version.</source>
+        <translation>GitHubs Antwort enthält keine Release-Version.</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>This release has no file for this installation (%1).</source>
+        <translation>Dieses Release hat keine Datei für diese Installation (%1).</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
+        <translation>Dieses Release hat keine SHA256SUMS-Datei, der Download kann also nicht geprüft werden. Es wurde nichts installiert.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The release file is not on GitHub: %1</source>
+        <translation>Die Release-Datei liegt nicht auf GitHub: %1</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Cannot create the folder %1.</source>
+        <translation>Der Ordner %1 kann nicht angelegt werden.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+28"/>
+        <location line="+21"/>
+        <source>Cannot write %1: %2</source>
+        <translation>%1 kann nicht geschrieben werden: %2</translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Downloading %1 …</source>
+        <translation>Lade %1 herunter …</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Download failed: %1</source>
+        <translation>Download fehlgeschlagen: %1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Checking the download …</source>
+        <translation>Prüfe den Download …</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Cannot download SHA256SUMS: %1</source>
+        <translation>SHA256SUMS kann nicht geladen werden: %1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>SHA256SUMS does not list %1. Nothing was installed.</source>
+        <translation>SHA256SUMS enthält %1 nicht. Es wurde nichts installiert.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
+        <translation>Der Download ist beschädigt: Seine SHA-256-Prüfsumme passt nicht zum Release. Es wurde nichts installiert.</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>XPanel %1 was saved as %2. The old file was kept.</source>
+        <translation>XPanel %1 wurde als %2 gespeichert. Die alte Datei bleibt erhalten.</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cannot start the installer %1.</source>
+        <translation>Das Installationsprogramm %1 kann nicht gestartet werden.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer is running. XPanel closes now and starts again when it is done.</source>
+        <translation>Das Installationsprogramm läuft. XPanel wird jetzt beendet und startet danach wieder.</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
+        <translation>pkexec ist nicht installiert. Führe diesen Befehl in einem Terminal aus, um XPanel %1 zu installieren:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installing XPanel %1. Enter your password when asked …</source>
+        <translation>Installiere XPanel %1. Gib dein Passwort ein, wenn danach gefragt wird …</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>XPanel %1 is installed. Restart XPanel to use it.</source>
+        <translation>XPanel %1 ist installiert. Starte XPanel neu, um es zu verwenden.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
+        <translation>Die Passwortabfrage wurde abgebrochen oder ist hier nicht verfügbar (der Steam-Spielmodus hat keine). Führe diesen Befehl in einem Terminal aus:</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
+        <translation>Die Installation brach mit Fehler %1 ab. Führe diesen Befehl in einem Terminal aus, um den Grund zu sehen:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>pkexec could not be started. Run this command in a terminal:</source>
+        <translation>pkexec konnte nicht gestartet werden. Führe diesen Befehl in einem Terminal aus:</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Cannot start %1.</source>
+        <translation>%1 kann nicht gestartet werden.</translation>
+    </message>
+</context>
+<context>
     <name>AppWindow</name>
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
@@ -82,6 +222,11 @@
         <location line="+2"/>
         <source>Started %1</source>
         <translation>%1 gestartet</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel %1 is available: Settings › Update Center</source>
+        <translation>XPanel %1 ist verfügbar: Einstellungen › Update-Zentrum</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1546,7 +1691,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Profil: %1</translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+180"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Auswählen   Ⓑ Schließen   Ⓧ Kontrollzentrum   Ⓨ Bearbeiten</translation>
     </message>
@@ -2204,7 +2349,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Dem Bericht hinzugefügt</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+7"/>
         <source>Send on GitHub</source>
         <translation>Auf GitHub senden</translation>
     </message>
@@ -2244,7 +2389,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Schließen</translation>
     </message>
     <message>
-        <location line="-99"/>
+        <location line="-96"/>
         <source>Write something first.</source>
         <translation>Bitte zuerst etwas schreiben.</translation>
     </message>
@@ -3001,7 +3146,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
 <context>
     <name>SetUpdate</name>
     <message>
-        <location filename="../qml/app/SetUpdate.qml" line="+13"/>
+        <location filename="../qml/app/SetUpdate.qml" line="+25"/>
         <source>Update available</source>
         <translation>Update verfügbar</translation>
     </message>
@@ -3021,28 +3166,56 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+91"/>
         <source>Update Center</source>
         <translation>Update-Zentrum</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-77"/>
+        <location line="+77"/>
         <location line="+2"/>
         <source>Checking…</source>
         <translation>Prüfe…</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-85"/>
+        <location line="+83"/>
         <source>Last check: %1</source>
         <translation>Letzte Prüfung: %1</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-83"/>
+        <location line="+83"/>
         <source>Not checked yet.</source>
         <translation>Noch nicht geprüft.</translation>
     </message>
     <message>
+        <location line="-10"/>
+        <source>Install in a terminal</source>
+        <translation>Im Terminal installieren</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy command</source>
+        <translation>Befehl kopieren</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Copied</source>
+        <translation>Kopiert</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Check for updates automatically</source>
+        <translation>Automatisch nach Updates suchen</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
+        <translation>Einmal am Tag fragt XPanel api.github.com nach dem neuesten Release. Sonst wird nichts gesendet.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <location line="+1"/>
         <source>Check for Updates</source>
         <translation>Nach Updates suchen</translation>
@@ -3093,12 +3266,68 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Neu starten</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-66"/>
+        <location line="+67"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-134"/>
+        <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
+        <translation>Installiert in /opt/xpanel: Das Update fragt nach deinem Passwort, ersetzt dann XPanel und startet xpanel-daemon neu.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
+        <translation>AppImage: Die neue Version wird neben dieser Datei gespeichert (die alte bleibt erhalten).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
+        <translation>Das Installationsprogramm läuft (Windows fragt nach der Berechtigung), danach startet XPanel wieder.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installed by your package manager: update XPanel with it.</source>
+        <translation>Mit deiner Paketverwaltung installiert: Aktualisiere XPanel damit.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
+        <translation>Diese Kopie wurde aus dem Quellcode gebaut oder aus einem Archiv entpackt: Lade die neue Version von der Release-Seite.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Checking GitHub …</source>
+        <translation>Frage GitHub …</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Installed version %1</source>
+        <translation>Installierte Version %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Version %1 is available (skipped).</source>
+        <translation>Version %1 ist verfügbar (übersprungen).</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Version %1 is available.</source>
+        <translation>Version %1 ist verfügbar.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel is up to date (latest release: %1).</source>
+        <translation>XPanel ist aktuell (neuestes Release: %1).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Check now</source>
+        <translation>Jetzt prüfen</translation>
+    </message>
+    <message>
+        <location line="+117"/>
         <source>Drivers &amp; firmware packages</source>
         <translation>Treiber- und Firmware-Pakete</translation>
     </message>
@@ -3143,7 +3372,12 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Firmware aktualisieren</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-98"/>
+        <source>XPanel %1</source>
+        <translation>XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>updatable</source>
         <translation>aktualisierbar</translation>
     </message>
@@ -3153,7 +3387,22 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Systemupdates (%1)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-99"/>
+        <source>Restart XPanel</source>
+        <translation>XPanel neu starten</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Updating…</source>
+        <translation>Aktualisiere…</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Update now</source>
+        <translation>Jetzt aktualisieren</translation>
+    </message>
+    <message>
+        <location line="+100"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
@@ -3168,7 +3417,22 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>System aktualisieren</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="-97"/>
+        <source>Skipped</source>
+        <translation>Übersprungen</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Skip this version</source>
+        <translation>Diese Version überspringen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release page</source>
+        <translation>Release-Seite</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>The system is up to date</source>
         <translation>Das System ist aktuell</translation>
     </message>
@@ -3260,7 +3524,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+405"/>
+        <location filename="../src/main.cpp" line="+408"/>
         <source>Open Quick Panel</source>
         <translation>Schnellmenü öffnen</translation>
     </message>
@@ -3343,6 +3607,16 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
         <translation>XPanel Schnellmenü %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>XPanel %1 is available</source>
+        <translation>XPanel %1 ist verfügbar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Settings › Update Center to install it.</source>
+        <translation>Öffne Einstellungen › Update-Zentrum, um es zu installieren.</translation>
     </message>
 </context>
 <context>
