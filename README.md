@@ -118,8 +118,8 @@ Crate or G-Helper. There is **no 32-bit build** either: the Ally X is a 64-bit d
 
 Download **`XPanel-<version>-x86_64.AppImage`** from
 [**Releases**](https://github.com/Adhamura/XPanel/releases/latest). It contains everything,
-Qt included, and works on any x86_64 distro from 2025 on (glibc ≥ 2.41: CachyOS, Arch, Fedora 42+,
-Bazzite, Debian 13, …).
+Qt included, and works on any x86_64 distro from 2024 on (glibc ≥ 2.39: CachyOS, Arch, Fedora 40+,
+Bazzite, Ubuntu 24.04+, Debian 13, …).
 
 ```bash
 chmod +x XPanel-*-x86_64.AppImage

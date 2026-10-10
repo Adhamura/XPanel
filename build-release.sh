@@ -19,7 +19,7 @@
 # on Windows use Armoury Crate. On Windows, build-release.bat runs this script in WSL.
 #
 # The AppImage bundles Qt, the Wayland/X11 plugins and layer-shell-qt, so it only needs
-# glibc >= the build system's (2.41 for debian:trixie). The archive needs Qt >= 6.8 installed.
+# glibc >= 2.39 when built in debian:trixie. The archive needs Qt >= 6.8 installed.
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")"
 
@@ -126,7 +126,9 @@ if [ "$APPIMAGE" = 1 ]; then
     install -Dm755 packaging/appimage/appimage-install.sh "$APPDIR/usr/share/xpanel/appimage-install.sh"
     (
         export PATH="$TOOLS:$PATH" APPIMAGE_EXTRACT_AND_RUN=1 QMAKE QML_SOURCES_PATHS="$PWD/qml"
-        export EXTRA_PLATFORM_PLUGINS="$WAYLAND" EXTRA_QT_MODULES="waylandclient"
+        # svg: the QML icons are SVG, but with --as-needed XPanel does not link QtSvg itself,
+        # so the Qt plugin would not bundle the SVG image / icon plugins on its own.
+        export EXTRA_PLATFORM_PLUGINS="$WAYLAND" EXTRA_QT_MODULES="svg;waylandclient" EXTRA_QT_PLUGINS="svg;waylandclient"
         export LDAI_OUTPUT="dist/$APPIMAGE_FILE" OUTPUT="dist/$APPIMAGE_FILE" LINUXDEPLOY_OUTPUT_VERSION="$VERSION"
         export LDAI_NO_APPSTREAM=1 NO_APPSTREAM=1
         linuxdeploy-x86_64.AppImage --appdir "$APPDIR" \
@@ -136,11 +138,15 @@ if [ "$APPIMAGE" = 1 ]; then
             --custom-apprun packaging/appimage/AppRun \
             --plugin qt --output appimage
     )
-    # layer-shell-qt's Wayland shell plugin makes the panel an overlay; make sure it came along.
-    if [ -n "$WAYLAND" ] && [ -f "$PLUGINS/wayland-shell-integration/liblayer-shell.so" ] \
-       && [ ! -f "$APPDIR/usr/plugins/wayland-shell-integration/liblayer-shell.so" ]; then
-        echo "AppImage is missing wayland-shell-integration/liblayer-shell.so"; exit 1
+    # Plugins XPanel cannot work without: X11, SVG icons, and on Wayland the platform plugin
+    # and layer-shell-qt's shell plugin (the panel overlay).
+    NEED="platforms/libqxcb.so imageformats/libqsvg.so iconengines/libqsvgicon.so"
+    if [ -n "$WAYLAND" ] && objdump -p "$BUILD/bin/XPanel" | grep -q 'NEEDED.*LayerShellQt'; then
+        NEED="$NEED wayland-shell-integration/liblayer-shell.so"
     fi
+    for p in $NEED; do
+        [ -f "$APPDIR/usr/plugins/$p" ] || { echo "The AppImage is missing the Qt plugin $p"; exit 1; }
+    done
     [ -f "dist/$APPIMAGE_FILE" ] || { echo "linuxdeploy did not write dist/$APPIMAGE_FILE"; exit 1; }
     chmod +x "dist/$APPIMAGE_FILE"
     echo "==> Checking the AppImage"

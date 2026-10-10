@@ -48,7 +48,7 @@ jobs:
           The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`,
           `sudo scripts/install-daemon.sh`). Check downloads with `sha256sum -c SHA256SUMS`.
 
-          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.41). On Windows, use Armoury Crate.
+          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.39). On Windows, use Armoury Crate.
           NOTES
       - uses: softprops/action-gh-release@v2
         with:
