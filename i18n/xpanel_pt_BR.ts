@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="pt_BR" sourcelanguage="en">
 <context>
+    <name>AppUpdate</name>
+    <message>
+        <location filename="../src/AppUpdate.cpp" line="+154"/>
+        <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
+        <translation>O limite de verificações de atualização do GitHub foi atingido. Tente novamente em uma hora.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>No connection to GitHub. Check the network and try again.</source>
+        <translation>Sem conexão com o GitHub. Verifique a rede e tente novamente.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download was stopped (or redirected to a server other than GitHub).</source>
+        <translation>O download foi interrompido (ou redirecionado para um servidor que não é do GitHub).</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>GitHub answered with error %1.</source>
+        <translation>O GitHub respondeu com o erro %1.</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>The update address is not allowed: %1</source>
+        <translation>O endereço da atualização não é permitido: %1</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>GitHub&apos;s answer has no release version.</source>
+        <translation>A resposta do GitHub não tem a versão do lançamento.</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>This release has no file for this installation (%1).</source>
+        <translation>Este lançamento não tem arquivo para esta instalação (%1).</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
+        <translation>Este lançamento não tem o arquivo SHA256SUMS, então o download não pode ser verificado. Nada foi instalado.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The release file is not on GitHub: %1</source>
+        <translation>O arquivo do lançamento não está no GitHub: %1</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Cannot create the folder %1.</source>
+        <translation>Não foi possível criar a pasta %1.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+28"/>
+        <location line="+21"/>
+        <source>Cannot write %1: %2</source>
+        <translation>Não foi possível gravar %1: %2</translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Downloading %1 …</source>
+        <translation>Baixando %1 …</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Download failed: %1</source>
+        <translation>Falha no download: %1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Checking the download …</source>
+        <translation>Verificando o download …</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Cannot download SHA256SUMS: %1</source>
+        <translation>Não foi possível baixar o SHA256SUMS: %1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>SHA256SUMS does not list %1. Nothing was installed.</source>
+        <translation>O SHA256SUMS não lista %1. Nada foi instalado.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
+        <translation>O download está corrompido: a soma de verificação SHA-256 não corresponde à do lançamento. Nada foi instalado.</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>XPanel %1 was saved as %2. The old file was kept.</source>
+        <translation>O XPanel %1 foi salvo como %2. O arquivo antigo foi mantido.</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cannot start the installer %1.</source>
+        <translation>Não foi possível iniciar o instalador %1.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer is running. XPanel closes now and starts again when it is done.</source>
+        <translation>O instalador está em execução. O XPanel fecha agora e inicia novamente quando terminar.</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
+        <translation>O pkexec não está instalado. Execute este comando em um terminal para instalar o XPanel %1:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installing XPanel %1. Enter your password when asked …</source>
+        <translation>Instalando o XPanel %1. Digite sua senha quando solicitado …</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>XPanel %1 is installed. Restart XPanel to use it.</source>
+        <translation>O XPanel %1 está instalado. Reinicie o XPanel para usá-lo.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
+        <translation>A solicitação de senha foi cancelada ou não está disponível aqui (o Modo Jogo da Steam não tem uma). Execute este comando em um terminal:</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
+        <translation>O instalador parou com o erro %1. Execute este comando em um terminal para ver o motivo:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>pkexec could not be started. Run this command in a terminal:</source>
+        <translation>Não foi possível iniciar o pkexec. Execute este comando em um terminal:</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Cannot start %1.</source>
+        <translation>Não foi possível iniciar %1.</translation>
+    </message>
+</context>
+<context>
     <name>AppWindow</name>
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
@@ -82,6 +222,11 @@
         <location line="+2"/>
         <source>Started %1</source>
         <translation>%1 iniciado</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel %1 is available: Settings › Update Center</source>
+        <translation>O XPanel %1 está disponível: Configurações › Central de atualizações</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1546,7 +1691,7 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Perfil: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+180"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Selecionar   Ⓑ Fechar   Ⓧ Central de controle   Ⓨ Editar</translation>
     </message>
@@ -2119,14 +2264,44 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Feedback</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Escreva o que corrigir ou adicionar. As anotações são salvas em %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation>Não foi possível abrir um navegador. Use o código QR ou use Copiar e cole o texto em github.com.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation>Aberto no seu navegador. O texto era longo demais para um link e foi encurtado lá; o texto completo foi copiado para a área de transferência.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation>Aberto no seu navegador. Envie o relato por lá.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation>Copiado para a área de transferência.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation>Salvo em %1</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation>Abre uma issue no GitHub — você precisa de uma conta do GitHub. Nada é enviado até você enviar por lá.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation>No Modo Jogo da Steam, muitas vezes não há navegador disponível: escaneie o código QR com o celular.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2150,21 +2325,71 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation>Título curto</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Seu feedback…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Salvar</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation>Incluir informações do dispositivo</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Salvo. Obrigado!</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation>Preenche modelo, BIOS, distro, desktop e versões. Nunca inclui seu número de série, nome de usuário ou arquivos. A versão do XPanel é sempre incluída.</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation>Adicionado ao relatório</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Send on GitHub</source>
+        <translation>Enviar no GitHub</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation>Mostrar código QR</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation>Salvar localmente</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation>Escaneie com o celular</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation>Seu texto é longo demais para um código QR. O código abre um relatório apenas com o título e as informações do dispositivo; o texto completo é copiado para a área de transferência.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation>Abre a issue no GitHub com o seu texto. Envie por lá com a sua conta do GitHub.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location line="-96"/>
         <source>Write something first.</source>
         <translation>Escreva algo primeiro.</translation>
     </message>
@@ -2183,12 +2408,12 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>Aplica na hora. Japonês, coreano e chinês exigem uma fonte CJK no sistema.</translation>
     </message>
@@ -2376,6 +2601,21 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <location line="+1"/>
         <source>not running</source>
         <translation>não está em execução</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a problem</source>
+        <translation>Relatar um problema</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation>Envie feedback ao desenvolvedor pelo GitHub.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation>Abrir Feedback</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2906,7 +3146,7 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
 <context>
     <name>SetUpdate</name>
     <message>
-        <location filename="../qml/app/SetUpdate.qml" line="+13"/>
+        <location filename="../qml/app/SetUpdate.qml" line="+25"/>
         <source>Update available</source>
         <translation>Atualização disponível</translation>
     </message>
@@ -2926,28 +3166,56 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+91"/>
         <source>Update Center</source>
         <translation>Central de atualizações</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-77"/>
+        <location line="+77"/>
         <location line="+2"/>
         <source>Checking…</source>
         <translation>Verificando…</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-85"/>
+        <location line="+83"/>
         <source>Last check: %1</source>
         <translation>Última verificação: %1</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-83"/>
+        <location line="+83"/>
         <source>Not checked yet.</source>
         <translation>Ainda não verificado.</translation>
     </message>
     <message>
+        <location line="-10"/>
+        <source>Install in a terminal</source>
+        <translation>Instalar em um terminal</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy command</source>
+        <translation>Copiar comando</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Copied</source>
+        <translation>Copiado</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Check for updates automatically</source>
+        <translation>Verificar atualizações automaticamente</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
+        <translation>Uma vez por dia o XPanel consulta o api.github.com sobre o lançamento mais recente. Nada mais é enviado.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <location line="+1"/>
         <source>Check for Updates</source>
         <translation>Verificar atualizações</translation>
@@ -2998,12 +3266,68 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Reiniciar</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-66"/>
+        <location line="+67"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-134"/>
+        <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
+        <translation>Instalado em /opt/xpanel: a atualização pede a sua senha, substitui o XPanel e reinicia o xpanel-daemon.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
+        <translation>AppImage: a nova versão é salva ao lado deste arquivo (o antigo é mantido).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
+        <translation>O instalador é executado (o Windows pede permissão) e depois o XPanel inicia novamente.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installed by your package manager: update XPanel with it.</source>
+        <translation>Instalado pelo seu gerenciador de pacotes: atualize o XPanel com ele.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
+        <translation>Esta cópia foi compilada a partir do código-fonte ou extraída de um arquivo compactado: baixe a nova versão na página do lançamento.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Checking GitHub …</source>
+        <translation>Verificando o GitHub …</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Installed version %1</source>
+        <translation>Versão instalada %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Version %1 is available (skipped).</source>
+        <translation>A versão %1 está disponível (ignorada).</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Version %1 is available.</source>
+        <translation>A versão %1 está disponível.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel is up to date (latest release: %1).</source>
+        <translation>O XPanel está atualizado (lançamento mais recente: %1).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Check now</source>
+        <translation>Verificar agora</translation>
+    </message>
+    <message>
+        <location line="+117"/>
         <source>Drivers &amp; firmware packages</source>
         <translation>Pacotes de drivers e firmware</translation>
     </message>
@@ -3048,7 +3372,12 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Atualizar firmware</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-98"/>
+        <source>XPanel %1</source>
+        <translation>XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>updatable</source>
         <translation>atualizável</translation>
     </message>
@@ -3058,7 +3387,22 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Atualizações do sistema (%1)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-99"/>
+        <source>Restart XPanel</source>
+        <translation>Reiniciar o XPanel</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Updating…</source>
+        <translation>Atualizando…</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Update now</source>
+        <translation>Atualizar agora</translation>
+    </message>
+    <message>
+        <location line="+100"/>
         <source>Install</source>
         <translation>Instalar</translation>
     </message>
@@ -3073,7 +3417,22 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <translation>Atualizar sistema</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="-97"/>
+        <source>Skipped</source>
+        <translation>Ignorada</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Skip this version</source>
+        <translation>Ignorar esta versão</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release page</source>
+        <translation>Página do lançamento</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>The system is up to date</source>
         <translation>O sistema está atualizado</translation>
     </message>
@@ -3165,7 +3524,7 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+408"/>
         <source>Open Quick Panel</source>
         <translation>Abrir o Painel rápido</translation>
     </message>
@@ -3248,6 +3607,16 @@ Os jogos da Steam aparecem após a instalação; outros jogos: Gerenciar bibliot
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
         <translation>Painel rápido do XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>XPanel %1 is available</source>
+        <translation>O XPanel %1 está disponível</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Settings › Update Center to install it.</source>
+        <translation>Abra Configurações › Central de atualizações para instalá-lo.</translation>
     </message>
 </context>
 <context>

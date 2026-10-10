@@ -53,7 +53,16 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 [Run]
 Filename: "{app}\XPanel.exe"; Parameters: "--app"; Description: "Start XPanel"; Flags: nowait postinstall skipifsilent runasoriginaluser
+; XPanel's own updater runs Setup with /SILENT ... /relaunch=1 and quits: start it again when done,
+; as the signed-in user (not elevated). Other silent installs (scripts, winget) do not start it.
+Filename: "{app}\XPanel.exe"; Parameters: "--app settings/update"; Flags: nowait runasoriginaluser; Check: RelaunchAfterUpdate
 
 [UninstallRun]
 Filename: "{sys}\taskkill.exe"; Parameters: "/F /IM XPanel.exe"; Flags: runhidden; RunOnceId: "StopXPanel"
 Filename: "{sys}\taskkill.exe"; Parameters: "/F /IM xpanel-daemon.exe"; Flags: runhidden; RunOnceId: "StopDaemon"
+
+[Code]
+function RelaunchAfterUpdate: Boolean;
+begin
+  Result := WizardSilent and (ExpandConstant('{param:relaunch|0}') = '1');
+end;

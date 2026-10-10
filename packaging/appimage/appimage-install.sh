@@ -59,10 +59,15 @@ chown -R root:root "$DEST"
 chmod -R u+rwX,go+rX,go-w "$DEST"
 
 # Only root and members of the group xpanel may control the daemon.
+# The user: sudo sets SUDO_USER, pkexec (XPanel's own updater) sets PKEXEC_UID.
+INSTALL_USER="${SUDO_USER:-}"
+if [ -z "$INSTALL_USER" ] && [ -n "${PKEXEC_UID:-}" ]; then
+    INSTALL_USER="$(id -nu "$PKEXEC_UID" 2>/dev/null || true)"
+fi
 getent group xpanel >/dev/null || groupadd --system xpanel
-if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
-    usermod -aG xpanel "$SUDO_USER"
-    echo "    added $SUDO_USER to the group xpanel"
+if [ -n "$INSTALL_USER" ] && [ "$INSTALL_USER" != root ]; then
+    usermod -aG xpanel "$INSTALL_USER"
+    echo "    added $INSTALL_USER to the group xpanel"
 else
     echo "    add your desktop user to the group xpanel: sudo usermod -aG xpanel <user>"
 fi
@@ -114,13 +119,17 @@ fi
 
 if have_systemd; then
     systemctl daemon-reload
-    systemctl enable --now xpanel-daemon.service
+    # Running --install again (an update) is safe: the daemon was stopped above and starts here
+    # from the new files; restart covers a daemon that was started again in between.
+    systemctl enable xpanel-daemon.service
+    systemctl restart xpanel-daemon.service
     systemctl --no-pager --lines=3 status xpanel-daemon.service || true
 else
     echo "WARNING: systemd is not running; start $DEST/usr/bin/xpanel-daemon as root yourself."
 fi
 
-# Start the tray icon for the user who ran sudo (it also starts at every login).
+# Start the tray icon for the user who ran sudo (it also starts at every login). Not after an
+# update through pkexec: the running XPanel offers "Restart XPanel" itself.
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
     sudo -u "$SUDO_USER" setsid -f "$DEST/AppRun" --background >/dev/null 2>&1 < /dev/null || true
 fi

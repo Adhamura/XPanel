@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="it" sourcelanguage="en">
 <context>
+    <name>AppUpdate</name>
+    <message>
+        <location filename="../src/AppUpdate.cpp" line="+154"/>
+        <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
+        <translation>Hai raggiunto il limite di GitHub per il controllo degli aggiornamenti. Riprova tra un&apos;ora.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>No connection to GitHub. Check the network and try again.</source>
+        <translation>Nessuna connessione a GitHub. Controlla la rete e riprova.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download was stopped (or redirected to a server other than GitHub).</source>
+        <translation>Il download è stato interrotto (o reindirizzato a un server diverso da GitHub).</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>GitHub answered with error %1.</source>
+        <translation>GitHub ha risposto con l&apos;errore %1.</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>The update address is not allowed: %1</source>
+        <translation>L&apos;indirizzo dell&apos;aggiornamento non è consentito: %1</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>GitHub&apos;s answer has no release version.</source>
+        <translation>La risposta di GitHub non contiene la versione della release.</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>This release has no file for this installation (%1).</source>
+        <translation>Questa release non ha un file per questa installazione (%1).</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
+        <translation>Questa release non ha un file SHA256SUMS, quindi il download non può essere verificato. Non è stato installato nulla.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The release file is not on GitHub: %1</source>
+        <translation>Il file della release non è su GitHub: %1</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Cannot create the folder %1.</source>
+        <translation>Impossibile creare la cartella %1.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+28"/>
+        <location line="+21"/>
+        <source>Cannot write %1: %2</source>
+        <translation>Impossibile scrivere %1: %2</translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Downloading %1 …</source>
+        <translation>Download di %1 …</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Download failed: %1</source>
+        <translation>Download non riuscito: %1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Checking the download …</source>
+        <translation>Verifica del download …</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Cannot download SHA256SUMS: %1</source>
+        <translation>Impossibile scaricare SHA256SUMS: %1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>SHA256SUMS does not list %1. Nothing was installed.</source>
+        <translation>SHA256SUMS non elenca %1. Non è stato installato nulla.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
+        <translation>Il download è danneggiato: il suo checksum SHA-256 non corrisponde a quello della release. Non è stato installato nulla.</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>XPanel %1 was saved as %2. The old file was kept.</source>
+        <translation>XPanel %1 è stato salvato come %2. Il vecchio file è stato conservato.</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cannot start the installer %1.</source>
+        <translation>Impossibile avviare l&apos;installer %1.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer is running. XPanel closes now and starts again when it is done.</source>
+        <translation>L&apos;installer è in esecuzione. XPanel si chiude ora e si riavvia al termine.</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
+        <translation>pkexec non è installato. Esegui questo comando in un terminale per installare XPanel %1:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installing XPanel %1. Enter your password when asked …</source>
+        <translation>Installazione di XPanel %1. Inserisci la password quando richiesto …</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>XPanel %1 is installed. Restart XPanel to use it.</source>
+        <translation>XPanel %1 è installato. Riavvia XPanel per usarlo.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
+        <translation>La richiesta della password è stata annullata o non è disponibile qui (Steam Game Mode non ce l&apos;ha). Esegui questo comando in un terminale:</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
+        <translation>L&apos;installer si è fermato con l&apos;errore %1. Esegui questo comando in un terminale per capire perché:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>pkexec could not be started. Run this command in a terminal:</source>
+        <translation>Impossibile avviare pkexec. Esegui questo comando in un terminale:</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Cannot start %1.</source>
+        <translation>Impossibile avviare %1.</translation>
+    </message>
+</context>
+<context>
     <name>AppWindow</name>
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
@@ -82,6 +222,11 @@
         <location line="+2"/>
         <source>Started %1</source>
         <translation>%1 avviato</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel %1 is available: Settings › Update Center</source>
+        <translation>XPanel %1 è disponibile: Impostazioni › Centro aggiornamenti</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -320,7 +465,7 @@
     <message>
         <location line="+0"/>
         <source>the Ally moved, try again</source>
-        <translation>l'Ally è stato mosso, riprova</translation>
+        <translation>l&apos;Ally è stato mosso, riprova</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -410,7 +555,7 @@
     <message>
         <location line="+11"/>
         <source>XPanel&apos;s input layer applies these settings live to the Ally controller (virtual Xbox 360 pad + keyboard / mouse).</source>
-        <translation>Il livello di input di XPanel applica queste impostazioni in tempo reale al controller dell'Ally (pad Xbox 360 virtuale + tastiera / mouse).</translation>
+        <translation>Il livello di input di XPanel applica queste impostazioni in tempo reale al controller dell&apos;Ally (pad Xbox 360 virtuale + tastiera / mouse).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -616,7 +761,7 @@
     <message>
         <location line="+0"/>
         <source>The Ally&apos;s motion sensor as mouse or right stick. It runs only while a game has the controller (not while XPanel is open).</source>
-        <translation>Il sensore di movimento dell'Ally come mouse o stick destro. Funziona solo mentre un gioco usa il controller (non quando XPanel è aperto).</translation>
+        <translation>Il sensore di movimento dell&apos;Ally come mouse o stick destro. Funziona solo mentre un gioco usa il controller (non quando XPanel è aperto).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -641,7 +786,7 @@
     <message>
         <location line="+0"/>
         <source>Yaw: turn the Ally left / right. Roll: tilt it like a steering wheel.</source>
-        <translation>Imbardata: ruota l'Ally a sinistra / destra. Rollio: inclinalo come un volante.</translation>
+        <translation>Imbardata: ruota l&apos;Ally a sinistra / destra. Rollio: inclinalo come un volante.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -702,7 +847,7 @@
     <message>
         <location line="-2"/>
         <source>If the aim drifts: put the Ally on a flat table, do not touch it, and press Calibrate.</source>
-        <translation>Se la mira deriva: appoggia l'Ally su un tavolo piano, non toccarlo e premi Calibra.</translation>
+        <translation>Se la mira deriva: appoggia l&apos;Ally su un tavolo piano, non toccarlo e premi Calibra.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1141,7 +1286,7 @@ Apri un gioco e premi Y o ★ per aggiungerlo.</translation>
         <source>No games found.
 Steam games appear after you install them; other games: Manage Library.</source>
         <translation>Nessun gioco trovato.
-I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.</translation>
+I giochi Steam compaiono dopo l&apos;installazione; altri giochi: Gestisci libreria.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1546,7 +1691,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Profilo: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+180"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Seleziona   Ⓑ Chiudi   Ⓧ Centro di controllo   Ⓨ Modifica</translation>
     </message>
@@ -1675,7 +1820,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Keeping the battery below 100% while plugged in makes it last longer.</source>
-        <translation>Mantenere la batteria sotto il 100% mentre è collegata all'alimentatore ne prolunga la durata.</translation>
+        <translation>Mantenere la batteria sotto il 100% mentre è collegata all&apos;alimentatore ne prolunga la durata.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1760,7 +1905,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>The sound when the Ally starts.</source>
-        <translation>Il suono all'avvio dell'Ally.</translation>
+        <translation>Il suono all&apos;avvio dell&apos;Ally.</translation>
     </message>
 </context>
 <context>
@@ -1773,12 +1918,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Done. The offset is saved.</source>
-        <translation>Fatto. L'offset è stato salvato.</translation>
+        <translation>Fatto. L&apos;offset è stato salvato.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Ally moved. Try again.</source>
-        <translation>L'Ally è stato mosso. Riprova.</translation>
+        <translation>L&apos;Ally è stato mosso. Riprova.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1804,7 +1949,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Gyro calibration measures the motion sensor&apos;s offset at rest, so the aim does not drift. Stick and trigger calibration come later; until then the dead zones and trigger ranges in Control Mode do that job.</source>
-        <translation>La calibrazione Gyro misura l'offset a riposo del sensore di movimento, così la mira non deriva. La calibrazione di stick e grilletti arriverà più avanti; nel frattempo le zone morte e le corse dei grilletti in Modalità di controllo svolgono questo compito.</translation>
+        <translation>La calibrazione Gyro misura l&apos;offset a riposo del sensore di movimento, così la mira non deriva. La calibrazione di stick e grilletti arriverà più avanti; nel frattempo le zone morte e le corse dei grilletti in Modalità di controllo svolgono questo compito.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1852,7 +1997,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Put the Ally on a flat table and do not touch it, then press Start (about 1 second).</source>
-        <translation>Appoggia l'Ally su un tavolo piano e non toccarlo, poi premi Avvia (circa 1 secondo).</translation>
+        <translation>Appoggia l&apos;Ally su un tavolo piano e non toccarlo, poi premi Avvia (circa 1 secondo).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1978,7 +2123,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>A little cooler and crisper (7200 K).</source>
-        <translation>Un po' più freddo e nitido (7200 K).</translation>
+        <translation>Un po&apos; più freddo e nitido (7200 K).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2063,7 +2208,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Ally screen only, external screen only, the same picture on both, or one desktop over both.</source>
-        <translation>Solo schermo dell'Ally, solo schermo esterno, la stessa immagine su entrambi o un desktop esteso su entrambi.</translation>
+        <translation>Solo schermo dell&apos;Ally, solo schermo esterno, la stessa immagine su entrambi o un desktop esteso su entrambi.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2119,14 +2264,44 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Feedback</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Scrivi cosa correggere o aggiungere. Le note vengono salvate in %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation>Impossibile aprire un browser. Usa il codice QR, oppure Copia e incolla il testo su github.com.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation>Aperto nel browser. Il testo era troppo lungo per un link e lì è abbreviato; il testo completo è stato copiato negli appunti.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation>Aperto nel browser. Invia lì la segnalazione.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation>Copiato negli appunti.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation>Salvato in %1</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation>Apre una issue su GitHub — serve un account GitHub. Non viene inviato nulla finché non la invii tu lì.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation>In Steam Game Mode spesso non c&apos;è un browser: inquadra il codice QR con il telefono.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2150,21 +2325,71 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation>Titolo breve</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Il tuo feedback…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Salva</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation>Includi info sul dispositivo</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Salvato. Grazie.</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation>Inserisce modello, BIOS, distro, desktop e versioni. Mai il tuo numero di serie, il nome utente o i tuoi file. La versione di XPanel è sempre inclusa.</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation>Aggiunto alla segnalazione</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Send on GitHub</source>
+        <translation>Invia su GitHub</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation>Mostra codice QR</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation>Copia</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation>Salva in locale</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation>Inquadra con il telefono</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation>Il tuo testo è troppo lungo per un codice QR. Il codice apre una segnalazione solo con titolo e info sul dispositivo; il testo completo è stato copiato negli appunti.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation>Apre la issue su GitHub con il tuo testo. Inviala lì con il tuo account GitHub.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <location line="-96"/>
         <source>Write something first.</source>
         <translation>Scrivi prima qualcosa.</translation>
     </message>
@@ -2183,12 +2408,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Lingua</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>Si applica subito. Giapponese, coreano e cinese richiedono un font CJK nel sistema.</translation>
     </message>
@@ -2200,7 +2425,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Short logo animation when Control Center opens.</source>
-        <translation>Breve animazione del logo all'apertura del Centro di controllo.</translation>
+        <translation>Breve animazione del logo all&apos;apertura del Centro di controllo.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2379,6 +2604,21 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+1"/>
+        <source>Report a problem</source>
+        <translation>Segnala un problema</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation>Invia un feedback allo sviluppatore su GitHub.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation>Apri Feedback</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>App Diagnostics</source>
         <translation>Diagnostica app</translation>
     </message>
@@ -2508,7 +2748,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Any color of the rainbow.</source>
-        <translation>Qualsiasi colore dell'arcobaleno.</translation>
+        <translation>Qualsiasi colore dell&apos;arcobaleno.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2533,7 +2773,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Which way the rainbow runs. Up and down may look the same on the rings.</source>
-        <translation>In quale direzione scorre l'arcobaleno. Su e giù possono sembrare uguali sugli anelli.</translation>
+        <translation>In quale direzione scorre l&apos;arcobaleno. Su e giù possono sembrare uguali sugli anelli.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2845,12 +3085,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere.</source>
-        <translation>I pulsanti dell'Ally funzionano ovunque.</translation>
+        <translation>I pulsanti dell&apos;Ally funzionano ovunque.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere; for a keyboard key, bind the command  XPanel --toggle  (or  XPanel --app ) in your desktop&apos;s keyboard settings.</source>
-        <translation>I pulsanti dell'Ally funzionano ovunque; per un tasto della tastiera, associa il comando  XPanel --toggle  (o  XPanel --app ) nelle impostazioni della tastiera del tuo desktop.</translation>
+        <translation>I pulsanti dell&apos;Ally funzionano ovunque; per un tasto della tastiera, associa il comando  XPanel --toggle  (o  XPanel --app ) nelle impostazioni della tastiera del tuo desktop.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2906,7 +3146,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
 <context>
     <name>SetUpdate</name>
     <message>
-        <location filename="../qml/app/SetUpdate.qml" line="+13"/>
+        <location filename="../qml/app/SetUpdate.qml" line="+25"/>
         <source>Update available</source>
         <translation>Aggiornamento disponibile</translation>
     </message>
@@ -2926,28 +3166,56 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Sconosciuto</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+91"/>
         <source>Update Center</source>
         <translation>Centro aggiornamenti</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-77"/>
+        <location line="+77"/>
         <location line="+2"/>
         <source>Checking…</source>
         <translation>Controllo in corso…</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-85"/>
+        <location line="+83"/>
         <source>Last check: %1</source>
         <translation>Ultimo controllo: %1</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-83"/>
+        <location line="+83"/>
         <source>Not checked yet.</source>
         <translation>Non ancora controllato.</translation>
     </message>
     <message>
+        <location line="-10"/>
+        <source>Install in a terminal</source>
+        <translation>Installa in un terminale</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy command</source>
+        <translation>Copia comando</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Copied</source>
+        <translation>Copiato</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Check for updates automatically</source>
+        <translation>Cerca aggiornamenti automaticamente</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
+        <translation>Una volta al giorno XPanel chiede ad api.github.com l&apos;ultima release. Non viene inviato nient&apos;altro.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <location line="+1"/>
         <source>Check for Updates</source>
         <translation>Cerca aggiornamenti</translation>
@@ -2998,19 +3266,75 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Riavvia</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-66"/>
+        <location line="+67"/>
         <source>Cancel</source>
         <translation>Annulla</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-134"/>
+        <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
+        <translation>Installato in /opt/xpanel: l&apos;aggiornamento chiede la tua password, poi sostituisce XPanel e riavvia xpanel-daemon.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
+        <translation>AppImage: la nuova versione viene salvata accanto a questo file (quella vecchia viene conservata).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
+        <translation>L&apos;installer viene eseguito (Windows chiede il permesso), poi XPanel si riavvia.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installed by your package manager: update XPanel with it.</source>
+        <translation>Installato dal gestore pacchetti: aggiorna XPanel con quello.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
+        <translation>Questa copia è stata compilata dai sorgenti o estratta da un archivio: scarica la nuova versione dalla pagina della release.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Checking GitHub …</source>
+        <translation>Controllo su GitHub …</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Installed version %1</source>
+        <translation>Versione installata %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Version %1 is available (skipped).</source>
+        <translation>La versione %1 è disponibile (saltata).</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Version %1 is available.</source>
+        <translation>La versione %1 è disponibile.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel is up to date (latest release: %1).</source>
+        <translation>XPanel è aggiornato (ultima release: %1).</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Check now</source>
+        <translation>Controlla ora</translation>
+    </message>
+    <message>
+        <location line="+117"/>
         <source>Drivers &amp; firmware packages</source>
         <translation>Driver e pacchetti firmware</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>On Linux the Ally drivers come with the kernel and these packages. They update with the system.</source>
-        <translation>Su Linux i driver dell'Ally arrivano con il kernel e questi pacchetti. Si aggiornano con il sistema.</translation>
+        <translation>Su Linux i driver dell&apos;Ally arrivano con il kernel e questi pacchetti. Si aggiornano con il sistema.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3048,7 +3372,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Aggiorna firmware</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-98"/>
+        <source>XPanel %1</source>
+        <translation>XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>updatable</source>
         <translation>aggiornabile</translation>
     </message>
@@ -3058,14 +3387,29 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Aggiornamenti di sistema (%1)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-99"/>
+        <source>Restart XPanel</source>
+        <translation>Riavvia XPanel</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Updating…</source>
+        <translation>Aggiornamento…</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Update now</source>
+        <translation>Aggiorna ora</translation>
+    </message>
+    <message>
+        <location line="+100"/>
         <source>Install</source>
         <translation>Installa</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Opens a terminal: the update asks for your password.</source>
-        <translation>Apre un terminale: l'aggiornamento chiede la tua password.</translation>
+        <translation>Apre un terminale: l&apos;aggiornamento chiede la tua password.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3073,7 +3417,22 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Aggiorna sistema</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="-97"/>
+        <source>Skipped</source>
+        <translation>Saltata</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Skip this version</source>
+        <translation>Salta questa versione</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release page</source>
+        <translation>Pagina della release</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>The system is up to date</source>
         <translation>Il sistema è aggiornato</translation>
     </message>
@@ -3165,7 +3524,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+408"/>
         <source>Open Quick Panel</source>
         <translation>Apri Pannello rapido</translation>
     </message>
@@ -3248,6 +3607,16 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
         <translation>XPanel Pannello rapido %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>XPanel %1 is available</source>
+        <translation>XPanel %1 è disponibile</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Settings › Update Center to install it.</source>
+        <translation>Apri Impostazioni › Centro aggiornamenti per installarlo.</translation>
     </message>
 </context>
 <context>

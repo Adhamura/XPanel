@@ -2,6 +2,146 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ja" sourcelanguage="en">
 <context>
+    <name>AppUpdate</name>
+    <message>
+        <location filename="../src/AppUpdate.cpp" line="+154"/>
+        <source>GitHub&apos;s limit for update checks was reached. Try again in an hour.</source>
+        <translation>GitHub の更新確認の上限に達しました。1 時間後にもう一度お試しください。</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>No connection to GitHub. Check the network and try again.</source>
+        <translation>GitHub に接続できません。ネットワークを確認して、もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download was stopped (or redirected to a server other than GitHub).</source>
+        <translation>ダウンロードが停止されました（または GitHub 以外のサーバーにリダイレクトされました）。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>GitHub answered with error %1.</source>
+        <translation>GitHub からエラー %1 が返されました。</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>The update address is not allowed: %1</source>
+        <translation>この更新アドレスは許可されていません：%1</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>GitHub&apos;s answer has no release version.</source>
+        <translation>GitHub の応答にリリースバージョンが含まれていません。</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>This release has no file for this installation (%1).</source>
+        <translation>このリリースには、このインストール環境 (%1) 用のファイルがありません。</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This release has no SHA256SUMS file, so the download cannot be checked. Nothing was installed.</source>
+        <translation>このリリースには SHA256SUMS ファイルがないため、ダウンロードを検証できません。何もインストールされていません。</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The release file is not on GitHub: %1</source>
+        <translation>リリースファイルが GitHub 上にありません：%1</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Cannot create the folder %1.</source>
+        <translation>フォルダー %1 を作成できません。</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+28"/>
+        <location line="+21"/>
+        <source>Cannot write %1: %2</source>
+        <translation>%1 を書き込めません：%2</translation>
+    </message>
+    <message>
+        <location line="-43"/>
+        <source>Downloading %1 …</source>
+        <translation>%1 をダウンロード中 …</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Download failed: %1</source>
+        <translation>ダウンロードに失敗しました：%1</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Checking the download …</source>
+        <translation>ダウンロードを検証中 …</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Cannot download SHA256SUMS: %1</source>
+        <translation>SHA256SUMS をダウンロードできません：%1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>SHA256SUMS does not list %1. Nothing was installed.</source>
+        <translation>SHA256SUMS に %1 が記載されていません。何もインストールされていません。</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The download is damaged: its SHA-256 checksum does not match the release. Nothing was installed.</source>
+        <translation>ダウンロードしたファイルが破損しています。SHA-256 チェックサムがリリースと一致しません。何もインストールされていません。</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>XPanel %1 was saved as %2. The old file was kept.</source>
+        <translation>XPanel %1 を %2 として保存しました。古いファイルはそのまま残してあります。</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Cannot start the installer %1.</source>
+        <translation>インストーラー %1 を起動できません。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer is running. XPanel closes now and starts again when it is done.</source>
+        <translation>インストーラーを実行しています。XPanel はこのまま終了し、完了後に再び起動します。</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>pkexec is not installed. Run this command in a terminal to install XPanel %1:</source>
+        <translation>pkexec がインストールされていません。XPanel %1 をインストールするには、ターミナルで次のコマンドを実行してください：</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installing XPanel %1. Enter your password when asked …</source>
+        <translation>XPanel %1 をインストールしています。パスワードの入力を求められたら入力してください …</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>XPanel %1 is installed. Restart XPanel to use it.</source>
+        <translation>XPanel %1 をインストールしました。使用するには XPanel を再起動してください。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>The password prompt was cancelled or is not available here (Steam Game Mode has none). Run this command in a terminal:</source>
+        <translation>パスワードの入力がキャンセルされたか、ここでは利用できません（Steam ゲームモードにはありません）。ターミナルで次のコマンドを実行してください：</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>The installer stopped with error %1. Run this command in a terminal to see why:</source>
+        <translation>インストーラーがエラー %1 で停止しました。原因を確認するには、ターミナルで次のコマンドを実行してください：</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>pkexec could not be started. Run this command in a terminal:</source>
+        <translation>pkexec を起動できませんでした。ターミナルで次のコマンドを実行してください：</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Cannot start %1.</source>
+        <translation>%1 を起動できません。</translation>
+    </message>
+</context>
+<context>
     <name>AppWindow</name>
     <message>
         <location filename="../qml/app/AppWindow.qml" line="+12"/>
@@ -82,6 +222,11 @@
         <location line="+2"/>
         <source>Started %1</source>
         <translation>%1 を開始しました</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel %1 is available: Settings › Update Center</source>
+        <translation>XPanel %1 を利用できます：設定 › アップデートセンター</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -1541,7 +1686,7 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>プロファイル：%1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+180"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ 決定   Ⓑ 閉じる   Ⓧ コントロールセンター   Ⓨ 編集</translation>
     </message>
@@ -2114,14 +2259,44 @@ Steam のゲームはインストール後に表示されます。その他の�
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>フィードバック</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>修正や追加してほしい点を書いてください。メモは %1 に保存されます。</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation>ブラウザーを開けませんでした。QR コードを使うか、コピーして github.com に貼り付けてください。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation>ブラウザーで開きました。テキストがリンクには長すぎるため、ブラウザー側では短縮されています。全文はクリップボードにコピーしました。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation>ブラウザーで開きました。そこで Issue を送信してください。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation>クリップボードにコピーしました。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation>%1 に保存しました</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation>GitHub の Issue を開きます — GitHub アカウントが必要です。そちらで送信するまで、何も送信されません。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation>Steam ゲームモードではブラウザーを使えないことが多いため、スマートフォンで QR コードを読み取ってください。</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2145,21 +2320,71 @@ Steam のゲームはインストール後に表示されます。その他の�
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation>短いタイトル</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>フィードバックを入力…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>保存</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation>デバイス情報を含める</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>保存しました。ありがとうございます。</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation>モデル、BIOS、ディストリビューション、デスクトップ、各バージョンを自動で入力します。シリアル番号、ユーザー名、ファイルは含まれません。XPanel のバージョンは常に含まれます。</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation>レポートに追加される情報</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Send on GitHub</source>
+        <translation>GitHub で送信</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation>QR コードを表示</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation>コピー</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation>ローカルに保存</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation>スマートフォンで読み取る</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation>テキストが長すぎるため QR コードに収まりません。QR コードで開くレポートにはタイトルとデバイス情報のみが入り、全文はクリップボードにコピーされます。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation>入力したテキストで GitHub の Issue を開きます。そちらで GitHub アカウントを使って送信してください。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <location line="-96"/>
         <source>Write something first.</source>
         <translation>先に内容を入力してください。</translation>
     </message>
@@ -2178,12 +2403,12 @@ Steam のゲームはインストール後に表示されます。その他の�
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>言語</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>すぐに反映されます。日本語、韓国語、中国語を表示するには、システムに CJK フォントが必要です。</translation>
     </message>
@@ -2371,6 +2596,21 @@ Steam のゲームはインストール後に表示されます。その他の�
         <location line="+1"/>
         <source>not running</source>
         <translation>停止中</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a problem</source>
+        <translation>問題を報告</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation>GitHub で開発者にフィードバックを送信します。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation>フィードバックを開く</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2675,7 +2915,7 @@ Steam のゲームはインストール後に表示されます。その他の�
     <message>
         <location line="+0"/>
         <source>Saves battery: CPU energy preference &quot;power&quot; and no CPU boost.</source>
-        <translation>バッテリーを節約：CPU のエネルギー設定を "power" にし、CPU ブーストを無効にします。</translation>
+        <translation>バッテリーを節約：CPU のエネルギー設定を &quot;power&quot; にし、CPU ブーストを無効にします。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2901,7 +3141,7 @@ Steam のゲームはインストール後に表示されます。その他の�
 <context>
     <name>SetUpdate</name>
     <message>
-        <location filename="../qml/app/SetUpdate.qml" line="+13"/>
+        <location filename="../qml/app/SetUpdate.qml" line="+25"/>
         <source>Update available</source>
         <translation>更新があります</translation>
     </message>
@@ -2921,28 +3161,56 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>不明</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+91"/>
         <source>Update Center</source>
         <translation>アップデートセンター</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-77"/>
+        <location line="+77"/>
         <location line="+2"/>
         <source>Checking…</source>
         <translation>確認中…</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-85"/>
+        <location line="+83"/>
         <source>Last check: %1</source>
         <translation>前回の確認：%1</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-83"/>
+        <location line="+83"/>
         <source>Not checked yet.</source>
         <translation>まだ確認していません。</translation>
     </message>
     <message>
+        <location line="-10"/>
+        <source>Install in a terminal</source>
+        <translation>ターミナルでインストール</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy command</source>
+        <translation>コマンドをコピー</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Copied</source>
+        <translation>コピーしました</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Check for updates automatically</source>
+        <translation>更新を自動的に確認する</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Once a day XPanel asks api.github.com for the latest release. Nothing else is sent.</source>
+        <translation>XPanel は 1 日に 1 回、api.github.com に最新リリースを問い合わせます。それ以外の情報は送信されません。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <location line="+1"/>
         <source>Check for Updates</source>
         <translation>更新を確認</translation>
@@ -2993,12 +3261,68 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>再起動</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-66"/>
+        <location line="+67"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-134"/>
+        <source>Installed in /opt/xpanel: the update asks for your password, then replaces XPanel and restarts xpanel-daemon.</source>
+        <translation>/opt/xpanel にインストールされています。更新時にパスワードの入力が求められ、その後 XPanel が置き換えられ、xpanel-daemon が再起動されます。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>AppImage: the new version is saved next to this file (the old one is kept).</source>
+        <translation>AppImage：新しいバージョンはこのファイルと同じ場所に保存されます（古いバージョンはそのまま残ります）。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The installer runs (Windows asks for permission), then XPanel starts again.</source>
+        <translation>インストーラーが実行され（Windows で許可を求められます）、その後 XPanel が再び起動します。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Installed by your package manager: update XPanel with it.</source>
+        <translation>パッケージマネージャーでインストールされています。XPanel の更新にはパッケージマネージャーを使用してください。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>This copy was built from source or unpacked from an archive: download the new version from the release page.</source>
+        <translation>このコピーはソースからビルドされたか、アーカイブから展開されたものです。新しいバージョンはリリースページからダウンロードしてください。</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Checking GitHub …</source>
+        <translation>GitHub を確認中 …</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Installed version %1</source>
+        <translation>インストール済みのバージョン %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Version %1 is available (skipped).</source>
+        <translation>バージョン %1 を利用できます（スキップ済み）。</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Version %1 is available.</source>
+        <translation>バージョン %1 を利用できます。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>XPanel is up to date (latest release: %1).</source>
+        <translation>XPanel は最新です（最新リリース：%1）。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Check now</source>
+        <translation>今すぐ確認</translation>
+    </message>
+    <message>
+        <location line="+117"/>
         <source>Drivers &amp; firmware packages</source>
         <translation>ドライバーとファームウェアのパッケージ</translation>
     </message>
@@ -3043,7 +3367,12 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>ファームウェアを更新</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-98"/>
+        <source>XPanel %1</source>
+        <translation>XPanel %1</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>updatable</source>
         <translation>更新可能</translation>
     </message>
@@ -3053,7 +3382,22 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>システムの更新 (%1)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-99"/>
+        <source>Restart XPanel</source>
+        <translation>XPanel を再起動</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Updating…</source>
+        <translation>更新中…</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Update now</source>
+        <translation>今すぐ更新</translation>
+    </message>
+    <message>
+        <location line="+100"/>
         <source>Install</source>
         <translation>インストール</translation>
     </message>
@@ -3068,7 +3412,22 @@ Steam のゲームはインストール後に表示されます。その他の�
         <translation>システムを更新</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="-97"/>
+        <source>Skipped</source>
+        <translation>スキップ済み</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Skip this version</source>
+        <translation>このバージョンをスキップ</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release page</source>
+        <translation>リリースページ</translation>
+    </message>
+    <message>
+        <location line="+102"/>
         <source>The system is up to date</source>
         <translation>システムは最新です</translation>
     </message>
@@ -3160,7 +3519,7 @@ Steam のゲームはインストール後に表示されます。その他の�
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+408"/>
         <source>Open Quick Panel</source>
         <translation>クイック設定を開く</translation>
     </message>
@@ -3243,6 +3602,16 @@ Steam のゲームはインストール後に表示されます。その他の�
         <location line="+3"/>
         <source>XPanel Quick Panel %1</source>
         <translation>XPanel クイック設定 %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>XPanel %1 is available</source>
+        <translation>XPanel %1 を利用できます</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Settings › Update Center to install it.</source>
+        <translation>インストールするには、設定 › アップデートセンターを開いてください。</translation>
     </message>
 </context>
 <context>

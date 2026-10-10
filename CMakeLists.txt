@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.4.0 LANGUAGES CXX)
+project(XPanel VERSION 1.5.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,6 +43,7 @@ qt_add_executable(XPanel
     src/AudioControl.h src/AudioControl.cpp
     src/NetworkControl.h src/NetworkControl.cpp
     src/UpdateCenter.h src/UpdateCenter.cpp
+    src/AppUpdate.h src/AppUpdate.cpp src/UpdateLogic.h
     src/GameLibrary.h src/GameLibrary.cpp
     src/GameWatcher.h src/GameWatcher.cpp
     src/ProfileManager.h src/ProfileManager.cpp
@@ -51,7 +52,11 @@ qt_add_executable(XPanel
     src/DesktopTweaks.h src/DesktopTweaks.cpp
     src/Desktop.h src/Desktop.cpp
     src/Translations.h src/Translations.cpp src/LanguageMatch.h
+    src/Feedback.h src/Feedback.cpp src/FeedbackReport.h src/FeedbackReport.cpp
+    src/QrMatrix.h src/QrMatrix.cpp
+    third_party/qrcodegen/qrcodegen.hpp third_party/qrcodegen/qrcodegen.cpp
 )
+target_include_directories(XPanel PRIVATE third_party/qrcodegen)
 
 file(GLOB XPANEL_ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/icons/*.svg)
 
