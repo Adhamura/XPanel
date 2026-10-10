@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - **Gyro**: the Ally's motion sensor (BMI323, kernel IIO driver) as a **mouse** or added to the
   **right stick** for aiming, set per mode in Control Mode › Gyro: sensitivity per axis, turning

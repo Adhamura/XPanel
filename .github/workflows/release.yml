@@ -117,7 +117,7 @@ jobs:
 
           ### Windows (experimental)
           Run **XPanel-*-Windows-x64-Setup.exe**. Operating Mode / TDP, fan, charge limit, Aura lighting and
-          boot sound work through the ASUS System Control Interface; controller remapping is Linux-only for now.
+          boot sound work through the ASUS System Control Interface; controller remapping and gyro are Linux-only for now.
           Open the Quick Panel from the tray icon or **Win+Shift+Q**, the Control Center with **Win+Shift+C**.
           Close Armoury Crate while you use XPanel (both change the same settings). Windows 10/11 x64.
 

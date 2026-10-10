@@ -79,7 +79,8 @@ familiar Armoury Crate layout to the Linux desktop as one app:
     <td><img src="docs/screenshots/media-gallery.png" alt="Media Gallery"><br><b>Media Gallery</b> — screenshots and recordings: open, share, show in folder, delete</td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="docs/screenshots/update-center.png" width="50%" alt="Update Center"><br><b>Update Center</b> — system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
+    <td><img src="docs/screenshots/fan-curve.png" alt="Fan curve editor"><br><b>Fan Curve</b> — 8-point custom curve, editable by touch or gamepad, separate GPU curve</td>
+    <td><img src="docs/screenshots/update-center.png" alt="Update Center"><br><b>Update Center</b> — system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
   </tr>
 </table>
 
