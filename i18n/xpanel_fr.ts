@@ -76,7 +76,7 @@
     <message>
         <location line="+1"/>
         <source>xpanel-daemon: %1</source>
-        <translation>xpanel-daemon : %1</translation>
+        <translation>xpanel-daemon&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -430,17 +430,17 @@
     <message>
         <location line="+0"/>
         <source>Primary button: normal press. Secondary function: while a rear paddle is held.</source>
-        <translation>Bouton principal : appui normal. Fonction secondaire : tant qu’une palette arrière est maintenue.</translation>
+        <translation>Bouton principal&#xa0;: appui normal. Fonction secondaire&#xa0;: tant qu’une palette arrière est maintenue.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Primary: %1</source>
-        <translation>Principal : %1</translation>
+        <translation>Principal&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Secondary: %1</source>
-        <translation>Secondaire : %1</translation>
+        <translation>Secondaire&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -641,7 +641,7 @@
     <message>
         <location line="+0"/>
         <source>Yaw: turn the Ally left / right. Roll: tilt it like a steering wheel.</source>
-        <translation>Lacet : tournez l’Ally vers la gauche / droite. Roulis : inclinez-le comme un volant.</translation>
+        <translation>Lacet&#xa0;: tournez l’Ally vers la gauche / droite. Roulis&#xa0;: inclinez-le comme un volant.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -702,12 +702,12 @@
     <message>
         <location line="-2"/>
         <source>If the aim drifts: put the Ally on a flat table, do not touch it, and press Calibrate.</source>
-        <translation>Si la visée dérive : posez l’Ally sur une table plane, ne le touchez pas et appuyez sur Calibrer.</translation>
+        <translation>Si la visée dérive&#xa0;: posez l’Ally sur une table plane, ne le touchez pas et appuyez sur Calibrer.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Last result: %1.</source>
-        <translation>Dernier résultat : %1.</translation>
+        <translation>Dernier résultat&#xa0;: %1.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -797,7 +797,7 @@
     <message>
         <location line="+0"/>
         <source>not reachable: %1</source>
-        <translation>inaccessible : %1</translation>
+        <translation>inaccessible&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -837,7 +837,7 @@
     <message>
         <location line="+10"/>
         <source>Tool: %1</source>
-        <translation>Outil : %1</translation>
+        <translation>Outil&#xa0;: %1</translation>
     </message>
 </context>
 <context>
@@ -914,7 +914,7 @@
     <message>
         <location line="+1"/>
         <source>Drag the points. With a gamepad: Ⓐ to edit the curve.</source>
-        <translation>Faites glisser les points. À la manette : Ⓐ pour modifier la courbe.</translation>
+        <translation>Faites glisser les points. À la manette&#xa0;: Ⓐ pour modifier la courbe.</translation>
     </message>
 </context>
 <context>
@@ -1010,7 +1010,7 @@ Les captures d’écran du panneau rapide apparaissent ici.</translation>
     <message>
         <location line="+0"/>
         <source>Copied to the clipboard: %1</source>
-        <translation>Copié dans le presse-papiers : %1</translation>
+        <translation>Copié dans le presse-papiers&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1031,8 +1031,8 @@ Les captures d’écran du panneau rapide apparaissent ici.</translation>
         <location line="+13"/>
         <source>Move %n item(s) to the trash?</source>
         <translation>
-            <numerusform>Déplacer %n élément vers la corbeille ?</numerusform>
-            <numerusform>Déplacer %n éléments vers la corbeille ?</numerusform>
+            <numerusform>Déplacer %n élément vers la corbeille&#xa0;?</numerusform>
+            <numerusform>Déplacer %n éléments vers la corbeille&#xa0;?</numerusform>
         </translation>
     </message>
     <message>
@@ -1141,7 +1141,7 @@ Ouvrez un jeu et appuyez sur Y ou ★ pour l’ajouter.</translation>
         <source>No games found.
 Steam games appear after you install them; other games: Manage Library.</source>
         <translation>Aucun jeu trouvé.
-Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer les jeux.</translation>
+Les jeux Steam apparaissent après leur installation&#xa0;; autres jeux&#xa0;: Gérer les jeux.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1176,7 +1176,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Applied while the game runs; your previous settings come back when it ends. Settings you change during the game are kept.</source>
-        <translation>S’applique pendant l’exécution du jeu ; vos réglages précédents reviennent à sa fermeture. Les réglages modifiés pendant le jeu sont conservés.</translation>
+        <translation>S’applique pendant l’exécution du jeu&#xa0;; vos réglages précédents reviennent à sa fermeture. Les réglages modifiés pendant le jeu sont conservés.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1186,7 +1186,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Off: only when you start it with Play here.</source>
-        <translation>Désactivé : uniquement quand vous le lancez avec « Jouer » ici.</translation>
+        <translation>Désactivé&#xa0;: uniquement quand vous le lancez avec «&#xa0;Jouer&#xa0;» ici.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1228,7 +1228,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Used when the Operating Mode above is Manual.</source>
-        <translation>S’applique lorsque le mode de fonctionnement ci-dessus est « Manuel ».</translation>
+        <translation>S’applique lorsque le mode de fonctionnement ci-dessus est «&#xa0;Manuel&#xa0;».</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1543,10 +1543,10 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+15"/>
         <source>Profile: %1</source>
-        <translation>Profil : %1</translation>
+        <translation>Profil&#xa0;: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+175"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Sélectionner   Ⓑ Fermer   Ⓧ Centre de contrôle   Ⓨ Modifier</translation>
     </message>
@@ -1662,7 +1662,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Needs the RNNoise plugin: sudo pacman -S noise-suppression-for-voice</source>
-        <translation>Nécessite le plugin RNNoise : sudo pacman -S noise-suppression-for-voice</translation>
+        <translation>Nécessite le plugin RNNoise&#xa0;: sudo pacman -S noise-suppression-for-voice</translation>
     </message>
 </context>
 <context>
@@ -1675,7 +1675,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>Keeping the battery below 100% while plugged in makes it last longer.</source>
-        <translation>Maintenir la batterie sous 100 % lorsqu’elle est branchée prolonge sa durée de vie.</translation>
+        <translation>Maintenir la batterie sous 100&#xa0;% lorsqu’elle est branchée prolonge sa durée de vie.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1685,17 +1685,17 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+2"/>
         <source>Full (100%)</source>
-        <translation>Pleine (100 %)</translation>
+        <translation>Pleine (100&#xa0;%)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Balanced (90%)</source>
-        <translation>Équilibrée (90 %)</translation>
+        <translation>Équilibrée (90&#xa0;%)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Maximum lifespan (80%)</source>
-        <translation>Longévité max. (80 %)</translation>
+        <translation>Longévité max. (80&#xa0;%)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1750,7 +1750,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>The controller chip sleeps with the device. Off can help if the controller does not wake up.</source>
-        <translation>La puce du contrôleur se met en veille avec l’appareil. « Désactivé » peut aider si la manette ne se réveille pas.</translation>
+        <translation>La puce du contrôleur se met en veille avec l’appareil. «&#xa0;Désactivé&#xa0;» peut aider si la manette ne se réveille pas.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1804,7 +1804,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Gyro calibration measures the motion sensor&apos;s offset at rest, so the aim does not drift. Stick and trigger calibration come later; until then the dead zones and trigger ranges in Control Mode do that job.</source>
-        <translation>Le calibrage du gyro mesure le décalage du capteur de mouvement au repos, afin que la visée ne dérive pas. Le calibrage des sticks et des gâchettes viendra plus tard ; d’ici là, les zones mortes et les plages des gâchettes du mode de contrôle jouent ce rôle.</translation>
+        <translation>Le calibrage du gyro mesure le décalage du capteur de mouvement au repos, afin que la visée ne dérive pas. Le calibrage des sticks et des gâchettes viendra plus tard&#xa0;; d’ici là, les zones mortes et les plages des gâchettes du mode de contrôle jouent ce rôle.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1852,7 +1852,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Put the Ally on a flat table and do not touch it, then press Start (about 1 second).</source>
-        <translation>Posez l’Ally sur une table plane, ne le touchez pas, puis appuyez sur « Démarrer » (environ 1 seconde).</translation>
+        <translation>Posez l’Ally sur une table plane, ne le touchez pas, puis appuyez sur «&#xa0;Démarrer&#xa0;» (environ 1 seconde).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2048,12 +2048,12 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+2"/>
         <source>Display mode, refresh rate and wide colour use KDE&apos;s display settings: in Steam Game Mode, use Steam&apos;s Display settings.</source>
-        <translation>Le mode d’affichage, la fréquence d’actualisation et la gamme de couleurs étendue utilisent les paramètres d’affichage de KDE : dans le mode Jeu de Steam, utilisez les paramètres d’affichage de Steam.</translation>
+        <translation>Le mode d’affichage, la fréquence d’actualisation et la gamme de couleurs étendue utilisent les paramètres d’affichage de KDE&#xa0;: dans le mode Jeu de Steam, utilisez les paramètres d’affichage de Steam.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Display mode, refresh rate and wide colour use KDE&apos;s display settings: not available %1.</source>
-        <translation>Le mode d’affichage, la fréquence d’actualisation et la gamme de couleurs étendue utilisent les paramètres d’affichage de KDE : indisponible %1.</translation>
+        <translation>Le mode d’affichage, la fréquence d’actualisation et la gamme de couleurs étendue utilisent les paramètres d’affichage de KDE&#xa0;: indisponible %1.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2119,14 +2119,44 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Commentaires</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Notez ce qu’il faut corriger ou ajouter. Les notes sont enregistrées dans %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2150,21 +2180,71 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Vos commentaires…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Enregistrer</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Enregistré. Merci !</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Send on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-99"/>
         <source>Write something first.</source>
         <translation>Écrivez d’abord quelque chose.</translation>
     </message>
@@ -2183,12 +2263,12 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Langue</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>S’applique immédiatement. Le japonais, le coréen et le chinois nécessitent une police CJK sur le système.</translation>
     </message>
@@ -2340,7 +2420,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>No access: %1</source>
-        <translation>Accès refusé : %1</translation>
+        <translation>Accès refusé&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2376,6 +2456,21 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
         <location line="+1"/>
         <source>not running</source>
         <translation>à l’arrêt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2423,7 +2518,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>No access to xpanel-daemon: %1</source>
-        <translation>Accès à xpanel-daemon refusé : %1</translation>
+        <translation>Accès à xpanel-daemon refusé&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2478,7 +2573,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Battery level: red when empty, green when full. Operating Mode: blue Silent, white Performance, red Turbo, your color in Manual.</source>
-        <translation>Niveau de batterie : rouge si vide, vert si pleine. Mode de fonctionnement : bleu en Silencieux, blanc en Performance, rouge en Turbo, votre couleur en Manuel.</translation>
+        <translation>Niveau de batterie&#xa0;: rouge si vide, vert si pleine. Mode de fonctionnement&#xa0;: bleu en Silencieux, blanc en Performance, rouge en Turbo, votre couleur en Manuel.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2602,12 +2697,12 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>No access to xpanel-daemon: %1</source>
-        <translation>Accès à xpanel-daemon refusé : %1</translation>
+        <translation>Accès à xpanel-daemon refusé&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>xpanel-daemon is not running: install it with  %1</source>
-        <translation>xpanel-daemon n’est pas en cours d’exécution : installez-le avec  %1</translation>
+        <translation>xpanel-daemon n’est pas en cours d’exécution&#xa0;: installez-le avec  %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2680,7 +2775,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>Saves battery: CPU energy preference &quot;power&quot; and no CPU boost.</source>
-        <translation>Économise la batterie : préférence énergétique du CPU « power » et pas de boost CPU.</translation>
+        <translation>Économise la batterie&#xa0;: préférence énergétique du CPU «&#xa0;power&#xa0;» et pas de boost CPU.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2721,7 +2816,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>Custom curve: 8 points of fan speed over temperature. Changes apply a moment after you let go.</source>
-        <translation>Courbe personnalisée : 8 points de vitesse du ventilateur en fonction de la température. Les changements sont appliqués un instant après le relâchement.</translation>
+        <translation>Courbe personnalisée&#xa0;: 8 points de vitesse du ventilateur en fonction de la température. Les changements sont appliqués un instant après le relâchement.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2767,7 +2862,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Off: one curve for both fans (CPU and GPU).</source>
-        <translation>Désactivé : une seule courbe pour les deux ventilateurs (CPU et GPU).</translation>
+        <translation>Désactivé&#xa0;: une seule courbe pour les deux ventilateurs (CPU et GPU).</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2840,7 +2935,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Global shortcuts use KDE&apos;s shortcut service: not available %1.</source>
-        <translation>Les raccourcis globaux utilisent le service de raccourcis de KDE : indisponible %1.</translation>
+        <translation>Les raccourcis globaux utilisent le service de raccourcis de KDE&#xa0;: indisponible %1.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2850,7 +2945,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere; for a keyboard key, bind the command  XPanel --toggle  (or  XPanel --app ) in your desktop&apos;s keyboard settings.</source>
-        <translation>Les boutons de l’Ally fonctionnent partout ; pour une touche de clavier, associez la commande  XPanel --toggle  (ou  XPanel --app ) dans les paramètres clavier de votre bureau.</translation>
+        <translation>Les boutons de l’Ally fonctionnent partout&#xa0;; pour une touche de clavier, associez la commande  XPanel --toggle  (ou  XPanel --app ) dans les paramètres clavier de votre bureau.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2870,7 +2965,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>%1: %2</source>
-        <translation>%1 : %2</translation>
+        <translation>%1&#xa0;: %2</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2880,7 +2975,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>Not a valid key: %1</source>
-        <translation>Touche non valide : %1</translation>
+        <translation>Touche non valide&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2939,7 +3034,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="-2"/>
         <source>Last check: %1</source>
-        <translation>Dernière vérification : %1</translation>
+        <translation>Dernière vérification&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2970,12 +3065,12 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+6"/>
         <source>%1   ·   installed %2</source>
-        <translation>%1   ·   installé : %2</translation>
+        <translation>%1   ·   installé&#xa0;: %2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ASUS: %1  (%2, %3)</source>
-        <translation>ASUS : %1  (%2, %3)</translation>
+        <translation>ASUS&#xa0;: %1  (%2, %3)</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2990,7 +3085,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+11"/>
         <source>Restart now into the BIOS setup? Save your work first.</source>
-        <translation>Redémarrer maintenant dans la configuration du BIOS ? Enregistrez d’abord votre travail.</translation>
+        <translation>Redémarrer maintenant dans la configuration du BIOS&#xa0;? Enregistrez d’abord votre travail.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3030,7 +3125,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Firmware updates: %1</source>
-        <translation>Mises à jour du firmware : %1</translation>
+        <translation>Mises à jour du firmware&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3065,7 +3160,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+0"/>
         <source>Opens a terminal: the update asks for your password.</source>
-        <translation>Ouvre un terminal : la mise à jour demande votre mot de passe.</translation>
+        <translation>Ouvre un terminal&#xa0;: la mise à jour demande votre mot de passe.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3165,7 +3260,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+405"/>
         <source>Open Quick Panel</source>
         <translation>Ouvrir le panneau rapide</translation>
     </message>
@@ -3255,7 +3350,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location filename="../src/UpdateCenter.cpp" line="+20"/>
         <source>Kernel: hid_asus_ally, asus-armoury, amdgpu, mt7921 drivers</source>
-        <translation>Noyau : pilotes hid_asus_ally, asus-armoury, amdgpu, mt7921</translation>
+        <translation>Noyau&#xa0;: pilotes hid_asus_ally, asus-armoury, amdgpu, mt7921</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3265,7 +3360,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Firmware files: AMD GPU, MediaTek Wi-Fi / Bluetooth, audio</source>
-        <translation>Fichiers de firmware : GPU AMD, Wi-Fi / Bluetooth MediaTek, audio</translation>
+        <translation>Fichiers de firmware&#xa0;: GPU AMD, Wi-Fi / Bluetooth MediaTek, audio</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3310,7 +3405,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+140"/>
         <source>Linux: download, put the .CAP file on a FAT32 USB stick, restart to BIOS, use EZ Flash.</source>
-        <translation>Linux : téléchargez, placez le fichier .CAP sur une clé USB FAT32, redémarrez dans le BIOS, utilisez EZ Flash.</translation>
+        <translation>Linux&#xa0;: téléchargez, placez le fichier .CAP sur une clé USB FAT32, redémarrez dans le BIOS, utilisez EZ Flash.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3335,7 +3430,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+1"/>
         <source>Not reachable: %1</source>
-        <translation>Inaccessible : %1</translation>
+        <translation>Inaccessible&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -3350,7 +3445,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+8"/>
         <source>Download failed: %1</source>
-        <translation>Échec du téléchargement : %1</translation>
+        <translation>Échec du téléchargement&#xa0;: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3360,7 +3455,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location line="+5"/>
         <source>Saved in %1. Copy the .CAP file to a FAT32 USB stick, then Restart to BIOS → EZ Flash.</source>
-        <translation>Enregistré dans %1. Copiez le fichier .CAP sur une clé USB FAT32, puis « Redémarrer dans le BIOS » → EZ Flash.</translation>
+        <translation>Enregistré dans %1. Copiez le fichier .CAP sur une clé USB FAT32, puis «&#xa0;Redémarrer dans le BIOS&#xa0;» → EZ Flash.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3373,7 +3468,7 @@ Les jeux Steam apparaissent après leur installation ; autres jeux : Gérer le
     <message>
         <location filename="../qml/app/UserPage.qml" line="+23"/>
         <source>Local account: %1  ·  %2</source>
-        <translation>Compte local : %1  ·  %2</translation>
+        <translation>Compte local&#xa0;: %1  ·  %2</translation>
     </message>
     <message>
         <location line="+1"/>

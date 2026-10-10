@@ -1551,7 +1551,7 @@ Steam games appear after you install them; other games: Manage Library.</source>
         <translation>Профиль: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+175"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Выбрать   Ⓑ Закрыть   Ⓧ Центр управления   Ⓨ Изменить</translation>
     </message>
@@ -2124,14 +2124,44 @@ Steam games appear after you install them; other games: Manage Library.</source>
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Обратная связь</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Напишите, что исправить или добавить. Заметки сохраняются в %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2155,21 +2185,71 @@ Steam games appear after you install them; other games: Manage Library.</source>
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Ваш отзыв…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Сохранить</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Сохранено. Спасибо!</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Send on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-99"/>
         <source>Write something first.</source>
         <translation>Сначала напишите что-нибудь.</translation>
     </message>
@@ -2188,12 +2268,12 @@ Steam games appear after you install them; other games: Manage Library.</source>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>Применяется сразу. Для японского, корейского и китайского в системе нужен шрифт CJK.</translation>
     </message>
@@ -2381,6 +2461,21 @@ Steam games appear after you install them; other games: Manage Library.</source>
         <location line="+1"/>
         <source>not running</source>
         <translation>не работает</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3170,7 +3265,7 @@ Steam games appear after you install them; other games: Manage Library.</source>
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+405"/>
         <source>Open Quick Panel</source>
         <translation>Открыть быструю панель</translation>
     </message>

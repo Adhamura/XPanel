@@ -51,7 +51,11 @@ qt_add_executable(XPanel
     src/DesktopTweaks.h src/DesktopTweaks.cpp
     src/Desktop.h src/Desktop.cpp
     src/Translations.h src/Translations.cpp src/LanguageMatch.h
+    src/Feedback.h src/Feedback.cpp src/FeedbackReport.h src/FeedbackReport.cpp
+    src/QrMatrix.h src/QrMatrix.cpp
+    third_party/qrcodegen/qrcodegen.hpp third_party/qrcodegen/qrcodegen.cpp
 )
+target_include_directories(XPanel PRIVATE third_party/qrcodegen)
 
 file(GLOB XPANEL_ICONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} qml/icons/*.svg)
 

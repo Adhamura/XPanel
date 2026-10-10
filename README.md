@@ -394,6 +394,14 @@ overlay), brightness goes through logind, the colour presets use Night Light. Re
 Display Mode, Show Desktop and the KDE shortcut settings are hidden. GNOME has no tray icon
 without the AppIndicator extension — use the Ally button or `XPanel --app`. See [Desktops](#desktops).
 
+**How do I send feedback or report a bug?** **Settings › Feedback** in the app. Pick Idea, Problem
+or Other, write a title and your text, and **Send on GitHub** opens a new issue on GitHub that is
+already filled in (the bug report or feature request form, plus device model, BIOS, desktop, distro,
+kernel and versions unless you turn **Include device info** off; never a serial number, user name
+or path). You submit it with your own GitHub account, nothing is sent before that. **Show QR code**
+shows the same link as a QR code to scan with a phone (useful in Steam Game Mode, which has no
+browser). **Copy** puts the report on the clipboard.
+
 **Is it safe?** The root daemon only listens on a local socket, only lets in root and members of
 the `xpanel` group (checked per connection), and only accepts a fixed, validated set of settings
 (power limits within the range the firmware reports, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
@@ -475,10 +483,16 @@ code and native name to `kLanguages` in `src/Translations.cpp`, then run the upd
 ## Contributing
 
 Bug reports with your device, distro, kernel and `journalctl -u xpanel-daemon -b` output help
-most. For code: `./run.sh` builds and runs; CI builds on Debian 13 (Qt 6.8) and Arch (latest Qt).
+most. The quickest way: **Settings › Feedback** in the app opens a GitHub issue that is already
+filled in with your text and (optionally) your device info; there is a QR code for phones, e.g. in
+Steam Game Mode. For code: `./run.sh` builds and runs; CI builds on Debian 13 (Qt 6.8) and Arch (latest Qt).
 `tools/mapper.sh` maps controller input codes, and `tools/screenshots/capture.sh` makes the
 README screenshots without an Ally.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+Third-party code: the QR code in Settings › Feedback is made by
+[QR Code generator library](https://github.com/nayuki/QR-Code-generator) by Project Nayuki (MIT),
+bundled unmodified in `third_party/qrcodegen/` with its license.

@@ -320,7 +320,7 @@
     <message>
         <location line="+0"/>
         <source>the Ally moved, try again</source>
-        <translation>l'Ally è stato mosso, riprova</translation>
+        <translation>l&apos;Ally è stato mosso, riprova</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -410,7 +410,7 @@
     <message>
         <location line="+11"/>
         <source>XPanel&apos;s input layer applies these settings live to the Ally controller (virtual Xbox 360 pad + keyboard / mouse).</source>
-        <translation>Il livello di input di XPanel applica queste impostazioni in tempo reale al controller dell'Ally (pad Xbox 360 virtuale + tastiera / mouse).</translation>
+        <translation>Il livello di input di XPanel applica queste impostazioni in tempo reale al controller dell&apos;Ally (pad Xbox 360 virtuale + tastiera / mouse).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -616,7 +616,7 @@
     <message>
         <location line="+0"/>
         <source>The Ally&apos;s motion sensor as mouse or right stick. It runs only while a game has the controller (not while XPanel is open).</source>
-        <translation>Il sensore di movimento dell'Ally come mouse o stick destro. Funziona solo mentre un gioco usa il controller (non quando XPanel è aperto).</translation>
+        <translation>Il sensore di movimento dell&apos;Ally come mouse o stick destro. Funziona solo mentre un gioco usa il controller (non quando XPanel è aperto).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -641,7 +641,7 @@
     <message>
         <location line="+0"/>
         <source>Yaw: turn the Ally left / right. Roll: tilt it like a steering wheel.</source>
-        <translation>Imbardata: ruota l'Ally a sinistra / destra. Rollio: inclinalo come un volante.</translation>
+        <translation>Imbardata: ruota l&apos;Ally a sinistra / destra. Rollio: inclinalo come un volante.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -702,7 +702,7 @@
     <message>
         <location line="-2"/>
         <source>If the aim drifts: put the Ally on a flat table, do not touch it, and press Calibrate.</source>
-        <translation>Se la mira deriva: appoggia l'Ally su un tavolo piano, non toccarlo e premi Calibra.</translation>
+        <translation>Se la mira deriva: appoggia l&apos;Ally su un tavolo piano, non toccarlo e premi Calibra.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1141,7 +1141,7 @@ Apri un gioco e premi Y o ★ per aggiungerlo.</translation>
         <source>No games found.
 Steam games appear after you install them; other games: Manage Library.</source>
         <translation>Nessun gioco trovato.
-I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.</translation>
+I giochi Steam compaiono dopo l&apos;installazione; altri giochi: Gestisci libreria.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1546,7 +1546,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
         <translation>Profilo: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+175"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Seleziona   Ⓑ Chiudi   Ⓧ Centro di controllo   Ⓨ Modifica</translation>
     </message>
@@ -1675,7 +1675,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Keeping the battery below 100% while plugged in makes it last longer.</source>
-        <translation>Mantenere la batteria sotto il 100% mentre è collegata all'alimentatore ne prolunga la durata.</translation>
+        <translation>Mantenere la batteria sotto il 100% mentre è collegata all&apos;alimentatore ne prolunga la durata.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1760,7 +1760,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>The sound when the Ally starts.</source>
-        <translation>Il suono all'avvio dell'Ally.</translation>
+        <translation>Il suono all&apos;avvio dell&apos;Ally.</translation>
     </message>
 </context>
 <context>
@@ -1773,12 +1773,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Done. The offset is saved.</source>
-        <translation>Fatto. L'offset è stato salvato.</translation>
+        <translation>Fatto. L&apos;offset è stato salvato.</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>The Ally moved. Try again.</source>
-        <translation>L'Ally è stato mosso. Riprova.</translation>
+        <translation>L&apos;Ally è stato mosso. Riprova.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1804,7 +1804,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Gyro calibration measures the motion sensor&apos;s offset at rest, so the aim does not drift. Stick and trigger calibration come later; until then the dead zones and trigger ranges in Control Mode do that job.</source>
-        <translation>La calibrazione Gyro misura l'offset a riposo del sensore di movimento, così la mira non deriva. La calibrazione di stick e grilletti arriverà più avanti; nel frattempo le zone morte e le corse dei grilletti in Modalità di controllo svolgono questo compito.</translation>
+        <translation>La calibrazione Gyro misura l&apos;offset a riposo del sensore di movimento, così la mira non deriva. La calibrazione di stick e grilletti arriverà più avanti; nel frattempo le zone morte e le corse dei grilletti in Modalità di controllo svolgono questo compito.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1852,7 +1852,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Put the Ally on a flat table and do not touch it, then press Start (about 1 second).</source>
-        <translation>Appoggia l'Ally su un tavolo piano e non toccarlo, poi premi Avvia (circa 1 secondo).</translation>
+        <translation>Appoggia l&apos;Ally su un tavolo piano e non toccarlo, poi premi Avvia (circa 1 secondo).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1978,7 +1978,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>A little cooler and crisper (7200 K).</source>
-        <translation>Un po' più freddo e nitido (7200 K).</translation>
+        <translation>Un po&apos; più freddo e nitido (7200 K).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2063,7 +2063,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>Ally screen only, external screen only, the same picture on both, or one desktop over both.</source>
-        <translation>Solo schermo dell'Ally, solo schermo esterno, la stessa immagine su entrambi o un desktop esteso su entrambi.</translation>
+        <translation>Solo schermo dell&apos;Ally, solo schermo esterno, la stessa immagine su entrambi o un desktop esteso su entrambi.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2119,14 +2119,44 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Feedback</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Scrivi cosa correggere o aggiungere. Le note vengono salvate in %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2150,21 +2180,71 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Il tuo feedback…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Salva</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Salvato. Grazie.</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Send on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-99"/>
         <source>Write something first.</source>
         <translation>Scrivi prima qualcosa.</translation>
     </message>
@@ -2183,12 +2263,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Lingua</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>Si applica subito. Giapponese, coreano e cinese richiedono un font CJK nel sistema.</translation>
     </message>
@@ -2200,7 +2280,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Short logo animation when Control Center opens.</source>
-        <translation>Breve animazione del logo all'apertura del Centro di controllo.</translation>
+        <translation>Breve animazione del logo all&apos;apertura del Centro di controllo.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2379,6 +2459,21 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     </message>
     <message>
         <location line="+1"/>
+        <source>Report a problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>App Diagnostics</source>
         <translation>Diagnostica app</translation>
     </message>
@@ -2508,7 +2603,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Any color of the rainbow.</source>
-        <translation>Qualsiasi colore dell'arcobaleno.</translation>
+        <translation>Qualsiasi colore dell&apos;arcobaleno.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2533,7 +2628,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Which way the rainbow runs. Up and down may look the same on the rings.</source>
-        <translation>In quale direzione scorre l'arcobaleno. Su e giù possono sembrare uguali sugli anelli.</translation>
+        <translation>In quale direzione scorre l&apos;arcobaleno. Su e giù possono sembrare uguali sugli anelli.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2845,12 +2940,12 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere.</source>
-        <translation>I pulsanti dell'Ally funzionano ovunque.</translation>
+        <translation>I pulsanti dell&apos;Ally funzionano ovunque.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The Ally buttons work everywhere; for a keyboard key, bind the command  XPanel --toggle  (or  XPanel --app ) in your desktop&apos;s keyboard settings.</source>
-        <translation>I pulsanti dell'Ally funzionano ovunque; per un tasto della tastiera, associa il comando  XPanel --toggle  (o  XPanel --app ) nelle impostazioni della tastiera del tuo desktop.</translation>
+        <translation>I pulsanti dell&apos;Ally funzionano ovunque; per un tasto della tastiera, associa il comando  XPanel --toggle  (o  XPanel --app ) nelle impostazioni della tastiera del tuo desktop.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3010,7 +3105,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+1"/>
         <source>On Linux the Ally drivers come with the kernel and these packages. They update with the system.</source>
-        <translation>Su Linux i driver dell'Ally arrivano con il kernel e questi pacchetti. Si aggiornano con il sistema.</translation>
+        <translation>Su Linux i driver dell&apos;Ally arrivano con il kernel e questi pacchetti. Si aggiornano con il sistema.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3065,7 +3160,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
     <message>
         <location line="+0"/>
         <source>Opens a terminal: the update asks for your password.</source>
-        <translation>Apre un terminale: l'aggiornamento chiede la tua password.</translation>
+        <translation>Apre un terminale: l&apos;aggiornamento chiede la tua password.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3165,7 +3260,7 @@ I giochi Steam compaiono dopo l'installazione; altri giochi: Gestisci libreria.<
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+405"/>
         <source>Open Quick Panel</source>
         <translation>Apri Pannello rapido</translation>
     </message>

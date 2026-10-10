@@ -68,6 +68,8 @@ Item {
             Text { text: device.connected ? qsTr("Running") : device.error ? qsTr("No access") : qsTr("Not running"); color: device.connected ? T.text : T.warn; font.pixelSize: 18 } }
         CcRow { title: qsTr("Input layer"); description: qsTr("XPanel's own controller handling (in xpanel-daemon).")
             Text { text: device.value("inputLayer") || qsTr("not running"); color: device.value("inputLayer") === "active" ? "#5fd38d" : T.warn; font.pixelSize: 18 } }
+        CcRow { title: qsTr("Report a problem"); description: qsTr("Send feedback to the developer on GitHub.")
+            CcButton { text: qsTr("Open Feedback"); onClicked: app.settingsPage = "feedback" } }
         CcRow { title: qsTr("App Diagnostics"); description: qsTr("Checks the services and tools XPanel uses.")
             CcButton { text: qsTr("Run"); onClicked: page.diag = tweaks.diagnostics() } }
         Repeater {

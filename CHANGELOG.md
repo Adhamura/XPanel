@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- **Feedback goes to GitHub.** **Settings › Feedback** (and a "Report a problem" row in
+  **Settings › General**) now writes a report and opens a pre-filled GitHub issue (Idea: feature
+  request form, Problem: bug report form, Other: plain issue) in your browser. You submit it with your
+  own GitHub account; XPanel sends nothing and carries no GitHub token. The report has a title, your
+  text and, with **Include device info** (on by default and shown before it is sent), the XPanel
+  version, model, BIOS, desktop, distro, kernel, Qt version and language, never a serial number,
+  user name or path. A **QR code** of the same link lets you file it from a phone (Steam Game Mode has
+  no browser to speak of); when the text is too long for a QR code, the code opens the issue with title
+  and device info only and the full text goes to the clipboard. **Copy** copies the report as text,
+  **Save locally** keeps the old notes file. The QR code is made by
+  [qrcodegen](https://github.com/nayuki/QR-Code-generator) (Project Nayuki, MIT), bundled in
+  `third_party/qrcodegen/`.
+
 ## 1.4.0
 
 - **Translations.** Every text in the Quick Panel, Control Center and tray menu can be translated

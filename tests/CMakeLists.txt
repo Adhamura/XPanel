@@ -26,3 +26,9 @@ foreach(t fancurve aura model)
     target_link_libraries(tst_${t} PRIVATE Qt6::Core Qt6::Test)
     add_test(NAME ${t} COMMAND tst_${t})
 endforeach()
+
+qt_add_executable(tst_feedback tst_feedback.cpp ../src/FeedbackReport.h ../src/FeedbackReport.cpp
+    ../src/QrMatrix.h ../src/QrMatrix.cpp ../third_party/qrcodegen/qrcodegen.hpp ../third_party/qrcodegen/qrcodegen.cpp)
+target_include_directories(tst_feedback PRIVATE ../src ../third_party/qrcodegen)
+target_link_libraries(tst_feedback PRIVATE Qt6::Core Qt6::Test)
+add_test(NAME feedback COMMAND tst_feedback)

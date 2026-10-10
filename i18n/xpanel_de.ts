@@ -1546,7 +1546,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <translation>Profil: %1</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+175"/>
         <source>Ⓐ Select   Ⓑ Close   Ⓧ Control Center   Ⓨ Edit</source>
         <translation>Ⓐ Auswählen   Ⓑ Schließen   Ⓧ Kontrollzentrum   Ⓨ Bearbeiten</translation>
     </message>
@@ -2119,14 +2119,44 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
 <context>
     <name>SetFeedback</name>
     <message>
-        <location filename="../qml/app/SetFeedback.qml" line="+9"/>
+        <location filename="../qml/app/SetFeedback.qml" line="+43"/>
         <source>Feedback</source>
         <translation>Feedback</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Write what to fix or add. Notes are saved to %1</source>
-        <translation>Notizen zu Fehlern oder Wünschen schreiben. Sie werden gespeichert unter %1</translation>
+        <location line="-17"/>
+        <source>Could not open a browser. Use the QR code, or Copy and paste it on github.com.</source>
+        <translation>Es konnte kein Browser geöffnet werden. Nutze den QR-Code oder kopiere den Text und füge ihn auf github.com ein.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. The text was too long for a link and is shortened there; the full text is copied to the clipboard.</source>
+        <translation>Im Browser geöffnet. Der Text war für einen Link zu lang und ist dort gekürzt; der vollständige Text liegt in der Zwischenablage.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opened in your browser. Submit the issue there.</source>
+        <translation>Im Browser geöffnet. Sende das Issue dort ab.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Copied to the clipboard.</source>
+        <translation>In die Zwischenablage kopiert.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Saved to %1</source>
+        <translation>Gespeichert in %1</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Opens a GitHub issue — you need a GitHub account. Nothing is sent until you submit it there.</source>
+        <translation>Öffnet ein GitHub-Issue – du brauchst ein GitHub-Konto. Es wird nichts gesendet, bevor du es dort absendest.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>In Steam Game Mode a browser is often not available: scan the QR code with your phone.</source>
+        <translation>Im Steam-Spielmodus ist oft kein Browser verfügbar: Scanne den QR-Code mit deinem Handy.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2150,21 +2180,71 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
     </message>
     <message>
         <location line="+2"/>
+        <source>Short title</source>
+        <translation>Kurzer Titel</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Your feedback…</source>
         <translation>Dein Feedback…</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Save</source>
-        <translation>Speichern</translation>
+        <location line="+1"/>
+        <source>Include device info</source>
+        <translation>Geräteinfos mitsenden</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Saved. Thank you.</source>
-        <translation>Gespeichert. Danke!</translation>
+        <source>Fills in model, BIOS, distro, desktop and versions. Never your serial number, user name or files. XPanel&apos;s version is always included.</source>
+        <translation>Fügt Modell, BIOS, Distribution, Desktop und Versionen ein. Nie deine Seriennummer, deinen Benutzernamen oder Dateien. Die XPanel-Version ist immer dabei.</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+8"/>
+        <source>Added to the report</source>
+        <translation>Dem Bericht hinzugefügt</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Send on GitHub</source>
+        <translation>Auf GitHub senden</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show QR code</source>
+        <translation>QR-Code anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation>Kopieren</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save locally</source>
+        <translation>Lokal speichern</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Scan with your phone</source>
+        <translation>Mit dem Handy scannen</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Your text is too long for a QR code. The code opens a report with title and device info only; the full text is copied to the clipboard.</source>
+        <translation>Dein Text ist für einen QR-Code zu lang. Der Code öffnet einen Bericht nur mit Titel und Geräteinfos; der vollständige Text liegt in der Zwischenablage.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opens the GitHub issue with your text. Submit it there with your GitHub account.</source>
+        <translation>Öffnet das GitHub-Issue mit deinem Text. Sende es dort mit deinem GitHub-Konto ab.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location line="-99"/>
         <source>Write something first.</source>
         <translation>Bitte zuerst etwas schreiben.</translation>
     </message>
@@ -2183,12 +2263,12 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
     </message>
     <message>
         <location line="+1"/>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location line="-73"/>
+        <location line="-75"/>
         <source>Applies right away. Japanese, Korean and Chinese need a CJK font on the system.</source>
         <translation>Gilt sofort. Japanisch, Koreanisch und Chinesisch benötigen eine CJK-Schrift im System.</translation>
     </message>
@@ -2376,6 +2456,21 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
         <location line="+1"/>
         <source>not running</source>
         <translation>läuft nicht</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a problem</source>
+        <translation>Problem melden</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Send feedback to the developer on GitHub.</source>
+        <translation>Feedback über GitHub an den Entwickler senden.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Feedback</source>
+        <translation>Feedback öffnen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3165,7 +3260,7 @@ Steam-Spiele erscheinen nach der Installation; andere Spiele: Bibliothek verwalt
 <context>
     <name>Tray</name>
     <message>
-        <location filename="../src/main.cpp" line="+401"/>
+        <location filename="../src/main.cpp" line="+405"/>
         <source>Open Quick Panel</source>
         <translation>Schnellmenü öffnen</translation>
     </message>

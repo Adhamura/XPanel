@@ -25,6 +25,7 @@
 #include "DesktopTweaks.h"
 #include "DeviceClient.h"
 #include "DeviceInfo.h"
+#include "Feedback.h"
 #include "GameLibrary.h"
 #include "GameWatcher.h"
 #include "ProfileManager.h"
@@ -343,6 +344,7 @@ int main(int argc, char **argv)
     ProfileManager profiles(&config, &device, &watcher, &library);
     MediaGallery gallery;
     DesktopTweaks tweaks(&config);
+    Feedback feedback(&device, &i18n);
     QObject::connect(&tweaks, &DesktopTweaks::shortcutPressed, [&](const QString &action) {
         if (action == "controlcenter") panel.appOpen() ? panel.closeApp() : panel.openApp();
         else panel.toggle();
@@ -350,6 +352,7 @@ int main(int argc, char **argv)
 
     QQmlEngine engine;
     engine.addImageProvider("theme", new ThemeIconProvider);
+    engine.addImageProvider("qr", new QrImageProvider);
     engine.rootContext()->setContextProperty("device", &device);
     engine.rootContext()->setContextProperty("sys", &sys);
     engine.rootContext()->setContextProperty("panel", &panel);
@@ -362,6 +365,7 @@ int main(int argc, char **argv)
     engine.rootContext()->setContextProperty("profiles", &profiles);
     engine.rootContext()->setContextProperty("gallery", &gallery);
     engine.rootContext()->setContextProperty("tweaks", &tweaks);
+    engine.rootContext()->setContextProperty("feedback", &feedback);
     engine.rootContext()->setContextProperty("i18n", &i18n);
     i18n.setEngine(&engine);
     DesktopInfo desktopInfo;
