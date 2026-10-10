@@ -21,7 +21,7 @@ jobs:
         run: ./build-release.sh --clean
       - name: Smoke test the AppImage (QML and Qt plugin errors)
         run: |
-          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth sway libegl-mesa0 libgl1-mesa-dri
           packaging/appimage/smoke-test.sh dist/XPanel-*-x86_64.AppImage
       - uses: actions/upload-artifact@v4
         with:

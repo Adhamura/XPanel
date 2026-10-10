@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.5
+
+- **Fixed**: the 1.0.4 AppImage crashed at start on Wayland (KDE Plasma, SteamOS / Bazzite desktop
+  mode) with `Failed to load client buffer integration: "wayland-egl"`: Qt's Wayland EGL plugin
+  was not bundled. It is now, and the release build fails if it is missing.
+- If OpenGL cannot start at all (missing or broken GPU driver), XPanel now draws with Qt's
+  software renderer instead of aborting.
+- The release smoke test also starts the AppImage on Wayland (headless sway with Mesa), not
+  only on X11.
+
 ## 1.0.4 — Windows (experimental)
 
 - **Windows 10 / 11 x64 installer**: `XPanel-<version>-Windows-x64-Setup.exe`. The same app and
