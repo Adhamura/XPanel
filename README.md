@@ -126,11 +126,15 @@ sudo scripts/install-daemon.sh --disable-hhd   # root service; stops hhd (it cha
 
 Distro packages for Qt, on Arch / CachyOS: `sudo pacman -S qt6-base qt6-declarative qt6-svg layer-shell-qt`.
 
+`install-daemon.sh` creates the group `xpanel` and adds your user to it. Only members of this
+group can use the daemon, so **log out and in again** (or reboot) once after the first install.
+
 ### Arch / CachyOS package
 
 ```bash
 cd packaging/arch && makepkg -si
 sudo systemctl enable --now xpanel-daemon
+sudo usermod -aG xpanel $USER   # only if makepkg did not say it added you; then log out and in
 ```
 
 ### From source
@@ -230,9 +234,15 @@ holds the controller, Control Mode shows it as busy.
 KDE Plasma desktop session.
 
 **Is it safe?** The root daemon only listens on a local socket and only accepts a fixed,
-validated set of settings (TDP between 5 and 40 W, charge limit 50–100 %, …). Wattages stay close
-to ASUS's Windows defaults. See [SECURITY.md](SECURITY.md) for details and known limits. As
-with any tool that changes power limits: use at your own risk.
+validated set of settings (TDP between 5 and 40 W, charge limit 50–100 %, …). Only root and
+members of group `xpanel` can use the socket, and the systemd unit sandboxes the daemon. Wattages
+stay close to ASUS's Windows defaults. See [SECURITY.md](SECURITY.md) for details and known
+limits. As with any tool that changes power limits: use at your own risk.
+
+**XPanel says the daemon is not running, but it is.** Your user is probably not in group
+`xpanel` yet, or you did not log in again after you joined it. Check with `id -nG`, then run
+`sudo usermod -aG xpanel $USER` and log out and in. `journalctl -u xpanel-daemon -b` shows
+"refused uid …" for clients that the daemon rejects.
 
 **The controller stopped working in games.** Restart the daemon:
 `sudo systemctl restart xpanel-daemon`. If you stopped it, udev restores the normal controller
@@ -250,8 +260,7 @@ from XPanel's Game Library for now.
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
   for games started from Steam, restored when the game ends.
-- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; a stricter daemon
-  socket (group + peer credentials).
+- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).

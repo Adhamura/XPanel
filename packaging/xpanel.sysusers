@@ -1,0 +1,3 @@
+# Members of group xpanel may use the xpanel-daemon socket (/run/xpanel/xpanel.sock).
+# Add your user: sudo usermod -aG xpanel $USER, then log out and in again.
+g xpanel - -

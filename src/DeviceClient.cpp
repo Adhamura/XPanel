@@ -21,7 +21,13 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
         emit connectedChanged();
         m_retry.start();
     });
-    connect(&m_sock, &QLocalSocket::errorOccurred, this, [this] {
+    connect(&m_sock, &QLocalSocket::errorOccurred, this, [this](QLocalSocket::LocalSocketError e) {
+        static bool told = false;
+        if (e == QLocalSocket::SocketAccessError && !told) {
+            told = true;
+            qWarning("XPanel: no access to %s. Add your user to group xpanel "
+                     "(sudo usermod -aG xpanel $USER), then log out and in again.", qPrintable(socketPath()));
+        }
         if (m_sock.state() != QLocalSocket::ConnectedState)
             m_retry.start();
     });

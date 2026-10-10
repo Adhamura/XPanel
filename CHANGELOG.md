@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+**Security**: only root and members of the new group `xpanel` can use the daemon socket
+(`root:xpanel 0660`, checked again with `SO_PEERCRED` / `SO_PEERGROUPS`). Before, any local
+program could change TDP and fan mode, ask for the controller grab and read the serial number.
+`install-daemon.sh` and the Arch package create the group and add the user who ran `sudo`
+(log out and in once); the uninstall paths remove it. The systemd unit is now sandboxed
+(`ProtectSystem=strict`, device allow list, capability bounding set) and no longer uses the
+deprecated `systemd-udev-settle.service`.
+
 ## 1.0.1 — first public release
 
 **Quick Panel** (Ally button, tray, shortcut): Operating Mode (Silent 13 W / Performance 17 W /

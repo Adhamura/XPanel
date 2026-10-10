@@ -1,6 +1,9 @@
 [Unit]
 Description=XPanel daemon (ROG Ally TDP, fan, charge limit, lighting, input layer)
-After=systemd-udev-settle.service
+# The daemon looks for the pad and the Aura node again every few seconds, so it does not
+# wait for udev to settle. It needs /dev/uinput to exist at start (see DeviceAllow).
+Wants=modprobe@uinput.service
+After=modprobe@uinput.service systemd-udevd.service
 
 [Service]
 Type=simple
@@ -14,9 +17,30 @@ RuntimeDirectory=xpanel
 RuntimeDirectoryMode=0755
 StateDirectory=xpanel
 Environment=XPANEL_SOCKET=/run/xpanel/xpanel.sock
+# Only root and members of this group may use the socket (it is root:xpanel 0660).
+Environment=XPANEL_GROUP=xpanel
+
+# Sandbox. Writes: sysfs (TDP, fan, charge, cpufreq, amdgpu), /dev nodes of the pad,
+# and its own state and runtime directories.
 NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/sys -/var/lib/xpanel -/run/xpanel
 ProtectHome=yes
 PrivateTmp=yes
+DeviceAllow=char-input rw
+DeviceAllow=char-hidraw rw
+DeviceAllow=/dev/uinput rw
+# CHOWN: socket group. DAC_* / FOWNER: open and chmod the device nodes it hides from games.
+CapabilityBoundingSet=CAP_CHOWN CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
 
 [Install]
 WantedBy=multi-user.target

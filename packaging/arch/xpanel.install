@@ -1,17 +1,35 @@
+# Group xpanel may use the daemon socket. pacman's sysusers hook runs only after these
+# scriptlets, so create it here, then add the user who ran sudo (makepkg -si, paru, yay).
+_xpanel_group() {
+    systemd-sysusers /usr/lib/sysusers.d/xpanel.conf 2>/dev/null ||
+        getent group xpanel >/dev/null || groupadd --system xpanel
+    if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ] &&
+        ! id -nG "$SUDO_USER" | tr ' ' '\n' | grep -qx xpanel; then
+        usermod -aG xpanel "$SUDO_USER" &&
+            echo "==> Added $SUDO_USER to group xpanel. Log out and in again so XPanel can connect."
+    fi
+}
 post_install() {
+    _xpanel_group
     cat <<'MSG'
 ==> XPanel installed.
     Start the root service (TDP, fan, charge limit, lighting, input layer):
         sudo systemctl enable --now xpanel-daemon
+    Only members of group xpanel can use it. If your user is not one yet:
+        sudo usermod -aG xpanel $USER     (then log out and in again)
     Handheld Daemon (hhd) changes the same hardware; stop it first:
         sudo systemctl disable --now hhd@$USER
     Then start "XPanel Quick Panel" from the menu (it adds a tray icon).
 MSG
 }
 post_upgrade() {
+    _xpanel_group
     systemctl daemon-reload 2>/dev/null || true
     systemctl try-restart xpanel-daemon.service 2>/dev/null || true
 }
 pre_remove() {
     systemctl disable --now xpanel-daemon.service 2>/dev/null || true
+}
+post_remove() {
+    getent group xpanel >/dev/null && groupdel xpanel 2>/dev/null || true
 }

@@ -16,6 +16,18 @@ else
     exit 1
 fi
 
+# Group xpanel may use the daemon socket. Add the user who ran sudo.
+getent group xpanel >/dev/null || groupadd --system xpanel
+RELOGIN=
+if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != root ]; then
+    if ! id -nG "$SUDO_USER" | tr ' ' '\n' | grep -qx xpanel; then
+        usermod -aG xpanel "$SUDO_USER"
+        RELOGIN=1
+    fi
+else
+    echo "NOTE: add your desktop user to group xpanel: sudo usermod -aG xpanel <user>"
+fi
+
 install -m 755 "$BIN" /usr/local/bin/xpanel-daemon
 install -m 644 daemon/xpanel-daemon.service /etc/systemd/system/xpanel-daemon.service
 
@@ -34,4 +46,5 @@ systemctl enable xpanel-daemon.service
 systemctl restart xpanel-daemon.service
 sleep 1
 systemctl --no-pager --lines=5 status xpanel-daemon.service || true
-echo "xpanel-daemon installed. Socket: /run/xpanel/xpanel.sock"
+echo "xpanel-daemon installed. Socket: /run/xpanel/xpanel.sock (group xpanel)"
+[ -z "$RELOGIN" ] || echo "Added $SUDO_USER to group xpanel. Log out and in again (or reboot) so XPanel can connect."

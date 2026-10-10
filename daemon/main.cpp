@@ -6,6 +6,8 @@
 // something else (firmware, another tool) changes the TDP.
 //
 // Protocol: UNIX socket /run/xpanel/xpanel.sock, one JSON object per line.
+// Access: the socket is root:xpanel 0660, and each client must be root or a member of
+// group xpanel (checked again with SO_PEERCRED / SO_PEERGROUPS). Others are disconnected.
 //   client -> {"get": true}
 //   client -> {"set": {"opmode": "turbo"}}          (any of the keys below)
 //   daemon -> {"state": {...}}                      (reply, and pushed to every
@@ -35,20 +37,53 @@
 #include <QSocketNotifier>
 #include <QTimer>
 
+#include <algorithm>
+#include <cerrno>
 #include <csignal>
 #include <cstdio>
 #include <cstring>
+#include <grp.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <vector>
 
 static const QString kStateDir = qEnvironmentVariable("STATE_DIRECTORY", "/var/lib/xpanel");
 static const QString kSocketPath = qEnvironmentVariable("XPANEL_SOCKET", "/run/xpanel/xpanel.sock");
+static const QString kGroup = qEnvironmentVariable("XPANEL_GROUP", "xpanel");
 
 static const QStringList kOpModes = {"silent", "performance", "turbo", "manual"};
 static const QStringList kFans = {"auto", "quiet", "max"};
 static const QStringList kLights = {"off", "static", "breathing", "colorcycle", "rainbow"};
 static const QStringList kSpeeds = {"low", "medium", "high"};
+
+// May this socket peer use the daemon? Root, the daemon's own user, and members of
+// `group` (primary or supplementary, as the kernel saw them at connect time).
+static bool peerAllowed(int fd, gid_t group, uid_t *uid)
+{
+    ucred cr {};
+    socklen_t len = sizeof(cr);
+    if (fd < 0 || ::getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) < 0)
+        return false;
+    *uid = cr.uid;
+    if (cr.uid == 0 || cr.uid == ::geteuid())
+        return true;
+    if (group == gid_t(-1))
+        return false;
+    if (cr.gid == group)
+        return true;
+    std::vector<gid_t> groups(64);
+    len = socklen_t(groups.size() * sizeof(gid_t));
+    if (::getsockopt(fd, SOL_SOCKET, SO_PEERGROUPS, groups.data(), &len) < 0) {
+        if (errno != ERANGE) // ERANGE: len now holds the size we need
+            return false;
+        groups.resize(len / sizeof(gid_t));
+        if (::getsockopt(fd, SOL_SOCKET, SO_PEERGROUPS, groups.data(), &len) < 0)
+            return false;
+    }
+    groups.resize(len / sizeof(gid_t));
+    return std::find(groups.begin(), groups.end(), group) != groups.end();
+}
 
 class Daemon : public QObject {
 public:
@@ -59,10 +94,20 @@ public:
 
         QDir().mkpath(QFileInfo(kSocketPath).absolutePath());
         QLocalServer::removeServer(kSocketPath);
-        m_server.setSocketOptions(QLocalServer::WorldAccessOption);
-        if (!m_server.listen(kSocketPath))
+        if (const group *gr = ::getgrnam(kGroup.toLocal8Bit().constData()))
+            m_group = gr->gr_gid;
+        // The socket is born 0600, so nobody else can connect before the chown below.
+        const mode_t oldMask = ::umask(0177);
+        const bool listening = m_server.listen(kSocketPath);
+        ::umask(oldMask);
+        if (!listening)
             qFatal("xpanel-daemon: cannot listen on %s", qPrintable(kSocketPath));
-        ::chmod(kSocketPath.toLocal8Bit().constData(), 0666);
+        const QByteArray sockPath = kSocketPath.toLocal8Bit();
+        if (m_group != gid_t(-1) && ::chown(sockPath.constData(), uid_t(-1), m_group) == 0)
+            ::chmod(sockPath.constData(), 0660);
+        else
+            qWarning("xpanel-daemon: group %s missing, only root can use %s (run scripts/install-daemon.sh)",
+                     qPrintable(kGroup), sockPath.constData());
         connect(&m_server, &QLocalServer::newConnection, this, &Daemon::onConnection);
 
         // Our own input layer: the Ally pad -> virtual Xbox pad / keyboard / mouse.
@@ -228,6 +273,17 @@ private:
     void onConnection()
     {
         while (QLocalSocket *c = m_server.nextPendingConnection()) {
+            uid_t uid = uid_t(-1);
+            if (!peerAllowed(int(c->socketDescriptor()), m_group, &uid)) {
+                qWarning("xpanel-daemon: refused uid %d, not in group %s", int(uid), qPrintable(kGroup));
+                // Close a moment later, after the reply is read: closing with unread input
+                // (the client's first request) would reset the connection and drop the reply.
+                c->write(R"({"error":"permission denied"})" "\n");
+                connect(c, &QLocalSocket::readyRead, c, [c] { c->readAll(); });
+                connect(c, &QLocalSocket::disconnected, c, &QObject::deleteLater);
+                QTimer::singleShot(500, c, [c] { c->readAll(); c->disconnectFromServer(); });
+                continue;
+            }
             m_clients.append(c);
             connect(c, &QLocalSocket::readyRead, this, [this, c] { onRead(c); });
             connect(c, &QLocalSocket::disconnected, this, [this, c] {
@@ -283,6 +339,7 @@ private:
     QJsonObject m_state;
     const QJsonObject m_info = Hardware::deviceInfo(); // read once (serial needs root)
     QLocalServer m_server;
+    gid_t m_group = gid_t(-1); // group that may use the socket; -1 = none (root only)
     QList<QLocalSocket *> m_clients;
     InputLayer m_input;
     QLocalSocket *m_grabOwner = nullptr;

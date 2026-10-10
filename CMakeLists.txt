@@ -117,3 +117,5 @@ file(READ daemon/xpanel-daemon.service XPANEL_UNIT)
 string(REPLACE "/usr/local/bin/" "${CMAKE_INSTALL_FULL_BINDIR}/" XPANEL_UNIT "${XPANEL_UNIT}")
 file(WRITE ${CMAKE_BINARY_DIR}/xpanel-daemon.service "${XPANEL_UNIT}")
 install(FILES ${CMAKE_BINARY_DIR}/xpanel-daemon.service DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/system)
+# Group xpanel: who may use the daemon socket.
+install(FILES packaging/xpanel.sysusers DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/sysusers.d RENAME xpanel.conf)
