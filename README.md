@@ -232,7 +232,8 @@ KDE Plasma desktop session.
 
 **Is it safe?** The root daemon only listens on a local socket, only lets in root and members of
 the `xpanel` group (checked per connection), and only accepts a fixed, validated set of settings
-(TDP between 5 and 40 W, charge limit 50–100 %, …). Wattages stay close to ASUS's Windows defaults.
+(TDP between 5 and 40 W, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
+system, only the controller and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
 See [SECURITY.md](SECURITY.md) for details. As with any tool that changes power limits: use at
 your own risk.
 
@@ -256,8 +257,7 @@ from XPanel's Game Library for now.
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
   for games started from Steam, restored when the game ends.
-- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects; tighter systemd
-  sandboxing for the daemon.
+- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).

@@ -25,6 +25,9 @@ systemd unit; `xpanel-daemon --version`.
 (peer credentials checked on every connection; no new login needed after `usermod -aG xpanel`).
 Refused clients get a clear message, which the app shows in Settings. `install-daemon.sh`
 creates the group and adds the installing user; packages get a `sysusers.d` entry.
+The systemd unit sandboxes the daemon: read-only system except sysfs and its own directories,
+only input / hidraw / uinput devices, three capabilities, the `@system-service` system calls
+(`systemd-analyze security` exposure 8.9 → 2.2). Hardware write errors now name the reason.
 
 **Fixed**: the daemon dropped requests over 4 KB, so large Control Mode settings were silently
 not applied; it now accepts up to 128 KB (the setting itself is limited to 64 KB).
