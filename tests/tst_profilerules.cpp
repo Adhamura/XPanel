@@ -44,7 +44,7 @@ private slots:
         QCOMPARE(steamAppIdFromCmdline(cmdline), appid);
     }
 
-    void environ_data()
+    void environment_data()
     {
         QTest::addColumn<QByteArray>("env");
         QTest::addColumn<QString>("id");
@@ -57,7 +57,7 @@ private slots:
         QTest::newRow("bad marker") << nul({"XPANEL_GAME=whatever"}) << "";
         QTest::newRow("none") << nul({"HOME=/home/u", "PATH=/usr/bin"}) << "";
     }
-    void environ()
+    void environment()
     {
         QFETCH(QByteArray, env);
         QFETCH(QString, id);

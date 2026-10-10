@@ -13,7 +13,7 @@ QString steamAppIdFromCmdline(const QByteArray &cmdline);
 
 // Game id from /proc/<pid>/environ (NUL-separated): SteamAppId / SteamGameId -> "steam:<id>",
 // else XPANEL_GAME=<id> (set by XPanel's own launches). "" when none.
-QString gameIdFromEnviron(const QByteArray &environ);
+QString gameIdFromEnviron(const QByteArray &env);
 
 // Steam tools that are not games (Proton, Steam Linux Runtime, redistributables) by name.
 bool isSteamToolName(const QString &name);

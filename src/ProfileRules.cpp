@@ -49,10 +49,10 @@ QString steamAppIdFromCmdline(const QByteArray &cmdline)
     return QString::fromLatin1(id);
 }
 
-QString gameIdFromEnviron(const QByteArray &environ)
+QString gameIdFromEnviron(const QByteArray &env)
 {
     QByteArray appId, gameId, xpanel;
-    for (const QByteArray &kv : split0(environ)) {
+    for (const QByteArray &kv : split0(env)) {
         if (kv.startsWith("XPANEL_GAME="))
             xpanel = kv.mid(12);
         else if (kv.startsWith("SteamAppId="))
