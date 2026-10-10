@@ -4,11 +4,11 @@ labels: [bug]
 body:
   - type: input
     id: device
-    attributes: {label: Device, placeholder: "ROG Ally X (RC72LA) / ROG Ally (RC71L)"}
+    attributes: {label: Device, placeholder: "ROG Ally X (RC72LA) / ROG Ally (RC71L) / ROG Xbox Ally (RC73YA) / ROG Xbox Ally X (RC73XA)"}
     validations: {required: true}
   - type: input
     id: distro
-    attributes: {label: Distro, desktop and kernel, placeholder: "CachyOS, KDE Plasma 6.4, Wayland, 6.17.1-cachyos"}
+    attributes: {label: Distro, desktop and kernel, placeholder: "CachyOS, KDE Plasma 6.4 (or GNOME / Steam Game Mode), Wayland, 6.17.1-cachyos, XPanel 1.4.0"}
     validations: {required: true}
   - type: input
     id: version

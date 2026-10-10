@@ -63,7 +63,14 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   ▲ ▼ fan speed, LB / RB temperature). Start from Quiet, Balanced or Performance; one curve for
   both fans or a separate GPU curve. Saved, re-applied after TDP changes, and added to the Quick
   Panel fan tile once saved.
-- **🪶 Native and small.** About 7k lines of C++17 / QML. No Python, Electron or web runtime.
+- **🎯 Gyro aiming.** The Ally's motion sensor as a mouse or added to the right stick, with
+  sensitivity, turning axis, invert, "only while LT is held" and calibration.
+- **🖥️ Brightness for every screen.** External monitor only, Ally only, or one bar per screen
+  when the desktop is extended.
+- **🌍 10 languages, three desktops.** English, Deutsch, Español, Français, Italiano, 日本語,
+  한국어, Português (Brasil), Русский, 简体中文. Made for KDE Plasma; GNOME and Steam Game Mode
+  work too (experimental).
+- **🪶 Native and small.** About 11k lines of C++17 / QML. No Python, Electron or web runtime.
   A small root daemon on a local socket does the hardware work.
 
 ## Screenshots
@@ -75,7 +82,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   </tr>
   <tr>
     <td><img src="docs/screenshots/control-mode.png" alt="Control Mode"><br><b>Control Mode</b> — Gamepad / Desktop presets, key mapping with paddle-held secondary functions</td>
-    <td><img src="docs/screenshots/lighting.png" alt="Lighting"><br><b>Lighting</b> — Aura effects, colors and brightness for the stick rings</td>
+    <td><img src="docs/screenshots/lighting.png" alt="Lighting"><br><b>Lighting</b> — Aura effects (also dual breathing, strobe, battery level, follow Operating Mode), colors and brightness</td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/battery.png" alt="Battery Care"><br><b>Battery Care</b> — charge limit, battery health, cycles, power options</td>
@@ -95,17 +102,19 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 |---|:-:|:-:|:-:|:-:|:-:|
 | Runs on Linux | ✅ | ✅ | ✅ | ✅ | ❌ Windows only |
 | Armoury Crate–style Quick Panel + Control Center | ✅ | ➖ | ❌ | ➖ | ✅ |
-| Opens on the Ally button in the **KDE desktop** | ✅ | ➖ | ❌ | ❌ | — |
+| Opens on the Ally button in the **desktop** (KDE; GNOME experimental) | ✅ | ➖ | ❌ | ❌ | — |
 | Works without Steam / Game Mode | ✅ | ✅ | ❌ | ✅ | — |
 | Operating Modes + manual SPL / SPPT / FPPT | ✅ | ✅ | ✅ | ➖ | ✅ |
 | Re-applies TDP on charger plug / unplug | ✅ | ➖ | ➖ | ➖ | — |
 | Charge limit | ✅ | ✅ | ➖ | ✅ | ✅ |
 | Aura lighting | ✅ | ✅ | ➖ | ➖ | ✅ |
+| Custom fan curve editor | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Gyro as mouse / right stick | ✅ | ✅ | ❌ | ❌ | ✅ |
 | Button remapping, paddle-held second functions | ✅ | ➖ | ❌ | ❌ | ✅ |
 | Game Library with per-game profiles | ✅ | ❌ | ➖ | ❌ | ✅ |
 | Media Gallery | ✅ | ❌ | ❌ | ❌ | ✅ |
 | Native app, no Python / web runtime | ✅ | ❌ | ❌ | ✅ | — |
-| Steam Game Mode (gamescope) | ➖ experimental | ✅ | ✅ | ➖ | — |
+| Steam Game Mode (gamescope) | ➖ experimental: overlay driven by the pad, no touch | ✅ | ✅ | ➖ | — |
 
 <sub>✅ yes · ➖ partial, or depends on setup · ❌ no. Based on each project's public documentation;
 corrections are welcome in an issue. hhd is great in Steam Game Mode — XPanel is for people who
@@ -364,8 +373,8 @@ See the top of `daemon/main.cpp` for all keys.
 ## FAQ
 
 **Does it work on Windows?** Partly, and experimentally: the installer sets Operating Mode / TDP,
-fan, charge limit, lighting and boot sound the way Armoury Crate does. Controller remapping and
-the Ally buttons are Linux-only for now. XPanel is made first for Linux, where there is no
+fan (including a custom curve), charge limit, lighting and boot sound the way Armoury Crate does.
+Controller remapping, gyro and the Ally buttons are Linux-only for now. XPanel is made first for Linux, where there is no
 Armoury Crate.
 
 **Does it conflict with Handheld Daemon (hhd), InputPlumber or Decky TDP plugins?** Yes, they
@@ -373,8 +382,7 @@ change the same hardware. `install-daemon.sh --disable-hhd` stops hhd, and `unin
 tells you how to turn it back on. Don't run a Decky TDP plugin at the same time. If InputPlumber
 holds the controller, Control Mode shows it as busy.
 
-**Does it work in Steam Game Mode (Bazzite / SteamOS / ChimeraOS)?** Experimentally, since the
-next release. Enable the user unit (`systemctl --user enable xpanel.service`, see
+**Does it work in Steam Game Mode (Bazzite / SteamOS / ChimeraOS)?** Experimentally, since 1.3. Enable the user unit (`systemctl --user enable xpanel.service`, see
 [Steam Game Mode autostart](#steam-game-mode-autostart-experimental)); the Ally button then opens
 the Quick Panel over the game as a gamescope overlay. Use the pad to drive it (touch goes to the
 game). Refresh rate, colour presets, screenshots and log out are Steam's there, so XPanel hides
@@ -435,7 +443,7 @@ tray icon); if it was closed during a game, it restores your settings the next t
 
 ## Roadmap
 
-- **1.0** — ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
+- **1.0** — ✅ ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — ✅ Original ROG Ally (Z1 / Z1 Extreme) power limits and controller (not yet tested on
   hardware); ✅ per-game profiles for games started from Steam, restored when the game ends.
