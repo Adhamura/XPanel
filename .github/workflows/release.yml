@@ -1,36 +1,70 @@
 name: Release
 
 # Publishes XPanel-<version>-x86_64.AppImage, xpanel-<version>-linux-x86_64.tar.gz and
-# SHA256SUMS as a GitHub Release.
-# Either push a tag like v1.0.1 (it must match project(VERSION) in CMakeLists.txt), or
-# Actions -> Release -> "Run workflow" on main: it creates the tag v<version> itself.
+# SHA256SUMS as the GitHub Release v<version>, automatically:
+#   every push to main whose project(VERSION) in CMakeLists.txt has no release yet is built,
+#   smoke-tested and published (it creates the tag). To release: bump the version, add a
+#   "## <version>" section to CHANGELOG.md, merge.
+# Pushing a tag v<version> (it must match) or "Run workflow" also work; an existing release
+# is never rebuilt from a different commit.
 on:
   push:
+    branches: [main]
     tags: ["v*"]
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  check:
+    name: New version?
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.v.outputs.tag }}
+      release: ${{ steps.v.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          v=$(sed -n 's/^project(XPanel VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          tag="v$v"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+              [ "$tag" = "$GITHUB_REF_NAME" ] || { echo "::error::Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1; }
+              echo "release=true" >> "$GITHUB_OUTPUT"
+          elif git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null; then
+              echo "::notice::$tag is already released. Bump project(VERSION) in CMakeLists.txt to publish a new release."
+              echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+              echo "::notice::Publishing $tag"
+              echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
   release:
+    name: Build, smoke-test and publish
+    needs: check
+    if: needs.check.outputs.release == 'true'
     runs-on: ubuntu-latest
     container: debian:trixie
+    env:
+      TAG: ${{ needs.check.outputs.tag }}
     steps:
       - name: Install git
         run: apt-get update -qq && apt-get install -y -qq git
       - uses: actions/checkout@v4
       - name: Install build dependencies (packaging/build-deps-debian.txt)
         run: DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $(cat packaging/build-deps-debian.txt)
-      - name: Release tag from the project version
-        run: |
-          v=$(sed -n 's/^project(XPanel VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
-          if [ "$GITHUB_REF_TYPE" = tag ] && [ "v$v" != "$GITHUB_REF_NAME" ]; then
-              echo "Tag $GITHUB_REF_NAME != CMakeLists.txt version $v"; exit 1
-          fi
-          echo "TAG=v$v" >> "$GITHUB_ENV"
       - name: Build AppImage and release archive
         run: ./build-release.sh --clean
+      - name: Smoke test the AppImage (QML and Qt plugin errors)
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth
+          packaging/appimage/smoke-test.sh dist/XPanel-*-x86_64.AppImage
       - name: Release notes from CHANGELOG.md
         run: |
           v=${TAG#v}
@@ -48,7 +82,7 @@ jobs:
           The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`,
           `sudo scripts/install-daemon.sh`). Check downloads with `sha256sum -c SHA256SUMS`.
 
-          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.41). On Windows, use Armoury Crate.
+          Linux x86_64 only (ROG Ally X, KDE Plasma 6, glibc ≥ 2.39). On Windows, use Armoury Crate.
           NOTES
       - uses: softprops/action-gh-release@v2
         with:

@@ -118,8 +118,8 @@ Crate or G-Helper. There is **no 32-bit build** either: the Ally X is a 64-bit d
 
 Download **`XPanel-<version>-x86_64.AppImage`** from
 [**Releases**](https://github.com/Adhamura/XPanel/releases/latest). It contains everything,
-Qt included, and works on any x86_64 distro from 2025 on (glibc ≥ 2.41: CachyOS, Arch, Fedora 42+,
-Bazzite, Debian 13, …).
+Qt included, and works on any x86_64 distro from 2024 on (glibc ≥ 2.39: CachyOS, Arch, Fedora 40+,
+Bazzite, Ubuntu 24.04+, Debian 13, …).
 
 ```bash
 chmod +x XPanel-*-x86_64.AppImage
@@ -171,9 +171,12 @@ Remove: `scripts/uninstall.sh` and `sudo scripts/uninstall-daemon.sh`.
 ./build-release.sh --container   # builds in debian:trixie with Docker / Podman, like CI
 ```
 
-On Windows, `build-release.bat` runs the same script inside WSL. To publish a GitHub release,
-run **Actions → Release → Run workflow** on `main` (it tags `v<version>` from `CMakeLists.txt`), or
-push a `v*` tag.
+On Windows, `build-release.bat` runs the same script inside WSL.
+
+**Releases are automatic.** Bump `project(VERSION)` in `CMakeLists.txt`, add a `## <version>`
+section to `CHANGELOG.md` and merge to `main`: GitHub Actions builds the AppImage and the archive,
+starts the AppImage on a virtual screen to catch missing plugins or QML errors, and publishes the
+release `v<version>` with the changelog section as notes.
 
 ## Using XPanel
 
