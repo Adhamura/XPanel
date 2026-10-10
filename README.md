@@ -99,7 +99,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 ## How it compares
 
 | | **XPanel** | Handheld Daemon (hhd) | Decky TDP plugins | asusctl / ROG Control Center | Armoury Crate |
-|---|:-:|:-:|:-:|:-:|:-:|
+|---|:--|:--|:--|:--|:--|
 | Runs on Linux | ✅ | ✅ | ✅ | ✅ | ❌ Windows only |
 | Armoury Crate–style Quick Panel + Control Center | ✅ | ➖ | ❌ | ➖ | ✅ |
 | Opens on the Ally button in the **desktop** (KDE; GNOME experimental) | ✅ | ➖ | ❌ | ❌ | — |
@@ -114,7 +114,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 | Game Library with per-game profiles | ✅ | ❌ | ➖ | ❌ | ✅ |
 | Media Gallery | ✅ | ❌ | ❌ | ❌ | ✅ |
 | Native app, no Python / web runtime | ✅ | ❌ | ❌ | ✅ | — |
-| Steam Game Mode (gamescope) | ➖ experimental: overlay driven by the pad, no touch | ✅ | ✅ | ➖ | — |
+| Steam Game Mode (gamescope) | ➖ experimental (pad only, no touch) | ✅ | ✅ | ➖ | — |
 
 <sub>✅ yes · ➖ partial, or depends on setup · ❌ no. Based on each project's public documentation;
 corrections are welcome in an issue. hhd is great in Steam Game Mode — XPanel is for people who
@@ -152,7 +152,7 @@ The hardware part (Operating Mode, TDP, fan, charge limit, lighting, controller 
 the root daemon's and works the same everywhere.
 
 | | KDE Plasma 6 | GNOME (experimental) | Steam Game Mode (experimental) |
-|---|:-:|:-:|:-:|
+|---|:--|:--|:--|
 | Quick Panel window | Wayland layer-shell overlay (X11 too) | XWayland window, full screen, kept above | gamescope external overlay (XWayland) |
 | Ally buttons, gamepad navigation | ✅ | ✅ | ✅ (touch / mouse go to the game) |
 | Brightness | ✅ KDE service, internal + DDC/CI monitors | ✅ internal (logind); monitors with `ddcutil` | ✅ internal (logind) |
