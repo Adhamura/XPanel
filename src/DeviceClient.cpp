@@ -108,6 +108,11 @@ void DeviceClient::setGrab(bool grab)
     send({{"input", QJsonObject{{"grab", grab}}}});
 }
 
+void DeviceClient::calibrateGyro()
+{
+    send({{"input", QJsonObject{{"calibrate", "gyro"}}}});
+}
+
 QVariant DeviceClient::value(const QString &key) const
 {
     return m_state.value(key).toVariant();

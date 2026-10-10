@@ -37,6 +37,24 @@ Item {
     function defaults(k, def) { return CD.defaultFor(editing, k, def) }
     function label(v) { return v ? v.split(":")[1] : "" }
 
+    // Gyro: state from xpanel-daemon ("no device" | "ready" | "active" | "busy")
+    readonly property bool gyroOn: val("gyro.mode", "off") !== "off"
+    readonly property string gyroState: (device.rev, device.value("gyro") || "")
+    readonly property string calibration: {
+        const r = (device.rev, device.value("gyroCalibration") || "")
+        return ({ "running": "measuring…", "done": "done", "moved": "the Ally moved, try again",
+                  "busy": "the motion sensor is busy", "no data": "no data from the motion sensor",
+                  "no device": "no motion sensor" })[r] || r
+    }
+    readonly property string gyroLabel: ({ "active": "Active", "ready": "Ready", "busy": "Busy",
+                                           "no device": "Not found" })[gyroState] || "Not available"
+    readonly property string gyroNote: ({
+        "active": "Reading the motion sensor now.",
+        "ready": "Starts when Gyro function is on and a game has the controller.",
+        "busy": "Another program (Handheld Daemon, InputPlumber) is using the motion sensor.",
+        "no device": "No motion sensor found. It needs the kernel's bmi323 IIO driver."
+    })[gyroState] || "Needs xpanel-daemon (Linux)."
+
     CcPage {
         anchors.fill: parent
         Row {
@@ -144,20 +162,36 @@ Item {
                        onMoved: (v) => page.put("vibration.right", v) } }
 
         // ----- gyro -----
-        CcSection { title: "Gyro" }
-        CcRow { title: "Note"; description: "Gyro is saved but not applied yet: reading the Ally's motion sensor comes in a later step."; Item { width: 1; height: 1 } }
+        CcSection { title: "Gyro"; note: "The Ally's motion sensor as mouse or right stick. It runs only while a game has the controller (not while XPanel is open)." }
+        CcRow { title: "Motion sensor"; description: page.gyroNote
+            Text { text: page.gyroLabel; color: page.gyroState === "active" || page.gyroState === "ready" ? "#5fd38d" : T.warn
+                   font.pixelSize: 18 } }
         CcRow { title: "Gyro function"
             CcChoice { options: [{ value: "off", label: "Off" }, { value: "mouse", label: "Mouse" }, { value: "rstick", label: "Right stick" }]
                        current: page.val("gyro.mode", "off"); onPicked: (v) => page.put("gyro.mode", v) } }
+        CcRow { title: "Turning axis"; description: "Yaw: turn the Ally left / right. Roll: tilt it like a steering wheel."
+            CcChoice { options: [{ value: "yaw", label: "Yaw" }, { value: "roll", label: "Roll" }]
+                       enabledChoice: page.gyroOn
+                       current: page.val("gyro.axis", "yaw"); onPicked: (v) => page.put("gyro.axis", v) } }
         CcRow { title: "Horizontal sensitivity"
             CcSlider { width: 420; from: 10; to: 300; stepSize: 5; unit: " %"; value: page.val("gyro.sensX", 100)
-                       enabledSlider: page.val("gyro.mode", "off") !== "off"; onMoved: (v) => page.put("gyro.sensX", v) } }
+                       enabledSlider: page.gyroOn; onMoved: (v) => page.put("gyro.sensX", v) } }
         CcRow { title: "Vertical sensitivity"
             CcSlider { width: 420; from: 10; to: 300; stepSize: 5; unit: " %"; value: page.val("gyro.sensY", 100)
-                       enabledSlider: page.val("gyro.mode", "off") !== "off"; onMoved: (v) => page.put("gyro.sensY", v) } }
+                       enabledSlider: page.gyroOn; onMoved: (v) => page.put("gyro.sensY", v) } }
+        CcRow { title: "Invert horizontal"; description: "Use this if the aim moves the wrong way left / right."
+            CcSwitch { checked: page.val("gyro.invertX", false); enabledSwitch: page.gyroOn
+                       onToggled: (v) => page.put("gyro.invertX", v) } }
+        CcRow { title: "Invert vertical"; description: "Use this if the aim moves the wrong way up / down."
+            CcSwitch { checked: page.val("gyro.invertY", false); enabledSwitch: page.gyroOn
+                       onToggled: (v) => page.put("gyro.invertY", v) } }
         CcRow { title: "Only while a button is held"; description: "Gyro works only while LT is held (aiming)."
-            CcSwitch { checked: page.val("gyro.ratchet", false); enabledSwitch: page.val("gyro.mode", "off") !== "off"
+            CcSwitch { checked: page.val("gyro.ratchet", false); enabledSwitch: page.gyroOn
                        onToggled: (v) => page.put("gyro.ratchet", v) } }
+        CcRow { title: "Calibrate"; description: "If the aim drifts: put the Ally on a flat table, do not touch it, and press Calibrate."
+                                   + (page.calibration ? "  Last result: " + page.calibration + "." : "")
+            CcButton { text: "Calibrate"; enabledButton: page.gyroState === "ready" || page.gyroState === "active"
+                       onClicked: device.calibrateGyro() } }
 
         // ----- external controller -----
         CcSection { title: "External Controller"; note: "Controllers connected by USB or Bluetooth." }

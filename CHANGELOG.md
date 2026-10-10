@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- **Gyro**: the Ally's motion sensor (BMI323, kernel IIO driver) as a **mouse** or added to the
+  **right stick** for aiming, set per mode in Control Mode › Gyro: sensitivity per axis, turning
+  axis Yaw or Roll, Invert horizontal / vertical, "Only while a button is held" (LT). Not yet
+  tested on hardware, please report how it feels and whether the directions are right.
+  - The daemon reads the sensor through the IIO buffer (200 Hz, the sensor's own trigger) or by
+    polling at 125 Hz, only while gyro is on and a game has the pad, and restores the sensor's
+    settings when it stops. If another program (hhd, InputPlumber) holds it, gyro shows "busy".
+  - Gyro calibration (Settings › Calibration or Control Mode): ~1 second at rest; the offset is
+    saved by the daemon (`gyroBias`). New daemon request `{"input": {"calibrate": "gyro"}}`;
+    new state keys `gyro` (no device / ready / active / busy), `gyroMethod`, `gyroCalibration`.
+  - systemd unit: `DeviceAllow=char-iio rw` for the sensor.
+
 ## 1.1.0
 
 - **Original ROG Ally (Z1 / Z1 Extreme)**: Operating Modes with the Ally's own wattages, power

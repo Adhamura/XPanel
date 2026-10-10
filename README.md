@@ -247,6 +247,12 @@ flowchart LR
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
   While the Quick Panel is open, the pad drives XPanel instead of the game. The raw pad nodes are
   hidden from games while the daemon runs and restored by udev when it stops.
+- **Gyro:** the Bosch BMI323 through the kernel IIO driver (`/sys/bus/iio/devices/iio:deviceN`,
+  name `bmi323-imu`), rotated by its mount matrix. The daemon reads it through the IIO buffer
+  (`/dev/iio:deviceN`, the sensor's data-ready trigger, 200 Hz) or, without a trigger, by polling
+  `in_anglvel_*_raw` at 125 Hz — only while gyro is on and a game has the pad — and puts the
+  buffer and sampling rate back when it stops. The calibration offset is kept in the daemon's
+  state (`gyroBias`).
 - **Desktop:** KDE brightness D-Bus, KWin, kglobalaccel, `wpctl`, `kscreen-doctor`, `nmcli`,
   `bluetoothctl`, `spectacle`.
 
@@ -285,8 +291,17 @@ your own risk.
 `sudo systemctl restart xpanel-daemon`. If you stopped it, udev restores the normal controller
 (`sudo udevadm trigger --action=change --subsystem-match=input`).
 
-**Is gyro supported?** The gyro settings are saved, but not applied yet. Calibration is not
-available yet either. There is no FPS limiter (KDE has no global one).
+**Is gyro supported?** Yes, since 1.2 (not yet tested on hardware, please report how it feels).
+Control Mode › Gyro turns the Ally's motion sensor into a **mouse** or adds it to the **right
+stick** (aiming), per mode (Gamepad / Desktop), with horizontal and vertical sensitivity, a
+turning axis (Yaw: turn the Ally left / right; Roll: tilt it like a steering wheel), Invert
+horizontal / vertical, and "Only while a button is held" (gyro works only while LT is pulled).
+It runs only while a game has the controller, not while XPanel is open. If the aim drifts, put
+the Ally on a table and press Calibrate (Control Mode or Settings › Calibration). It needs the
+kernel's `bmi323` IIO driver (in mainline Linux); if Handheld Daemon or InputPlumber already uses
+the sensor, Control Mode shows it as busy. If the aim moves the wrong way, use the Invert
+switches (and please open an issue with your model). There is no FPS limiter (KDE has no global
+one).
 
 **Does the per-game profile apply when I start a game from Steam?** Yes. XPanel notices when Steam
 starts a game (native or Proton) and applies the profile you set under Game Library › the game ›
@@ -303,7 +318,7 @@ tray icon); if it was closed during a game, it restores your settings the next t
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — ✅ Original ROG Ally (Z1 / Z1 Extreme) power limits and controller (not yet tested on
   hardware); ✅ per-game profiles for games started from Steam, restored when the game ends.
-- **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
+- **1.2** — ✅ Gyro (aim and mouse; not yet tested on hardware), custom fan curve editor, more Aura effects.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).

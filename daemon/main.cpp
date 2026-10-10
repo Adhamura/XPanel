@@ -16,6 +16,8 @@
 //                                                    client on each change)
 //   client -> {"input": {"grab": true}}             (the pad drives XPanel, not the game;
 //                                                    ends by itself when that client goes)
+//   client -> {"input": {"calibrate": "gyro"}}      (~1 s at rest; result in "gyroCalibration",
+//                                                    offset saved as "gyroBias" [x, y, z] rad/s)
 //   daemon -> {"event": "special" | "nav" | "action", "name": "..."}   (input layer)
 // Key "control": the resolved Control Mode settings from the app (not echoed in "state").
 // Keys: opmode (silent|performance|turbo|manual), tdp / tdpSlow / tdpFast (W, manual;
@@ -35,6 +37,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QJsonArray>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -46,6 +49,7 @@
 #include <QSocketNotifier>
 #include <QTimer>
 
+#include <algorithm>
 #include <csignal>
 #include <cstdio>
 #include <cstring>
@@ -98,6 +102,12 @@ public:
 
         // Our own input layer: the Ally pad -> virtual Xbox pad / keyboard / mouse.
         m_input.setControl(m_state["control"].toObject());
+        m_input.setGyroBias(m_state["gyroBias"].toArray());
+        connect(&m_input, &InputLayer::gyroBiasChanged, this, [this](const QJsonArray &b) {
+            m_state["gyroBias"] = b;
+            save();
+            broadcast();
+        });
         auto sendEvent = [this](const QString &kind, const QString &name) {
             const QByteArray msg = QJsonDocument(QJsonObject{{"event", kind}, {"name", name}}).toJson(QJsonDocument::Compact) + "\n";
             for (QLocalSocket *c : std::as_const(m_clients)) c->write(msg);
@@ -177,6 +187,11 @@ private:
         if (key == "lightColor") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
         if (key == "eco" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
+        if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
+            const QJsonArray a = v.toArray();
+            return v.isArray() && a.size() == 3
+                   && std::all_of(a.begin(), a.end(), [](const QJsonValue &x) { return x.isDouble() && qAbs(x.toDouble()) < 0.5; });
+        }
         if (key == "charge") return v.isDouble() && v.toInt() >= 50 && v.toInt() <= 100;
         return false;
     }
@@ -347,6 +362,10 @@ private:
             if (raw.size() > (1 << 17)) // "control" alone may be up to 64 KB (see valid())
                 continue;
             const QJsonObject req = QJsonDocument::fromJson(raw).object();
+            if (req["input"].toObject()["calibrate"].toString() == "gyro") {
+                m_input.calibrateGyro();
+                continue;
+            }
             if (req.contains("input")) {
                 const bool g = req["input"].toObject()["grab"].toBool(false);
                 m_grabOwner = g ? c : nullptr;
@@ -371,6 +390,7 @@ private:
             if (apply.contains("fan")) Hardware::applyFan(m_state["fan"].toString());
             if (apply.contains("charge")) Hardware::applyChargeLimit(m_state["charge"].toInt());
             if (apply.contains("control")) m_input.setControl(m_state["control"].toObject());
+            if (apply.contains("gyroBias")) m_input.setGyroBias(m_state["gyroBias"].toArray());
             for (const char *k : {"lighting", "lightColor", "lightBrightness", "lightSpeed"})
                 if (apply.contains(k)) { applyLighting(); break; }
             if (changed) {

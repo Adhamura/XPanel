@@ -34,7 +34,8 @@ function defaultFor(preset, k, def) {
               "repeat.on": false, "repeat.ms": 100, "trigger.mirror": true,
               "lt.start": 5, "lt.end": 96, "rt.start": 5, "rt.end": 96,
               "vibration.left": 100, "vibration.right": 100,
-              "gyro.mode": "off", "gyro.sensX": 100, "gyro.sensY": 100, "gyro.ratchet": false }
+              "gyro.mode": "off", "gyro.sensX": 100, "gyro.sensY": 100, "gyro.ratchet": false,
+              "gyro.axis": "yaw", "gyro.invertX": false, "gyro.invertY": false }
     return g[k] !== undefined ? g[k] : def
 }
 
@@ -61,7 +62,8 @@ function resolve(get) {
             trigger: { mirror: v("trigger.mirror") },
             lt: { start: v("lt.start"), end: v("lt.end") }, rt: { start: v("rt.start"), end: v("rt.end") },
             vibration: { left: v("vibration.left"), right: v("vibration.right") },
-            gyro: { mode: v("gyro.mode"), sensX: v("gyro.sensX"), sensY: v("gyro.sensY"), ratchet: v("gyro.ratchet") }
+            gyro: { mode: v("gyro.mode"), sensX: v("gyro.sensX"), sensY: v("gyro.sensY"), ratchet: v("gyro.ratchet"),
+                    axis: v("gyro.axis"), invertX: v("gyro.invertX"), invertY: v("gyro.invertY") }
         }
     }
     return out

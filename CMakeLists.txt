@@ -112,7 +112,7 @@ if(WIN32)
     target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
 else()
     add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/Hardware.cpp
-        daemon/InputLayer.h daemon/InputLayer.cpp)
+        daemon/InputLayer.h daemon/InputLayer.cpp daemon/Imu.h daemon/Imu.cpp daemon/GyroMath.h daemon/GyroMath.cpp)
 endif()
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)
 target_compile_definitions(xpanel-daemon PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")
