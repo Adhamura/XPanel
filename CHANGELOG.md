@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.1.0
+
+- **Original ROG Ally (Z1 / Z1 Extreme)**: Operating Modes with the Ally's own wattages, power
+  limits from the firmware, controller and buttons. Not yet tested on hardware, please report
+  issues.
+  - Operating Modes (SPL / SPPT / FPPT): Silent 10 / 13 / 16 W, Performance 15 / 20 / 25 W,
+    Turbo 25 / 30 / 35 W on battery and 30 / 35 / 43 W on the charger. The Ally X keeps its values.
+  - The model is found by the DMI board name (`RC71…` Ally, `RC72…` Ally X), else by the
+    controller's USB id; the daemon reports it as `model` / `modelName`.
+  - The Manual SPPT / FPPT sliders use the ranges the firmware reports (new daemon state keys
+    `spptMin`/`spptMax`/`fpptMin`/`fpptMax`); the daemon accepts manual values within them.
+  - Input layer: the Ally pad (xpad, `0b05:1abe`) and its N-KEY keyboard are found by their USB
+    id and capabilities instead of their names, XPanel's own virtual devices are skipped, stick
+    and trigger ranges come from the device, and the menu buttons on the N-KEY keyboard
+    (`KEY_F16`, `KEY_PROG1`) open the Quick Panel / Control Center.
+  - Windows: the power limits and Operating Modes follow the model too.
+- Brightness follows the active display: external monitor only, Ally only, or one bar per screen when extended.
+- Per-game profiles now apply when a game starts from Steam (or from XPanel) and are restored
+  when it ends. Settings you change during the game are kept; the Quick Panel shows
+  "Profile: <game>" while one is active. Game Options gain Fan Mode and a "Use this profile when
+  the game starts from Steam" switch.
+- Unit tests (`ctest`), run in CI on Debian and Arch.
+
 ## 1.0.5
 
 - **Fixed**: the 1.0.4 AppImage crashed at start on Wayland (KDE Plasma, SteamOS / Bazzite desktop

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.0.5 LANGUAGES CXX)
+project(XPanel VERSION 1.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,6 +35,9 @@ qt_add_executable(XPanel
     src/NetworkControl.h src/NetworkControl.cpp
     src/UpdateCenter.h src/UpdateCenter.cpp
     src/GameLibrary.h src/GameLibrary.cpp
+    src/GameWatcher.h src/GameWatcher.cpp
+    src/ProfileManager.h src/ProfileManager.cpp
+    src/ProfileRules.h src/ProfileRules.cpp
     src/MediaGallery.h src/MediaGallery.cpp
     src/DesktopTweaks.h src/DesktopTweaks.cpp
 )
@@ -101,13 +104,14 @@ endif()
 # Hardware helper: TDP, fan curve, charge limit, lighting (no GUI libraries).
 # Linux: root service with the input layer. Windows: ASUS ACPI + HID backend in the user session.
 if(WIN32)
-    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/HardwareWin.cpp daemon/InputLayerStub.h)
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/HardwareWin.cpp
+        daemon/InputLayerStub.h)
     set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON)
     target_sources(xpanel-daemon PRIVATE packaging/windows/xpanel.rc)
     target_compile_definitions(xpanel-daemon PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
 else()
-    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Hardware.cpp
+    add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/Hardware.cpp
         daemon/InputLayer.h daemon/InputLayer.cpp)
 endif()
 set_target_properties(xpanel-daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin AUTOMOC ON)
@@ -123,6 +127,13 @@ if(XPANEL_BUILD_TOOLS AND NOT WIN32)
         FILES tools/mapper/Mapper.qml tools/mapper/AllyView.qml)
     set_target_properties(xpanel-mapper PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     target_link_libraries(xpanel-mapper PRIVATE Qt6::Core Qt6::Gui Qt6::Quick)
+endif()
+
+# Unit tests (ctest); never installed
+option(XPANEL_BUILD_TESTS "Build the unit tests" ON)
+if(XPANEL_BUILD_TESTS AND NOT WIN32)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
 
 # Install: binaries, desktop entry, icon, systemd unit (ExecStart follows the install prefix).

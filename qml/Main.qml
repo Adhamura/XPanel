@@ -16,7 +16,17 @@ Item {
     property string area: "grid"
     property int gridIndex: 0
     property int sideIndex: 0           // 0 brightness, 1 volume, 2 power
+    property int brightIndex: 0         // focused brightness bar (one per screen when extended)
+    readonly property var screens: sys.displays
     property bool editing: false
+
+    // brightness of the focused bar, in steps of d (falls back to the primary display)
+    function adjustBrightness(d) {
+        const n = screens.length
+        if (n === 0) { sys.setBrightness(sys.brightness + d); return }
+        const e = screens[Math.min(brightIndex, n - 1)]
+        sys.setDisplayBrightness(e.id, e.brightness + d)
+    }
 
     // ---------------- tile catalog ----------------
     readonly property var catalog: [
@@ -210,11 +220,12 @@ Item {
             else if (a === "right" && sideIndex === 2) area = "grid"
             else if (a === "left" || a === "right") {
                 const d = a === "right" ? 5 : -5
-                if (sideIndex === 0) sys.setBrightness(sys.brightness + d)
+                if (sideIndex === 0) adjustBrightness(d)
                 else if (sideIndex === 1) sys.setVolume(sys.volume + d)
             } else if (a === "a") {
                 if (sideIndex === 1) sys.toggleMute()
                 else if (sideIndex === 2) openPowerMenu()
+                else if (sideIndex === 0 && screens.length > 1) brightIndex = (Math.min(brightIndex, screens.length - 1) + 1) % screens.length
                 else area = "grid"
             }
             return
@@ -337,6 +348,22 @@ Item {
                 color: T.warn; font.pixelSize: 22 * root.s
                 anchors.verticalCenter: parent.verticalCenter
             }
+            // the running game's profile is applied (restored when the game ends)
+            Rectangle {
+                visible: profiles.activeProfile
+                anchors.verticalCenter: parent.verticalCenter
+                width: profileText.width + 24 * root.s; height: 36 * root.s
+                radius: height / 2
+                color: "transparent"; border.color: T.accent; border.width: Math.max(1, 2 * root.s)
+                Text {
+                    id: profileText
+                    anchors.centerIn: parent
+                    width: Math.min(implicitWidth, 260 * root.s)
+                    text: "Profile: " + profiles.activeTitle
+                    color: T.accent; font.pixelSize: 19 * root.s
+                    elide: Text.ElideRight
+                }
+            }
             Text {
                 text: sys.battery + "%" + (sys.charging ? " ⚡" : "")
                 color: sys.battery <= 15 && !sys.charging ? T.warn : T.text
@@ -380,14 +407,43 @@ Item {
         }
 
         // left column: brightness, volume, power
-        VSlider {
-            s: root.s
-            x: 64 * root.s; y: 148 * root.s
-            height: 300 * root.s
-            value: sys.brightness
-            minimum: 1
-            focused: root.area === "side" && root.sideIndex === 0 && !root.editing
-            onMoved: (v) => sys.setBrightness(v)
+        // one bar per active screen (a single bar for Ally only / external only / mirrored)
+        Repeater {
+            model: Math.max(1, root.screens.length)   // a count, so the sliders survive value updates
+            Item {
+                id: bar
+                readonly property var e: index < root.screens.length
+                    ? root.screens[index] : { id: "", label: "", internal: true, brightness: sys.brightness }
+                readonly property int n: Math.max(1, root.screens.length)
+                readonly property real sc: n === 1 ? 1 : (n === 2 ? 0.62 : 0.5)
+                readonly property real cx: (94 + (index - (n - 1) / 2) * 46) * root.s
+                readonly property bool multi: n > 1
+                VSlider {
+                    s: root.s * bar.sc
+                    x: bar.cx - width / 2; y: 148 * root.s
+                    height: 300 * root.s
+                    value: bar.e.brightness
+                    minimum: 1
+                    focused: root.area === "side" && root.sideIndex === 0 && !root.editing
+                             && (!bar.multi || Math.min(root.brightIndex, bar.n - 1) === index)
+                    onMoved: (v) => {
+                        root.brightIndex = index
+                        if (bar.e.id === "") sys.setBrightness(v)
+                        else sys.setDisplayBrightness(bar.e.id, v)
+                    }
+                }
+                Text {
+                    visible: bar.multi
+                    x: bar.cx - width / 2; y: 120 * root.s
+                    width: 46 * root.s
+                    horizontalAlignment: Text.AlignHCenter
+                    elide: Text.ElideRight
+                    text: bar.e.internal ? "Ally" : bar.e.label
+                    color: root.area === "side" && root.sideIndex === 0 && Math.min(root.brightIndex, bar.n - 1) === index
+                           ? T.accent : T.dim
+                    font.pixelSize: 14 * root.s
+                }
+            }
         }
         Image {
             source: "qrc:/qml/icons/sun.svg"

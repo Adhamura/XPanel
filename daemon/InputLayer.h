@@ -10,10 +10,12 @@
 
 class QSocketNotifier;
 
-// XPanel's own input layer for the ROG Ally X (runs in xpanel-daemon, as root).
+// XPanel's own input layer for the ROG Ally / Ally X (runs in xpanel-daemon, as root).
 //
-// - Takes the Ally gamepad (evdev, hid_asus_ally) and the Ally N-KEY keyboard for itself
-//   (EVIOCGRAB) and hides the raw gamepad from games (permissions 0, like other handheld tools).
+// - Takes the Ally gamepad (evdev: hid-asus on the Ally X, xpad on the Ally) and the Ally
+//   N-KEY keyboard nodes for itself (EVIOCGRAB) and hides the raw gamepad from games
+//   (permissions 0, like other handheld tools). Nodes are found by the controller's USB id
+//   (Model.h) and their capabilities, not by name.
 // - Creates two uinput devices: an Xbox 360 pad (045e:028e) and a keyboard + mouse.
 // - Applies the Control Mode settings sent by the XPanel app (key mapping with a secondary
 //   function while a rear paddle is held, button repeat, stick dead zones / curves,
@@ -48,7 +50,10 @@ private:
     bool openKeyboard(const QString &node);
     bool createVirtual();
     void readPad();
-    void readKeyboard();
+    void readKeyboard(int fd);
+    void closeKeyboard(int fd);
+    double axis(int code) const;    // stick: -1..1 from the pad's own range
+    double trigger(int code) const; // trigger: 0..1 from the pad's own range
     void readVirtualPad(); // force feedback requests from games
     void frame();          // one input frame (EV_SYN): compute and write the outputs
     void tick();           // 125 Hz: mouse / scroll from sticks, repeats, nav repeats
@@ -61,11 +66,18 @@ private:
 
     QJsonObject preset() const;
     double shapeStick(double v, const QJsonObject &cfg) const; // -1..1 in, -1..1 out
-    int shapeTrigger(int raw, const QJsonObject &cfg) const;   // 0..1023 in, 0..255 out
+    int shapeTrigger(double p, const QJsonObject &cfg) const;  // 0..1 in, 0..255 out
 
-    int m_pad = -1, m_kbd = -1, m_vpad = -1, m_vkbm = -1;
-    QString m_padNode, m_kbdNode;
-    QSocketNotifier *m_padN = nullptr, *m_kbdN = nullptr, *m_vpadN = nullptr;
+    struct Keyboard {
+        int fd = -1;
+        QString node;
+        QSocketNotifier *notifier = nullptr;
+    };
+
+    int m_pad = -1, m_vpad = -1, m_vkbm = -1;
+    QString m_padNode;
+    QList<Keyboard> m_kbds; // the N-KEY nodes with keys (several on the original Ally)
+    QSocketNotifier *m_padN = nullptr, *m_vpadN = nullptr;
     QHash<QString, uint> m_savedModes; // device file -> original mode
     QTimer m_scanTimer, m_tick;
 
@@ -74,6 +86,7 @@ private:
 
     // raw pad state
     QHash<int, int> m_abs;      // ABS code -> value
+    QHash<int, QPair<int, int>> m_absRange; // ABS code -> pad's min, max
     QSet<int> m_keysDown;       // raw key codes held
     QSet<QString> m_logicalDown;// logical buttons held (A, LB, D-pad up, Left paddle ...)
     QHash<QString, QString> m_activeFn; // logical button -> function it pressed

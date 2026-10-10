@@ -19,6 +19,8 @@ jobs:
         run: DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $(cat packaging/build-deps-debian.txt)
       - name: Build AppImage and release archive
         run: ./build-release.sh --clean
+      - name: Unit tests
+        run: ctest --test-dir build-release --output-on-failure
       - name: Smoke test the AppImage (QML and Qt plugin errors)
         run: |
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth sway libegl-mesa0 libgl1-mesa-dri
@@ -63,6 +65,8 @@ jobs:
           build/bin/XPanel --version
           build/bin/xpanel-daemon --version
           grep -q '^XPANEL_LAYERSHELL_ACTIVE_SCREEN:INTERNAL=1$' build/CMakeCache.txt
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
       - name: Install into a staging dir
         run: |
           DESTDIR="$PWD/stage" cmake --install build
@@ -70,6 +74,7 @@ jobs:
           test -f stage/usr/share/applications/xpanel.desktop
           grep -q '^ExecStart=/usr/bin/xpanel-daemon$' stage/usr/lib/systemd/system/xpanel-daemon.service
           test -f stage/usr/lib/sysusers.d/xpanel.conf
+          ! find stage -name 'tst_*' | grep -q . # the unit tests are not installed
 
   scripts:
     name: Shell scripts (shellcheck)

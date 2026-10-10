@@ -8,7 +8,12 @@ CcPage {
 
     CcSection { title: "Operating Mode"; note: device.connected ? "" : device.error ? "No access to xpanel-daemon: " + device.error
                                                                        : "xpanel-daemon is not running: install it with  " + device.installHint }
-    CcRow { title: "Mode"; description: "Silent 13 W · Performance 17 W · Turbo 25 W (30 W on the charger) · Manual"
+    // Operating Mode watts of this model (from xpanel-daemon; Ally X values until it answers)
+    readonly property var modeWatts: (device.rev, device.value("modeWatts") || { silent: 13, performance: 17, turbo: 25, turboAc: 30 })
+
+    CcRow { title: "Mode"
+            description: "Silent " + page.modeWatts.silent + " W · Performance " + page.modeWatts.performance + " W · Turbo "
+                         + page.modeWatts.turbo + " W (" + page.modeWatts.turboAc + " W on the charger) · Manual"
         CcChoice { enabledChoice: device.connected
                    options: [{ value: "silent", label: "Silent" }, { value: "performance", label: "Performance" },
                              { value: "turbo", label: "Turbo" }, { value: "manual", label: "Manual" }]
@@ -24,10 +29,10 @@ CcPage {
                    value: (device.rev, device.value("tdp") || 15)
                    onMoved: (v) => { device.setValue("tdp", v); if (!page.manual) device.setValue("opmode", "manual") } } }
     CcRow { title: "SPPT — slow boost"
-        CcSlider { width: 460; from: 0; to: 43; unit: " W"; enabledSlider: device.connected
+        CcSlider { width: 460; from: 0; to: (device.rev, device.value("spptMax") || 43); unit: " W"; enabledSlider: device.connected
                    value: (device.rev, device.value("tdpSlow") || 0); onMoved: (v) => device.setValue("tdpSlow", v) } }
     CcRow { title: "FPPT — fast boost"
-        CcSlider { width: 460; from: 0; to: 53; unit: " W"; enabledSlider: device.connected
+        CcSlider { width: 460; from: 0; to: (device.rev, device.value("fpptMax") || 53); unit: " W"; enabledSlider: device.connected
                    value: (device.rev, device.value("tdpFast") || 0); onMoved: (v) => device.setValue("tdpFast", v) } }
 
     CcSection { title: "Eco Mode" }

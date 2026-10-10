@@ -113,7 +113,7 @@ jobs:
           ```
           Or just run it: `./XPanel-*-x86_64.AppImage`. Remove with `sudo xpanel --uninstall`.
           The `.tar.gz` is for systems with Qt ≥ 6.8 installed (`scripts/install.sh`, `sudo scripts/install-daemon.sh`).
-          Linux x86_64, ROG Ally X, KDE Plasma 6, glibc ≥ 2.39.
+          Linux x86_64, ROG Ally X or ROG Ally (Z1 / Z1 Extreme), KDE Plasma 6, glibc ≥ 2.39.
 
           ### Windows (experimental)
           Run **XPanel-*-Windows-x64-Setup.exe**. Operating Mode / TDP, fan, charge limit, Aura lighting and

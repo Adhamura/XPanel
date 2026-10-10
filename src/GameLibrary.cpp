@@ -1,5 +1,6 @@
 #include "GameLibrary.h"
 #include "Config.h"
+#include "ProfileRules.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -20,9 +21,10 @@ GameLibrary::GameLibrary(Config *config, QObject *parent) : QObject(parent), m_c
     rescan();
 }
 
-QVariantList GameLibrary::scanSteam() const
+QVariantList GameLibrary::scanSteam()
 {
     QVariantList out;
+    m_steamNames.clear();
     const QString steam = QDir::homePath() + "/.local/share/Steam";
     // every library folder: "path" lines in libraryfolders.vdf
     QStringList libs{steam};
@@ -34,14 +36,15 @@ QVariantList GameLibrary::scanSteam() const
     }
     static const QRegularExpression idRe("\"appid\"\\s+\"(\\d+)\"");
     static const QRegularExpression nameRe("\"name\"\\s+\"([^\"]+)\"");
-    // tools that are not games
-    static const QRegularExpression toolRe("^(Proton|Steam Linux Runtime|Steamworks Common)");
     for (const QString &lib : libs) {
         const QDir dir(lib + "/steamapps");
         for (const QString &fn : dir.entryList({"appmanifest_*.acf"}, QDir::Files)) {
             const QString acf = readFile(dir.absoluteFilePath(fn));
             const QString id = idRe.match(acf).captured(1), name = nameRe.match(acf).captured(1);
-            if (id.isEmpty() || name.isEmpty() || toolRe.match(name).hasMatch())
+            if (id.isEmpty() || name.isEmpty())
+                continue;
+            m_steamNames.insert(id, name);
+            if (ProfileRules::isSteamToolName(name)) // tools that are not games
                 continue;
             // cover art: new layout (librarycache/<id>/library_600x900.jpg) or old (<id>_library_600x900.jpg)
             QString cover;
@@ -157,6 +160,24 @@ void GameLibrary::launch(const QString &id)
     emit launched(id);
     if (id.startsWith("steam:"))
         QProcess::startDetached("steam", {"steam://rungameid/" + id.mid(6)});
-    else if (id.startsWith("app:"))
-        QProcess::startDetached("gtk-launch", {id.mid(4)});
+    else if (id.startsWith("app:")) {
+        // XPANEL_GAME marks the game's processes, so GameWatcher can tell when it ends
+        QProcess p;
+        p.setProgram("gtk-launch");
+        p.setArguments({id.mid(4)});
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("XPANEL_GAME", id);
+        p.setProcessEnvironment(env);
+        p.startDetached();
+    }
+}
+
+QString GameLibrary::titleOf(const QString &id) const
+{
+    if (id.startsWith("steam:") && m_steamNames.contains(id.mid(6)))
+        return m_steamNames.value(id.mid(6));
+    for (const QVariant &g : m_games)
+        if (g.toMap().value("id").toString() == id)
+            return g.toMap().value("title").toString();
+    return {};
 }

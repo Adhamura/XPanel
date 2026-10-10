@@ -1,7 +1,7 @@
 // xpanel-input-probe - root helper for the XPanel button mapper.
 //
-// Stops InputPlumber (it grabs the Ally devices), reads every ROG Ally X input node
-// (evdev + hidraw, USB 0b05:1b4c) and writes each event as one JSON line on stdout.
+// Stops InputPlumber (it grabs the Ally devices), reads every ROG Ally X / Ally input node
+// (evdev + hidraw, USB 0b05:1b4c or 0b05:1abe) and writes each event as one JSON line on stdout.
 // Starts InputPlumber again on exit: normal end, SIGTERM/SIGINT/SIGHUP, or when the
 // reader goes away (stdout broken pipe, checked by a heartbeat every second).
 //
@@ -15,6 +15,7 @@
 #include <sys/ioctl.h>
 #include <sys/prctl.h>
 
+#include <cctype>
 #include <cerrno>
 #include <chrono>
 #include <csignal>
@@ -102,7 +103,10 @@ std::string absName(int c) { return g_absNames.count(c) ? g_absNames[c] : "ABS_"
 
 bool isAlly(const std::string &vendor, const std::string &product)
 {
-    return (vendor == "0b05" || vendor == "0B05") && (product == "1b4c" || product == "1B4C");
+    // ROG Ally X 0b05:1b4c, ROG Ally (RC71L) 0b05:1abe
+    auto lower = [](std::string s) { for (char &c : s) c = char(std::tolower(static_cast<unsigned char>(c))); return s; };
+    const std::string p = lower(product);
+    return lower(vendor) == "0b05" && (p == "1b4c" || p == "1abe");
 }
 
 struct Node {
@@ -161,7 +165,7 @@ void scan()
             if (name.rfind("hidraw", 0) != 0 || isOpen(name))
                 continue;
             const std::string uevent = readFile("/sys/class/hidraw/" + name + "/device/uevent");
-            if (uevent.find("00000B05:00001B4C") == std::string::npos)
+            if (uevent.find("00000B05:00001B4C") == std::string::npos && uevent.find("00000B05:00001ABE") == std::string::npos)
                 continue;
             Node n;
             n.src = name;

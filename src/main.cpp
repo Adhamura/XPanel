@@ -22,6 +22,8 @@
 #include "DeviceClient.h"
 #include "DeviceInfo.h"
 #include "GameLibrary.h"
+#include "GameWatcher.h"
+#include "ProfileManager.h"
 #include "MediaGallery.h"
 #include "NetworkControl.h"
 #include "UpdateCenter.h"
@@ -308,6 +310,10 @@ int main(int argc, char **argv)
     NetworkControl network;
     UpdateCenter updates;
     GameLibrary library(&config);
+    GameWatcher watcher;
+    watcher.setTitleLookup([&library](const QString &id) { return library.titleOf(id); });
+    watcher.start();
+    ProfileManager profiles(&config, &device, &watcher, &library);
     MediaGallery gallery;
     DesktopTweaks tweaks(&config);
     QObject::connect(&tweaks, &DesktopTweaks::shortcutPressed, [&](const QString &action) {
@@ -326,6 +332,7 @@ int main(int argc, char **argv)
     engine.rootContext()->setContextProperty("network", &network);
     engine.rootContext()->setContextProperty("updates", &updates);
     engine.rootContext()->setContextProperty("library", &library);
+    engine.rootContext()->setContextProperty("profiles", &profiles);
     engine.rootContext()->setContextProperty("gallery", &gallery);
     engine.rootContext()->setContextProperty("tweaks", &tweaks);
     engine.rootContext()->setContextProperty("appVersion", QString(XPANEL_VERSION));
