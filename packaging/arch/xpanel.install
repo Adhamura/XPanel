@@ -1,0 +1,17 @@
+post_install() {
+    cat <<'MSG'
+==> XPanel installed.
+    Start the root service (TDP, fan, charge limit, lighting, input layer):
+        sudo systemctl enable --now xpanel-daemon
+    Handheld Daemon (hhd) changes the same hardware; stop it first:
+        sudo systemctl disable --now hhd@$USER
+    Then start "XPanel Quick Panel" from the menu (it adds a tray icon).
+MSG
+}
+post_upgrade() {
+    systemctl daemon-reload 2>/dev/null || true
+    systemctl try-restart xpanel-daemon.service 2>/dev/null || true
+}
+pre_remove() {
+    systemctl disable --now xpanel-daemon.service 2>/dev/null || true
+}

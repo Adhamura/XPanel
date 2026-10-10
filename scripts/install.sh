@@ -3,18 +3,31 @@
 # - ~/.local/bin/XPanel            the app
 # - ~/.local/share/applications/xpanel.desktop + icon
 # - ~/.config/autostart/xpanel.desktop  (tray icon at login)
+# Works from a source checkout (builds first) and from a release archive (uses bin/XPanel).
 # Undo with scripts/uninstall.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+if [ -x bin/XPanel ]; then
+    APP=bin/XPanel # release archive: prebuilt
+else
+    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+    APP=build/bin/XPanel
+fi
+# --version only loads the libraries: a quick check that Qt 6 is installed.
+if ! "$APP" --version >/dev/null 2>&1; then
+    echo "XPanel does not start. Missing libraries:"
+    ldd "$APP" | grep 'not found' || true
+    echo "Install Qt 6 (>= 6.8 for the release archive, >= 6.5 from source): qt6-base qt6-declarative qt6-svg, and layer-shell-qt for the Wayland overlay."
+    exit 1
+fi
 
 BIN="$HOME/.local/bin"
 ICONS="$HOME/.local/share/icons/hicolor/scalable/apps"
 mkdir -p "$BIN" "$HOME/.local/share/applications" "$ICONS" "$HOME/.config/autostart"
 install -m 644 qml/icons/app.svg "$ICONS/xpanel.svg"
-install -m 755 build/bin/XPanel "$BIN/XPanel"
+install -m 755 "$APP" "$BIN/XPanel"
 
 cat > "$HOME/.local/share/applications/xpanel.desktop" <<EOF
 [Desktop Entry]

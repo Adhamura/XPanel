@@ -7,8 +7,11 @@ set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "Run with sudo."; exit 1; }
 cd "$(dirname "$0")/.."
 
-BIN=build/bin/xpanel-daemon
-if [ ! -x "$BIN" ]; then
+if [ -x bin/xpanel-daemon ]; then
+    BIN=bin/xpanel-daemon # release archive: prebuilt
+elif [ -x build/bin/xpanel-daemon ]; then
+    BIN=build/bin/xpanel-daemon
+else
     echo "Build first (as your user): ./run.sh --version"
     exit 1
 fi

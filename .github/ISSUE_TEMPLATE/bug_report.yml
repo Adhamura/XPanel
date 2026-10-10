@@ -1,0 +1,32 @@
+name: Bug report
+description: Something does not work on your ROG Ally
+labels: [bug]
+body:
+  - type: input
+    id: device
+    attributes: {label: Device, placeholder: "ROG Ally X (RC72LA) / ROG Ally (RC71L)"}
+    validations: {required: true}
+  - type: input
+    id: distro
+    attributes: {label: Distro, desktop and kernel, placeholder: "CachyOS, KDE Plasma 6.4, Wayland, 6.17.1-cachyos"}
+    validations: {required: true}
+  - type: input
+    id: version
+    attributes: {label: XPanel version, description: "Output of `XPanel --version` and `xpanel-daemon --version`"}
+    validations: {required: true}
+  - type: textarea
+    id: what
+    attributes: {label: What happened, and what did you expect?}
+    validations: {required: true}
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "`journalctl -u xpanel-daemon -b --no-pager | tail -50` and the output of `XPanel` started from a terminal"
+      render: text
+  - type: checkboxes
+    id: hhd
+    attributes:
+      label: Other tools
+      options:
+        - label: Handheld Daemon (hhd) / Decky TDP plugins are stopped (they change the same hardware)

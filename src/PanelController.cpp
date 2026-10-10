@@ -112,7 +112,9 @@ void PanelController::preparePanelWindow()
                 LayerShellQt::Window::AnchorLeft | LayerShellQt::Window::AnchorRight));
             ls->setExclusiveZone(-1); // cover panels / taskbar too
             ls->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityExclusive);
+#ifdef XPANEL_LAYERSHELL_ACTIVE_SCREEN
             ls->setWantsToBeOnActiveScreen(true);
+#endif
         }
         return;
     }
@@ -140,7 +142,9 @@ void PanelController::prepareOsdWindow()
             ls->setMargins(QMargins(0, 12, 12, 0));
             ls->setExclusiveZone(-1);
             ls->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
+#ifdef XPANEL_LAYERSHELL_ACTIVE_SCREEN
             ls->setWantsToBeOnActiveScreen(true);
+#endif
         }
         return;
     }

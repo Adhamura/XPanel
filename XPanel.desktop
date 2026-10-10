@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=XPanel
-Comment=Start the XPanel Quick Panel
-Exec=/home/deck/Desktop/XPanel/run.sh --toggle
-Icon=/home/deck/Desktop/XPanel/qml/icons/app.svg
-Terminal=false
-Categories=System;Settings;

@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  debian:
+    name: Build (Debian 13, Qt 6.8) + release archive
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+            ca-certificates git cmake ninja-build g++ file \
+            qt6-base-dev qt6-declarative-dev qt6-declarative-dev-tools qt6-svg-dev \
+            liblayershellqtinterface-dev libgl-dev libxkbcommon-dev
+      - uses: actions/checkout@v4
+      - name: Build release archive
+        run: ./build-release.sh --clean
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xpanel-linux-x86_64
+          path: dist/*
+          if-no-files-found: error
+
+  arch:
+    name: Build (Arch Linux, latest Qt) + install rules
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install build dependencies
+        run: pacman -Syu --noconfirm --needed base-devel git cmake ninja qt6-base qt6-declarative qt6-svg layer-shell-qt
+      - uses: actions/checkout@v4
+      - name: Build (with developer tools)
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build
+          build/bin/XPanel --version
+          build/bin/xpanel-daemon --version
+          grep -q '^XPANEL_LAYERSHELL_ACTIVE_SCREEN:INTERNAL=1$' build/CMakeCache.txt
+      - name: Install into a staging dir
+        run: |
+          DESTDIR="$PWD/stage" cmake --install build
+          test -x stage/usr/bin/XPanel
+          test -f stage/usr/share/applications/xpanel.desktop
+          grep -q '^ExecStart=/usr/bin/xpanel-daemon$' stage/usr/lib/systemd/system/xpanel-daemon.service
+
+  scripts:
+    name: Shell scripts (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh

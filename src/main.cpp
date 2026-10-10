@@ -165,6 +165,7 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
     app.setApplicationName("XPanel");
+    app.setApplicationVersion(XPANEL_VERSION);
     app.setOrganizationName("XPanel");
     app.setDesktopFileName("xpanel");
     app.setQuitOnLastWindowClosed(false);
@@ -293,7 +294,7 @@ int main(int argc, char **argv)
     trayMenu.addSeparator();
     trayMenu.addAction("Quit XPanel", [&] { app.quit(); });
     tray.setContextMenu(&trayMenu);
-    tray.setToolTip("XPanel Quick Panel");
+    tray.setToolTip("XPanel Quick Panel " XPANEL_VERSION);
     QObject::connect(&tray, &QSystemTrayIcon::activated, [&](QSystemTrayIcon::ActivationReason r) {
         if (r == QSystemTrayIcon::Trigger || r == QSystemTrayIcon::DoubleClick)
             panel.toggle();

@@ -1,0 +1,32 @@
+# Maintainer: Adhamura
+# Arch / CachyOS / Manjaro: makepkg -si   (from this folder)
+pkgname=xpanel
+pkgver=1.0.1
+pkgrel=1
+pkgdesc="Armoury Crate-style Quick Panel and Control Center for the ASUS ROG Ally X on Linux (KDE Plasma)"
+arch=('x86_64')
+url="https://github.com/Adhamura/XPanel"
+license=('MIT')
+depends=('qt6-base' 'qt6-declarative' 'qt6-svg' 'layer-shell-qt' 'systemd')
+makedepends=('cmake' 'ninja' 'git')
+optdepends=('wireplumber: volume (wpctl)'
+            'networkmanager: Wi-Fi tile and Connection settings'
+            'bluez-utils: Bluetooth (bluetoothctl)'
+            'kscreen: refresh rate (kscreen-doctor)'
+            'spectacle: screenshots'
+            'fwupd: device firmware in Update Center'
+            'pacman-contrib: system updates in Update Center (checkupdates)')
+install=xpanel.install
+source=("$pkgname::git+https://github.com/Adhamura/XPanel.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+build() {
+    cmake -S "$pkgname" -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr -DXPANEL_BUILD_TOOLS=OFF
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 "$pkgname/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

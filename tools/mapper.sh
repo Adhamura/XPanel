@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")/.."
 if [ ! -x build/bin/xpanel-mapper ] || [ -n "$(find tools/mapper -newer build/bin/xpanel-mapper -print -quit)" ]; then
-    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release >/dev/null
+    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DXPANEL_BUILD_TOOLS=ON >/dev/null
     cmake --build build --target xpanel-mapper xpanel-input-probe
 fi
 exec build/bin/xpanel-mapper "$PWD/data/ally-x-input-map.json"
