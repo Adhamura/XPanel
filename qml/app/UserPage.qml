@@ -21,7 +21,8 @@ CcPage {
             anchors.verticalCenter: parent.verticalCenter; spacing: 6
             Text { text: page.user.name || ""; color: T.text; font.pixelSize: 34; font.bold: true }
             Text { text: "Local account: " + (page.user.login || "") + "  ·  " + (page.info.hostname || ""); color: T.dim; font.pixelSize: 17 }
-            CcButton { text: "Edit profile (KDE)"; onClicked: tweaks.openSystemSettings("kcm_users") }
+            CcButton { visible: desktop.userSettings; text: desktop.kde ? "Edit profile (KDE)" : "Edit profile"
+                       onClicked: tweaks.openSystemSettings("kcm_users") }
         }
     }
 

@@ -6,16 +6,19 @@
 
 ### The Armoury Crate experience for the ROG Ally X and ROG Ally — on Linux.
 
+<sub>ROG Xbox Ally and ROG Xbox Ally X: experimental, untested on hardware.</sub>
+
 Press the Ally button: a **Quick Panel** slides in with Operating Mode, fan, charge limit,
 lighting and more. Open the full **Control Center** for your game library, controller
-mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Plasma.
+mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Plasma
+(GNOME and Steam Game Mode: experimental).
 
 [![CI](https://github.com/Adhamura/XPanel/actions/workflows/ci.yml/badge.svg)](https://github.com/Adhamura/XPanel/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Adhamura/XPanel?include_prereleases&sort=semver)](https://github.com/Adhamura/XPanel/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20(experimental)-informational)
-![Device](https://img.shields.io/badge/device-ROG%20Ally%20X%20%7C%20ROG%20Ally-red)
-![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma%206-1d99f3)
+![Device](https://img.shields.io/badge/device-ROG%20Ally%20X%20%7C%20ROG%20Ally%20%7C%20ROG%20Xbox%20Ally%20(experimental)-red)
+![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma%206%20%7C%20GNOME%20%7C%20Game%20Mode%20(experimental)-1d99f3)
 ![Qt](https://img.shields.io/badge/Qt-6-41cd52)
 
 [**Download**](https://github.com/Adhamura/XPanel/releases/latest) ·
@@ -102,7 +105,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 | Game Library with per-game profiles | ✅ | ❌ | ➖ | ❌ | ✅ |
 | Media Gallery | ✅ | ❌ | ❌ | ❌ | ✅ |
 | Native app, no Python / web runtime | ✅ | ❌ | ❌ | ✅ | — |
-| Steam Game Mode (gamescope) | ❌ not yet | ✅ | ✅ | ➖ | — |
+| Steam Game Mode (gamescope) | ➖ experimental | ✅ | ✅ | ➖ | — |
 
 <sub>✅ yes · ➖ partial, or depends on setup · ❌ no. Based on each project's public documentation;
 corrections are welcome in an issue. hhd is great in Steam Game Mode — XPanel is for people who
@@ -113,12 +116,64 @@ use the Ally as a <b>Linux desktop</b> and miss Armoury Crate.</sub>
 - **ROG Ally X** (RC72LA) or **ROG Ally** (RC71L, Z1 / Z1 Extreme). The original Ally has its
   own Operating Mode wattages, power limits and controller support, but is not yet tested on
   hardware: please [report issues](https://github.com/Adhamura/XPanel/issues/new/choose).
-- **Linux x86_64** with **KDE Plasma 6** (Wayland or X11). Developed on CachyOS; Arch, Fedora
-  KDE and other Plasma 6 distros should work.
+- **ROG Xbox Ally** (RC73YA, Ryzen Z2 A) and **ROG Xbox Ally X** (RC73XA, Ryzen AI Z2 Extreme):
+  **experimental, untested on hardware** — please report what works and what doesn't. Detected
+  by DMI board name; their controller is the same USB device as the Ally X's (`0b05:1b4c`).
+  The Xbox Ally X has `asus-armoury` power ranges in the kernel; for the Xbox Ally XPanel uses
+  the Ryzen Z2 A's 6–20 W.
+- **Linux x86_64** with **KDE Plasma 6** (Wayland or X11) — recommended, everything works there.
+  Developed on CachyOS; Arch, Fedora KDE and other Plasma 6 distros should work.
+  **GNOME** and **Steam Game Mode** (gamescope: SteamOS, Bazzite, ChimeraOS) are experimental,
+  see [Desktops](#desktops).
 - A kernel with the **`asus-armoury`** driver (e.g. the CachyOS kernel) for TDP and BIOS settings.
 - **Qt 6** (≥ 6.8 for the release archive, ≥ 6.5 from source), `layer-shell-qt` for the Wayland overlay.
 - Optional, for the matching tiles and settings: `wireplumber` (`wpctl`), NetworkManager,
-  `bluez-utils`, `kscreen`, `spectacle`, `fwupd`, `pacman-contrib`.
+  `bluez-utils`, `kscreen`, `spectacle`, `fwupd`, `pacman-contrib`; outside KDE also
+  `gnome-screenshot` (GNOME) and `ddcutil` (external monitor brightness).
+
+### Desktops
+
+XPanel finds out where it runs from `XDG_CURRENT_DESKTOP` (and `GAMESCOPE_WAYLAND_DISPLAY`,
+`XDG_SESSION_DESKTOP`); `XPanel --desktop` prints the result, `XPANEL_DESKTOP=kde|gnome|gamescope|other`
+overrides it. Controls that a desktop cannot do are hidden, with a short note in Settings.
+The hardware part (Operating Mode, TDP, fan, charge limit, lighting, controller layer, gyro) is
+the root daemon's and works the same everywhere.
+
+| | KDE Plasma 6 | GNOME (experimental) | Steam Game Mode (experimental) |
+|---|:-:|:-:|:-:|
+| Quick Panel window | Wayland layer-shell overlay (X11 too) | XWayland window, full screen, kept above | gamescope external overlay (XWayland) |
+| Ally buttons, gamepad navigation | ✅ | ✅ | ✅ (touch / mouse go to the game) |
+| Brightness | ✅ KDE service, internal + DDC/CI monitors | ✅ internal (logind); monitors with `ddcutil` | ✅ internal (logind) |
+| Volume, Wi-Fi, Bluetooth, sensors | ✅ | ✅ | ✅ |
+| Refresh rate, Display Mode, wide colour | ✅ `kscreen-doctor` | ❌ hidden | ❌ hidden (Steam's display settings) |
+| Colour presets | ✅ KWin Night Color | ✅ Night Light (always on, via `gsettings`) | ❌ hidden |
+| On-screen keyboard | ✅ KWin keyboard (Steam's as fallback) | ✅ GNOME screen keyboard on / off | ✅ Steam's keyboard |
+| Screenshot tile | ✅ Spectacle | ✅ with `gnome-screenshot` | ❌ hidden (Steam + R1) |
+| Show Desktop tile | ✅ | ❌ hidden | ❌ hidden |
+| Log out | ✅ | ✅ (GNOME's dialog) | ❌ hidden (Steam's power menu) |
+| Global keyboard shortcuts | ✅ kglobalaccel | ➖ bind `XPanel --toggle` yourself | ❌ |
+| Tray icon | ✅ | ➖ needs the AppIndicator extension | ❌ none |
+| Autostart | XDG autostart | XDG autostart | systemd user unit `xpanel.service` |
+
+Other desktops (Sway, Hyprland, …) get the generic path: layer-shell if the compositor has it,
+logind brightness, `xdg-open` and `x-terminal-emulator`, no KDE-only controls.
+
+<details>
+<summary>Why XWayland on GNOME, and how the Game Mode overlay works</summary>
+
+- **GNOME:** Mutter has no `wlr-layer-shell`, and a normal Wayland window cannot place itself or
+  stay above others. On GNOME XPanel therefore runs on XWayland (`QT_QPA_PLATFORM=xcb`, when
+  `DISPLAY` is set), where a frameless "keep above" window covering the screen works. The trade-off:
+  XWayland scaling on HiDPI can look soft, and GNOME may show "XPanel is ready" instead of giving
+  it keyboard focus; the gamepad works regardless (it goes through xpanel-daemon).
+  `XPANEL_BACKEND=wayland` keeps it on Wayland (no overlay).
+- **Steam Game Mode:** apps run on gamescope's XWayland. XPanel sets the X11 property
+  `GAMESCOPE_EXTERNAL_OVERLAY = 1` (CARDINAL) on the window it shows — the Quick Panel, the
+  Control Center or the Real-time Monitor, one at a time — and gamescope draws it above the game,
+  as it does for MangoHud. Overlays never get input focus in gamescope: the panel is driven with
+  the Ally's buttons and pad through xpanel-daemon; touch and mouse reach the game. Built with
+  libxcb (`XPANEL_WITH_XCB`, on by default).
+</details>
 
 **Windows 10 / 11 x64 (experimental):** Operating Mode / TDP, fan, charge limit, Aura lighting
 and boot sound through the ASUS System Control Interface (installed on every Ally). Controller
@@ -141,9 +196,28 @@ sudo ./XPanel-*-x86_64.AppImage --install --disable-hhd   # app, tray icon, menu
 
 `--install` copies XPanel to `/opt/xpanel`, sets up the root service and the `xpanel` group,
 adds a menu entry, autostart and the `xpanel` command; `--disable-hhd` stops hhd (it changes the
-same hardware). Remove everything with `sudo xpanel --uninstall`.
+same hardware); `--game-mode` also starts XPanel in Steam Game Mode (see below). Remove
+everything with `sudo xpanel --uninstall`.
 You can also just run the file (`./XPanel-*-x86_64.AppImage`) to try the app; hardware settings
 need the installed service.
+
+### Steam Game Mode autostart (experimental)
+
+gamescope sessions (SteamOS, Bazzite, ChimeraOS Game Mode) don't run the desktop autostart
+entries. Every install method also installs a systemd **user** unit, `xpanel.service`, that starts
+XPanel in Game Mode only (it checks `XPanel --is-game-mode` first, so it does nothing in a desktop
+session, where the autostart entry starts XPanel; a second start would just hand over to the
+running one). It is not enabled by default:
+
+```bash
+systemctl --user enable --now xpanel.service     # your user
+sudo systemctl --global enable xpanel.service    # every user (what the AppImage's --game-mode does)
+scripts/install.sh --game-mode                   # release archive / source install: enable it too
+```
+
+If it does not start, check `systemctl --user status xpanel.service` and that the session exports
+`XDG_CURRENT_DESKTOP=gamescope` (or `GAMESCOPE_WAYLAND_DISPLAY`) to the user manager
+(`systemctl --user show-environment`).
 
 ### Windows (experimental)
 
@@ -204,7 +278,7 @@ release `v<version>` with the changelog section as notes.
 
 | Pad | Keyboard | Action |
 |---|---|---|
-| Left menu button (or right, from the tray menu) | Meta+Shift+Q | open / close the Quick Panel |
+| Left menu button (or right, from the tray menu) | Meta+Shift+Q (KDE) | open / close the Quick Panel |
 | D-pad | Arrows | move |
 | A | Enter / Space | change the tile value / select |
 | B | Esc | back / close |
@@ -237,7 +311,7 @@ flowchart LR
     app <-->|"/run/xpanel/xpanel.sock<br/>JSON lines"| daemon
     daemon -->|uinput| vpad["Virtual Xbox 360 pad,<br/>keyboard, mouse"] --> games["Games"]
     daemon --> hw["asus-armoury TDP · platform_profile<br/>hwmon fan · charge limit<br/>Aura hidraw · amdgpu"]
-    app --> kde["KDE / PipeWire / NetworkManager<br/>brightness · volume · Wi-Fi · refresh rate"]
+    app --> kde["KDE · GNOME · gamescope / PipeWire / NetworkManager<br/>brightness · volume · Wi-Fi · refresh rate"]
 ```
 
 | Part | Runs as | Does |
@@ -263,7 +337,8 @@ flowchart LR
   Operating Mode lighting are a static color the daemon recomputes (every 5 % of charge, on a
   mode change).
 - **Input layer:** the daemon grabs the Ally pad and N-KEY keyboard (USB `0b05:1b4c` on the
-  Ally X, `0b05:1abe` on the Ally; nodes picked by their capabilities) with evdev and sends a
+  Ally X and the ROG Xbox Ally / Xbox Ally X, `0b05:1abe` on the Ally; nodes picked by their
+  capabilities, never a virtual device or an external pad) with evdev and sends a
   virtual Xbox 360 pad, keyboard and mouse through uinput, with the mapping from Control Mode.
   While the Quick Panel is open, the pad drives XPanel instead of the game. The raw pad nodes are
   hidden from games while the daemon runs and restored by udev when it stops.
@@ -273,8 +348,10 @@ flowchart LR
   `in_anglvel_*_raw` at 125 Hz — only while gyro is on and a game has the pad — and puts the
   buffer and sampling rate back when it stops. The calibration offset is kept in the daemon's
   state (`gyroBias`).
-- **Desktop:** KDE brightness D-Bus, KWin, kglobalaccel, `wpctl`, `kscreen-doctor`, `nmcli`,
-  `bluetoothctl`, `spectacle`.
+- **Desktop** (`src/Desktop.*` decides what is used where): KDE brightness D-Bus, KWin,
+  kglobalaccel, `kscreen-doctor`, `spectacle`; logind `SetBrightness` and `/sys/class/backlight`,
+  `ddcutil`, GNOME `gsettings` (Night Light, screen keyboard) and `org.gnome.SessionManager`,
+  gamescope's `GAMESCOPE_EXTERNAL_OVERLAY`; everywhere `wpctl`, `nmcli`, `bluetoothctl`.
 
 Protocol on `/run/xpanel/xpanel.sock`, one JSON object per line:
 `{"get":true}`, `{"set":{"opmode":"turbo"}}` → `{"state":{...}}` (also pushed on each change).
@@ -293,13 +370,23 @@ change the same hardware. `install-daemon.sh --disable-hhd` stops hhd, and `unin
 tells you how to turn it back on. Don't run a Decky TDP plugin at the same time. If InputPlumber
 holds the controller, Control Mode shows it as busy.
 
-**Does it work in Steam Game Mode (Bazzite / SteamOS / ChimeraOS)?** Not yet. XPanel is for the
-KDE Plasma desktop session.
+**Does it work in Steam Game Mode (Bazzite / SteamOS / ChimeraOS)?** Experimentally, since the
+next release. Enable the user unit (`systemctl --user enable xpanel.service`, see
+[Steam Game Mode autostart](#steam-game-mode-autostart-experimental)); the Ally button then opens
+the Quick Panel over the game as a gamescope overlay. Use the pad to drive it (touch goes to the
+game). Refresh rate, colour presets, screenshots and log out are Steam's there, so XPanel hides
+them. Not yet tested on hardware: please report how it works. Note that hhd (default on Bazzite)
+changes the same hardware — stop it first.
+
+**Does it work on GNOME?** Experimentally: the panel runs on XWayland (GNOME has no layer-shell
+overlay), brightness goes through logind, the colour presets use Night Light. Refresh rate,
+Display Mode, Show Desktop and the KDE shortcut settings are hidden. GNOME has no tray icon
+without the AppIndicator extension — use the Ally button or `XPanel --app`. See [Desktops](#desktops).
 
 **Is it safe?** The root daemon only listens on a local socket, only lets in root and members of
 the `xpanel` group (checked per connection), and only accepts a fixed, validated set of settings
-(TDP between 5 and 40 W, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
-system, only the controller and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
+(power limits within the range the firmware reports, charge limit 50–100 %, …). It runs in a systemd sandbox: read-only
+system, only the controller, motion sensor and lighting devices, three capabilities. Wattages stay close to ASUS's Windows defaults.
 See [SECURITY.md](SECURITY.md) for details. As with any tool that changes power limits: use at
 your own risk.
 
@@ -323,6 +410,17 @@ the sensor, Control Mode shows it as busy. If the aim moves the wrong way, use t
 switches (and please open an issue with your model). There is no FPS limiter (KDE has no global
 one).
 
+**Does it work on the ROG Xbox Ally / ROG Xbox Ally X?** Experimentally, untested on hardware.
+XPanel recognizes both (board names RC73YA / RC73XA) and uses their own Operating Mode wattages
+(Xbox Ally: Silent 10 W, Performance 15 W, Turbo 20 W; Xbox Ally X: Silent 13 W, Performance
+17 W, Turbo 25 W, 35 W on the charger) and power limits. The controller is the Ally X's. The
+Xbox button and the right menu button work like the Ally's two menu buttons (one opens the Quick
+Panel, the other the Control Center), holding the Xbox button opens the on-screen keyboard, and
+the back buttons are the paddles. Lighting uses the same Aura commands as the Ally (on Windows,
+turn off Settings › Personalization › Dynamic Lighting if it takes over the rings). Some values
+are taken from other projects (InputPlumber, hhd) and not measured: please [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose) with what
+you see, including `cat /sys/class/dmi/id/board_name` and `xpanel-daemon` log lines.
+
 **Does the per-game profile apply when I start a game from Steam?** Yes. XPanel notices when Steam
 starts a game (native or Proton) and applies the profile you set under Game Library › the game ›
 Game Options (Operating Mode, Manual TDP, Fan Mode, Control Mode); the Quick Panel shows
@@ -341,7 +439,9 @@ tray icon); if it was closed during a game, it restores your settings the next t
 - **1.2** — ✅ Gyro (aim and mouse); ✅ custom fan curve editor; ✅ more Aura effects (dual
   breathing, rainbow direction, strobe, battery level, follow Operating Mode). Not yet tested on
   hardware.
-- **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
+- **Later** — ✅ GNOME (experimental); ✅ Steam Game Mode / gamescope (experimental); ✅ other
+  ASUS handhelds: ROG Xbox Ally and ROG Xbox Ally X (experimental, untested on hardware);
+  translations.
 
 Ideas and Armoury Crate features you miss: [open an issue](https://github.com/Adhamura/XPanel/issues/new/choose).
 

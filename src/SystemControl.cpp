@@ -1,4 +1,5 @@
 #include "SystemControl.h"
+#include "Desktop.h"
 
 #include <QDBusConnection>
 #include <QDBusInterface>
@@ -10,6 +11,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <algorithm>
+#include <memory>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -75,7 +77,12 @@ SystemControl::SystemControl(QObject *parent) : QObject(parent)
         });
         connect(gui, &QGuiApplication::screenRemoved, this, [this] { m_screenDebounce.start(); });
     }
+    // Without KDE: DDC/CI monitors through ddcutil (slow, so only at start and when screens change)
+    m_ddcFlush.setSingleShot(true);
+    m_ddcFlush.setInterval(250);
+    connect(&m_ddcFlush, &QTimer::timeout, this, &SystemControl::flushDdc);
     enumerateDisplays();
+    scanDdc();
 
     connect(&m_slow, &QTimer::timeout, this, [this] {
         readBattery();
@@ -158,6 +165,7 @@ void SystemControl::watchScreen(QScreen *screen)
 void SystemControl::rescanDisplays()
 {
     enumerateDisplays();
+    scanDdc();
 }
 
 void SystemControl::readBrightness()
@@ -205,8 +213,166 @@ void SystemControl::enumerateDisplays()
             b.label = b.internal ? "Built-in" : b.id;
         all.push_back(b);
     }
+    if (all.empty()) {
+        // No KDE brightness service (GNOME, Game Mode, other desktops, older Plasma):
+        // the internal panel through logind, external monitors through ddcutil.
+        BlDisplay bl;
+        if (readBacklight(bl))
+            all.push_back(bl);
+        all.insert(all.end(), m_ddc.begin(), m_ddc.end());
+    }
     m_all = all;
     updateActiveDisplays();
+}
+
+// The internal panel's backlight in /sys/class/backlight (firmware > platform > raw, as the kernel
+// documents). Written through logind, which lets the active session's user do it without root.
+bool SystemControl::readBacklight(BlDisplay &out) const
+{
+    const QDir dir("/sys/class/backlight");
+    QString best;
+    int bestRank = 99;
+    for (const QString &e : dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        const QString p = dir.absoluteFilePath(e);
+        if (readFile(p + "/max_brightness").toInt() <= 0)
+            continue;
+        const QString type = readFile(p + "/type");
+        const int rank = type == "firmware" ? 0 : type == "platform" ? 1 : 2;
+        if (rank < bestRank) {
+            bestRank = rank;
+            best = e;
+        }
+    }
+    if (best.isEmpty())
+        return false;
+    const QString p = dir.absoluteFilePath(best);
+    out.id = "backlight";
+    out.path = best;
+    out.label = "Built-in";
+    out.internal = true;
+    out.source = BlSource::Backlight;
+    out.max = qMax(1, readFile(p + "/max_brightness").toInt());
+    // the value just written can still be on its way through logind: keep ours for a moment
+    const auto it = m_lastSet.constFind(out.id);
+    if (it != m_lastSet.constEnd() && it->isValid() && it->elapsed() < 1000)
+        for (const BlDisplay &b : m_all)
+            if (b.id == out.id) {
+                out.pct = b.pct;
+                return true;
+            }
+    out.pct = qBound(0, qRound(readFile(p + "/brightness").toInt() * 100.0 / out.max), 100);
+    return true;
+}
+
+// External monitors with DDC/CI (VCP 0x10 = brightness), when ddcutil is installed. KDE's service
+// already covers them on Plasma, and Game Mode shows one screen: only GNOME and other desktops.
+void SystemControl::scanDdc()
+{
+    const Desktop::Kind k = Desktop::current();
+    if (k == Desktop::Kind::KDE || k == Desktop::Kind::Gamescope || m_ddcScanning
+        || QStandardPaths::findExecutable("ddcutil").isEmpty())
+        return;
+    m_ddcScanning = true;
+    run("ddcutil", {"detect", "--terse"}, [this](const QString &out) {
+        // "Display 1 / I2C bus: /dev/i2c-4 / Monitor: DEL:DELL U2415:ABC123" ("Invalid display" skipped)
+        struct Found { QString num, label; };
+        std::vector<Found> found;
+        QString num;
+        for (const QString &raw : out.split('\n')) {
+            const QString l = raw.trimmed();
+            if (l.startsWith("Display ")) {
+                num = l.section(' ', 1, 1);
+            } else if (l.startsWith("Invalid display")) {
+                num.clear();
+            } else if (l.startsWith("Monitor:") && !num.isEmpty()) {
+                const QString model = l.mid(8).trimmed().section(':', 1, 1).trimmed();
+                found.push_back({num, model.isEmpty() ? "Monitor " + num : model});
+                num.clear();
+            }
+        }
+        if (found.empty()) {
+            m_ddcScanning = false;
+            if (!m_ddc.empty()) {
+                m_ddc.clear();
+                enumerateDisplays();
+            }
+            return;
+        }
+        auto result = std::make_shared<std::vector<BlDisplay>>();
+        auto left = std::make_shared<int>(int(found.size()));
+        for (const Found &f : found) {
+            run("ddcutil", {"--display", f.num, "--terse", "getvcp", "10"}, [this, f, result, left](const QString &v) {
+                // "VCP 10 C 50 100"
+                static const QRegularExpression re("VCP\\s+10\\s+C\\s+(\\d+)\\s+(\\d+)");
+                const auto m = re.match(v);
+                if (m.hasMatch()) {
+                    BlDisplay d;
+                    d.id = "ddc" + f.num;
+                    d.path = f.num;
+                    d.label = f.label;
+                    d.source = BlSource::Ddc;
+                    d.max = qMax(1, m.captured(2).toInt());
+                    d.pct = qRound(m.captured(1).toInt() * 100.0 / d.max);
+                    result->push_back(d);
+                }
+                if (--*left == 0) {
+                    std::sort(result->begin(), result->end(),
+                              [](const BlDisplay &a, const BlDisplay &b) { return a.id < b.id; });
+                    m_ddc = *result;
+                    m_ddcScanning = false;
+                    enumerateDisplays();
+                }
+            });
+        }
+    });
+}
+
+// ddcutil takes ~0.1-0.5 s per write: send only the latest value, one write per monitor at a time.
+void SystemControl::flushDdc()
+{
+    for (auto it = m_ddcPending.begin(); it != m_ddcPending.end();) {
+        const QString num = it.key();
+        if (m_ddcBusy.value(num)) {
+            ++it;
+            continue;
+        }
+        const int value = it.value();
+        it = m_ddcPending.erase(it);
+        m_ddcBusy[num] = true;
+        run("ddcutil", {"--display", num, "--noverify", "setvcp", "10", QString::number(value)},
+            [this, num](const QString &) {
+                m_ddcBusy[num] = false;
+                if (m_ddcPending.contains(num))
+                    m_ddcFlush.start();
+            });
+    }
+}
+
+void SystemControl::writeBrightness(const BlDisplay &d, int percent)
+{
+    const int raw = int(qRound(percent / 100.0 * d.max));
+    switch (d.source) {
+    case BlSource::Kde: {
+        QDBusMessage msg = QDBusMessage::createMethodCall(kBlService, d.path, kBlDisplayIface, "SetBrightness");
+        // flags = 1: do not show the KDE brightness OSD, our slider is the indicator.
+        msg << raw << uint(1);
+        QDBusConnection::sessionBus().asyncCall(msg);
+        break;
+    }
+    case BlSource::Backlight: {
+        // logind: the caller's session, or the user's graphical session for a systemd user service
+        QDBusMessage msg = QDBusMessage::createMethodCall("org.freedesktop.login1", "/org/freedesktop/login1/session/auto",
+                                                          "org.freedesktop.login1.Session", "SetBrightness");
+        msg << QString("backlight") << d.path << uint(qMax(1, raw));
+        QDBusConnection::systemBus().asyncCall(msg);
+        break;
+    }
+    case BlSource::Ddc:
+        m_ddcPending[d.path] = raw;
+        if (!m_ddcFlush.isActive())
+            m_ddcFlush.start();
+        break;
+    }
 }
 
 // Keep only the displays that are switched on (a disabled internal panel can still be listed),
@@ -320,10 +486,7 @@ void SystemControl::setDisplayBrightness(const QString &id, int percent)
             if (b.id == a.id)
                 b.pct = percent;
         m_lastSet[a.id].start();
-        QDBusMessage msg = QDBusMessage::createMethodCall(kBlService, a.path, kBlDisplayIface, "SetBrightness");
-        // flags = 1: do not show the KDE brightness OSD, our slider is the indicator.
-        msg << int(qRound(percent / 100.0 * a.max)) << uint(1);
-        QDBusConnection::sessionBus().asyncCall(msg);
+        writeBrightness(a, percent);
     }
     updateActiveDisplays();
 }
@@ -434,6 +597,8 @@ void SystemControl::setBluetooth(bool on)
 // ---------- refresh rate (KDE, internal panel) ----------
 void SystemControl::readRefresh()
 {
+    if (!Desktop::caps().refreshRate && !Desktop::caps().displayMode)
+        return; // kscreen-doctor is KDE's
     run("kscreen-doctor", {"-j"}, [this](const QString &out) {
         const QJsonArray outputs = QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray();
         // display layout: which screens are on, and where
@@ -476,6 +641,8 @@ void SystemControl::readRefresh()
 
 void SystemControl::toggleRefreshRate()
 {
+    if (!Desktop::caps().refreshRate)
+        return;
     run("kscreen-doctor", {"-j"}, [this](const QString &out) {
         const QJsonArray outputs = QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray();
         for (const QJsonValue &ov : outputs) {
@@ -518,6 +685,8 @@ void SystemControl::toggleRefreshRate()
 // (both at 0,0 with the same logical size) · extend: Ally screen primary, external to its right
 void SystemControl::setDisplayMode(const QString &mode)
 {
+    if (!Desktop::caps().displayMode)
+        return;
     run("kscreen-doctor", {"-j"}, [this, mode](const QString &out) {
         QJsonObject edp, ext;
         for (const QJsonValue &ov : QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray()) {
@@ -610,6 +779,8 @@ void SystemControl::readStats()
 // ---------- actions ----------
 void SystemControl::showDesktop()
 {
+    if (!Desktop::caps().showDesktop)
+        return; // only KWin has a "Show Desktop" to call
     QDBusMessage msg = QDBusMessage::createMethodCall(
         "org.kde.kglobalaccel", "/component/kwin", "org.kde.kglobalaccel.Component", "invokeShortcut");
     msg << QString("Show Desktop");
@@ -627,24 +798,53 @@ void SystemControl::openKeyboard()
         QDBusConnection::sessionBus().asyncCall(msg);
         return;
     }
-    // Fallback: the Steam on-screen keyboard (works when Steam runs).
+    if (Desktop::current() == Desktop::Kind::GNOME && !QStandardPaths::findExecutable("gsettings").isEmpty()) {
+        // GNOME's keyboard opens by itself on text fields once enabled: switch it on / off.
+        const QString schema = "org.gnome.desktop.a11y.applications", key = "screen-keyboard-enabled";
+        run("gsettings", {"get", schema, key}, [this, schema, key](const QString &out) {
+            run("gsettings", {"set", schema, key, out.trimmed() == "true" ? "false" : "true"});
+        });
+        return;
+    }
+    // Fallback (Game Mode, other desktops): the Steam on-screen keyboard (works when Steam runs).
     QProcess::startDetached("xdg-open", {"steam://open/keyboard"});
 }
 
 void SystemControl::screenshot()
 {
     // Wait for the panel to slide away first.
-    QTimer::singleShot(450, this, [] {
-        QProcess::startDetached("spectacle", {"--background", "--fullscreen", "--nonotify"});
+    const QString tool = Desktop::caps().screenshotTool;
+    if (tool.isEmpty())
+        return;
+    QTimer::singleShot(450, this, [tool] {
+        if (tool == "spectacle")
+            QProcess::startDetached("spectacle", {"--background", "--fullscreen", "--nonotify"});
+        else
+            QProcess::startDetached(tool, {}); // gnome-screenshot, grim: the whole screen into Pictures
     });
 }
 
 void SystemControl::power(const QString &what)
 {
     if (what == "logout") {
-        QDBusMessage msg = QDBusMessage::createMethodCall(
-            "org.kde.Shutdown", "/Shutdown", "org.kde.Shutdown", "logout");
-        QDBusConnection::sessionBus().asyncCall(msg);
+        if (!Desktop::caps().logout)
+            return;
+        switch (Desktop::current()) {
+        case Desktop::Kind::KDE:
+            QDBusConnection::sessionBus().asyncCall(QDBusMessage::createMethodCall(
+                "org.kde.Shutdown", "/Shutdown", "org.kde.Shutdown", "logout"));
+            break;
+        case Desktop::Kind::GNOME: {
+            QDBusMessage msg = QDBusMessage::createMethodCall(
+                "org.gnome.SessionManager", "/org/gnome/SessionManager", "org.gnome.SessionManager", "Logout");
+            msg << uint(0); // 0: normal, with GNOME's confirmation dialog
+            QDBusConnection::sessionBus().asyncCall(msg);
+            break;
+        }
+        default:
+            QProcess::startDetached("loginctl", {"terminate-session", qEnvironmentVariable("XDG_SESSION_ID")});
+            break;
+        }
         return;
     }
     if (what == "suspend" || what == "reboot" || what == "poweroff")

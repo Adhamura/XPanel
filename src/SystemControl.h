@@ -12,7 +12,7 @@
 #include <functional>
 
 // Everything that is not in xpanel-daemon: screen brightness, volume, battery, radios,
-// refresh rate, sensors, and the KDE / system actions.
+// refresh rate, sensors, and the desktop / system actions (KDE, GNOME, Steam Game Mode: see Desktop.h).
 class SystemControl : public QObject {
     Q_OBJECT
     Q_PROPERTY(int brightness READ brightness NOTIFY brightnessChanged)
@@ -114,21 +114,33 @@ private:
     void readStats();
     void tickClock();
 
-    // A display exposed by org.kde.ScreenBrightness.
+    // A display whose brightness we can set: from org.kde.ScreenBrightness (KDE), or without KDE
+    // the internal panel through logind (/sys/class/backlight) and DDC/CI monitors through ddcutil.
+    enum class BlSource { Kde, Backlight, Ddc };
     struct BlDisplay {
-        QString id;        // "display0"
-        QString path;      // /org/kde/ScreenBrightness/display0
+        QString id;        // "display0" (KDE), "backlight", "ddc1"
+        QString path;      // /org/kde/ScreenBrightness/display0 ; backlight device name ; ddcutil display number
         QString label;
         bool internal = false;
         int max = 100;
         int pct = 50;
+        BlSource source = BlSource::Kde;
     };
+    bool readBacklight(BlDisplay &out) const;
+    void scanDdc();
+    void flushDdc();
+    void writeBrightness(const BlDisplay &d, int percent);
     std::vector<BlDisplay> m_all;     // everything the service lists
     std::vector<BlDisplay> m_active;  // ... that is switched on right now, internal panel first
     bool m_mirror = false;            // the active screens show the same picture: one merged bar
     QHash<QString, QElapsedTimer> m_lastSet; // ignore the service's echo of our own writes briefly
     QVariantList m_displaysVar;
     QTimer m_screenDebounce;
+    std::vector<BlDisplay> m_ddc;     // DDC/CI monitors found by ddcutil (not on KDE: the service does it)
+    bool m_ddcScanning = false;
+    QHash<QString, int> m_ddcPending; // ddcutil display -> raw value still to write
+    QHash<QString, bool> m_ddcBusy;   // a ddcutil setvcp is running for this display
+    QTimer m_ddcFlush;
     int m_brightness = 50;
     int m_volume = 50;
     bool m_muted = false;

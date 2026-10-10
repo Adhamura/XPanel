@@ -29,7 +29,9 @@ Item {
     }
 
     // ---------------- tile catalog ----------------
-    readonly property var catalog: [
+    // (tiles the desktop cannot do, e.g. Refresh Rate outside KDE, are left out: see Desktop.h)
+    readonly property var catalog: allTiles.filter(t => desktop.unavailableTiles.indexOf(t.id) < 0)
+    readonly property var allTiles: [
         { id: "opmode",     title: "Operating Mode",    icon: "opmode" },
         { id: "ctrlmode",   title: "Control Mode",      icon: "ctrlmode" },
         { id: "fan",        title: "Fan Curve",         icon: "fan" },
@@ -188,7 +190,7 @@ Item {
             { label: "Shut down", value: "poweroff" },
             { label: "Log out", value: "logout" },
             { label: "Quit XPanel", value: "quit" }
-        ], it => {
+        ].filter(it => it.value !== "logout" || desktop.logout), it => {
             panel.requestClose()
             if (it.value === "quit") Qt.callLater(Qt.quit)
             else sys.power(it.value)

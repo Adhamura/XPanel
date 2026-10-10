@@ -62,4 +62,5 @@ private:
     bool m_appOpen = false;
     QString m_appPage = "library";
     bool m_open = false;
+    bool m_gamescope = false; // Steam Game Mode: windows are gamescope external overlays
 };

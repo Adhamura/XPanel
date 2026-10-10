@@ -1,5 +1,47 @@
 # Changelog
 
+## 1.3.0
+
+- **GNOME and Steam Game Mode (experimental).** XPanel now finds out which desktop it runs in
+  (`src/Desktop.*`: KDE Plasma, GNOME, gamescope or other, from `XDG_CURRENT_DESKTOP`,
+  `GAMESCOPE_WAYLAND_DISPLAY` and the session name; `XPanel --desktop` prints it,
+  `XPANEL_DESKTOP=` overrides it) and hides what a desktop cannot do instead of showing buttons
+  that do nothing. KDE Plasma behaves as before.
+  - **GNOME:** the panel runs on XWayland (Mutter has no layer-shell), full screen and kept above.
+    Brightness of the internal screen through logind (`SetBrightness`, `/sys/class/backlight`),
+    external monitors through `ddcutil` when installed. Colour presets through Night Light
+    (always on), the Keyboard tile switches GNOME's screen keyboard, Screenshot uses
+    `gnome-screenshot`, Log out asks GNOME's session manager, Edit profile opens GNOME Settings.
+    Refresh rate, Display Mode, wide colour, Show Desktop and the KDE shortcut settings are hidden.
+  - **Steam Game Mode (gamescope):** the Quick Panel, Control Center and Real-time Monitor are
+    gamescope external overlays (X11 property `GAMESCOPE_EXTERNAL_OVERLAY`, one window at a time),
+    drawn over the game and driven with the pad through xpanel-daemon. No tray icon; brightness
+    through logind; KDE / desktop-only tiles hidden. New systemd user unit `xpanel.service`
+    (installed to `lib/systemd/user`, not enabled by default) starts XPanel in Game Mode only
+    (`ExecCondition=XPanel --is-game-mode`): `systemctl --user enable xpanel.service`, or the
+    AppImage's `--install --game-mode` / `scripts/install.sh --game-mode`.
+  - Other desktops: logind brightness, generic launchers.
+  - Terminals (Update Center) and the file manager (Media Gallery, BIOS download) follow the
+    desktop: Konsole / Dolphin on KDE, Console / Ptyxis / GNOME Terminal and
+    `org.freedesktop.FileManager1` (Nautilus …) elsewhere, `x-terminal-emulator` / `xdg-open` as
+    fallbacks. App Diagnostics shows the detected desktop.
+  - Build: optional libxcb (`libxcb1-dev`, CMake option `XPANEL_WITH_XCB`) for the gamescope overlay.
+  - Not yet tested on real GNOME or gamescope sessions with an Ally: please report how it works.
+- **ROG Xbox Ally (RC73YA, Ryzen Z2 A) and ROG Xbox Ally X (RC73XA, Ryzen AI Z2 Extreme)**:
+  experimental, untested on hardware, please report. Detected by DMI board name (model ids
+  `xboxally` / `xboxallyx`), on Linux and Windows.
+  - Operating Modes (SPL): Xbox Ally Silent 10 W, Performance 15 W, Turbo 20 W; Xbox Ally X
+    Silent 13 W, Performance 17 W, Turbo 25 W on battery and 35 W on the charger (ASUS).
+  - Power limit ranges: the Xbox Ally X uses the kernel's `asus-armoury` ranges (SPL 7–35,
+    SPPT 13/14–45, FPPT 19–55 W); the Xbox Ally, which `asus-armoury` does not list yet, the
+    Ryzen Z2 A's 6–20 W.
+  - Controller: the same USB device as the Ally X (`0b05:1b4c`), so the input layer and Aura
+    lighting work as there. New button codes: holding the left (Xbox) button (`KEY_F21`) and the
+    right button (`KEY_F22`); back buttons as `KEY_F14` / `KEY_F15` (also on the keyboard node)
+    are the paddles.
+- The daemon never takes a USB product id 0 as the controller.
+- Tests: `tst_model` (model detection, controller ids, table consistency).
+
 ## 1.2.0
 
 - **Gyro**: the Ally's motion sensor (BMI323, kernel IIO driver) as a **mouse** or added to the

@@ -1,4 +1,5 @@
 #include "MediaGallery.h"
+#include "Desktop.h"
 
 #include <QClipboard>
 #include <QDir>
@@ -58,7 +59,7 @@ void MediaGallery::openFile(const QString &path)
 
 void MediaGallery::showInFolder(const QString &path)
 {
-    QProcess::startDetached("dolphin", {"--select", path});
+    Desktop::showInFileManager(path, true);
 }
 
 void MediaGallery::copyToClipboard(const QStringList &paths)

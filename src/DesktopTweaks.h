@@ -5,8 +5,8 @@
 
 class Config;
 
-// KDE-side settings: colour presets (screen colour via KWin Night Color), global keyboard
-// shortcuts (KDE kglobalaccel), Feedback notes and App Diagnostics.
+// Desktop-side settings: colour presets (KWin Night Color or GNOME Night Light), global keyboard
+// shortcuts (KDE kglobalaccel only), Feedback notes and App Diagnostics. See Desktop.h.
 class DesktopTweaks : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString colorPreset READ colorPreset NOTIFY colorPresetChanged)
@@ -27,7 +27,7 @@ public:
     Q_INVOKABLE bool saveFeedback(const QString &topic, const QString &text);
     Q_INVOKABLE QString feedbackPath() const;
     Q_INVOKABLE QVariantList diagnostics() const;
-    Q_INVOKABLE void openSystemSettings(const QString &module); // e.g. kcm_users, kcm_keys
+    Q_INVOKABLE void openSystemSettings(const QString &module); // e.g. kcm_users, kcm_keys (GNOME: the same pages)
 
 signals:
     void colorPresetChanged();
