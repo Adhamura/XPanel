@@ -17,6 +17,11 @@
     (`KEY_F16`, `KEY_PROG1`) open the Quick Panel / Control Center.
   - Windows: the power limits and Operating Modes follow the model too.
 - Brightness follows the active display: external monitor only, Ally only, or one bar per screen when extended.
+- Per-game profiles now apply when a game starts from Steam (or from XPanel) and are restored
+  when it ends. Settings you change during the game are kept; the Quick Panel shows
+  "Profile: <game>" while one is active. Game Options gain Fan Mode and a "Use this profile when
+  the game starts from Steam" switch.
+- Unit tests (`ctest`), run in CI on Debian and Arch.
 
 ## 1.0.5
 

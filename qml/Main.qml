@@ -348,6 +348,22 @@ Item {
                 color: T.warn; font.pixelSize: 22 * root.s
                 anchors.verticalCenter: parent.verticalCenter
             }
+            // the running game's profile is applied (restored when the game ends)
+            Rectangle {
+                visible: profiles.activeProfile
+                anchors.verticalCenter: parent.verticalCenter
+                width: profileText.width + 24 * root.s; height: 36 * root.s
+                radius: height / 2
+                color: "transparent"; border.color: T.accent; border.width: Math.max(1, 2 * root.s)
+                Text {
+                    id: profileText
+                    anchors.centerIn: parent
+                    width: Math.min(implicitWidth, 260 * root.s)
+                    text: "Profile: " + profiles.activeTitle
+                    color: T.accent; font.pixelSize: 19 * root.s
+                    elide: Text.ElideRight
+                }
+            }
             Text {
                 text: sys.battery + "%" + (sys.charging ? " ⚡" : "")
                 color: sys.battery <= 15 && !sys.charging ? T.warn : T.text

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QHash>
 #include <QObject>
 #include <QVariantList>
 
@@ -20,14 +21,17 @@ public:
     Q_INVOKABLE void addApp(const QString &desktopId);
     Q_INVOKABLE void removeGame(const QString &id);  // hides it from the library
     Q_INVOKABLE void launch(const QString &id);
+    // name of a game id, also of Steam tools and hidden games ("" when unknown)
+    QString titleOf(const QString &id) const;
 
 signals:
     void gamesChanged();
-    void launched(const QString &id); // QML applies the per-game profile
+    void launched(const QString &id);
 
 private:
-    QVariantList scanSteam() const;
+    QVariantList scanSteam();
     QVariantMap desktopEntry(const QString &path) const;
     Config *m_config;
     QVariantList m_games;
+    QHash<QString, QString> m_steamNames; // app id -> name, tools included
 };

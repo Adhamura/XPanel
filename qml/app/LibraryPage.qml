@@ -24,14 +24,11 @@ Item {
         if (i >= 0) f.splice(i, 1); else f.push(id)
         config.set("library.favorites", f)
     }
-    // per-game profile, applied when the game starts
-    function profile(id) { return config.get("game." + id, { opmode: "", control: "", tdp: 0 }) }
+    // per-game profile: applied by `profiles` when the game starts, restored when it ends
+    function profile(id) { return config.get("game." + id, { opmode: "", control: "", tdp: 0, fan: "" }) }
+    function setProfile(id, key, value) { const p = profile(id); p[key] = value; config.set("game." + id, p) }
     function play(g) {
-        const p = profile(g.id)
-        if (p.opmode) device.setValue("opmode", p.opmode)
-        if (p.opmode === "manual" && p.tdp) device.setValue("tdp", p.tdp)
-        if (p.control) config.set("control.preset", p.control)
-        library.launch(g.id)
+        profiles.play(g.id)
         panel.closeApp()
     }
 
@@ -145,14 +142,24 @@ Item {
                            onClicked: { library.removeGame(details.game.id); details.hide(); app.popBack() } }
                 CcButton { text: "Back"; onClicked: { details.hide(); app.popBack() } }
             }
-            CcSection { title: "Game Options"; note: "Applied when you start the game from this library." }
+            CcSection { title: "Game Options"
+                        note: "Applied while the game runs; your previous settings come back when it ends. Settings you change during the game are kept." }
+            CcRow {
+                visible: !!details.game && details.game.platform === "Steam"
+                title: "Use this profile when the game starts from Steam"
+                description: "Off: only when you start it with Play here."
+                CcSwitch {
+                    checked: details.game ? (config.rev, page.profile(details.game.id).enabled !== false) : true
+                    onToggled: (v) => page.setProfile(details.game.id, "enabled", v)
+                }
+            }
             CcRow {
                 title: "Operating Mode"
                 CcChoice {
                     options: [{ value: "", label: "Keep" }, { value: "silent", label: "Silent" }, { value: "performance", label: "Performance" },
                               { value: "turbo", label: "Turbo" }, { value: "manual", label: "Manual" }]
                     current: details.game ? (config.rev, page.profile(details.game.id).opmode) : ""
-                    onPicked: (v) => { const p = page.profile(details.game.id); p.opmode = v; config.set("game." + details.game.id, p) }
+                    onPicked: (v) => page.setProfile(details.game.id, "opmode", v)
                 }
             }
             CcRow {
@@ -161,7 +168,16 @@ Item {
                 CcSlider {
                     width: 420; from: 7; to: 30; unit: " W"
                     value: details.game ? (config.rev, page.profile(details.game.id).tdp || 15) : 15
-                    onMoved: (v) => { const p = page.profile(details.game.id); p.tdp = v; config.set("game." + details.game.id, p) }
+                    onMoved: (v) => page.setProfile(details.game.id, "tdp", v)
+                }
+            }
+            CcRow {
+                title: "Fan Mode"
+                CcChoice {
+                    options: [{ value: "", label: "Keep" }, { value: "auto", label: "Auto" }, { value: "quiet", label: "Quiet" },
+                              { value: "max", label: "Max" }]
+                    current: details.game ? (config.rev, page.profile(details.game.id).fan || "") : ""
+                    onPicked: (v) => page.setProfile(details.game.id, "fan", v)
                 }
             }
             CcRow {
@@ -169,7 +185,7 @@ Item {
                 CcChoice {
                     options: [{ value: "", label: "Keep" }, { value: "gamepad", label: "Gamepad" }, { value: "desktop", label: "Desktop" }]
                     current: details.game ? (config.rev, page.profile(details.game.id).control) : ""
-                    onPicked: (v) => { const p = page.profile(details.game.id); p.control = v; config.set("game." + details.game.id, p) }
+                    onPicked: (v) => page.setProfile(details.game.id, "control", v)
                 }
             }
         }

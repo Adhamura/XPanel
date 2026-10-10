@@ -35,6 +35,9 @@ qt_add_executable(XPanel
     src/NetworkControl.h src/NetworkControl.cpp
     src/UpdateCenter.h src/UpdateCenter.cpp
     src/GameLibrary.h src/GameLibrary.cpp
+    src/GameWatcher.h src/GameWatcher.cpp
+    src/ProfileManager.h src/ProfileManager.cpp
+    src/ProfileRules.h src/ProfileRules.cpp
     src/MediaGallery.h src/MediaGallery.cpp
     src/DesktopTweaks.h src/DesktopTweaks.cpp
 )
@@ -124,6 +127,13 @@ if(XPANEL_BUILD_TOOLS AND NOT WIN32)
         FILES tools/mapper/Mapper.qml tools/mapper/AllyView.qml)
     set_target_properties(xpanel-mapper PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     target_link_libraries(xpanel-mapper PRIVATE Qt6::Core Qt6::Gui Qt6::Quick)
+endif()
+
+# Unit tests (ctest); never installed
+option(XPANEL_BUILD_TESTS "Build the unit tests" ON)
+if(XPANEL_BUILD_TESTS AND NOT WIN32)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
 
 # Install: binaries, desktop entry, icon, systemd unit (ExecStart follows the install prefix).
