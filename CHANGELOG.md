@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0
+## Unreleased
 
 - **Translations.** Every text in the Quick Panel, Control Center and tray menu can be translated
   (`qsTr` / `tr`); the first translation is **German**. The language follows the system, or pick
@@ -11,6 +11,8 @@
   Build needs Qt Linguist tools, otherwise XPanel builds in English only; releases and CI build
   with `-DXPANEL_REQUIRE_TRANSLATIONS=ON`. Maintainers: target `update_translations`.
   Values sent to xpanel-daemon and stored in the config (modes, effects, key names) stay English.
+
+## 1.3.0
 
 - **GNOME and Steam Game Mode (experimental).** XPanel now finds out which desktop it runs in
   (`src/Desktop.*`: KDE Plasma, GNOME, gamescope or other, from `XDG_CURRENT_DESKTOP`,

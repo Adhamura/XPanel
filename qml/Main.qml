@@ -399,12 +399,13 @@ Item {
             anchors.right: parent.right; y: 0
             width: 60 * root.s; height: 60 * root.s
             Canvas {
+                id: editCorner
                 anchors.right: parent.right; anchors.rightMargin: 14 * root.s
                 y: 12 * root.s
                 width: 16 * root.s; height: 16 * root.s
                 onPaint: { const c = getContext("2d"); c.fillStyle = root.editing ? T.accent : "#fff"
                            c.beginPath(); c.moveTo(0, 0); c.lineTo(width, 0); c.lineTo(width, height); c.fill() }
-                Connections { target: root; function onEditingChanged() { parent.requestPaint() } }
+                Connections { target: root; function onEditingChanged() { editCorner.requestPaint() } }
             }
             MouseArea { anchors.fill: parent; onClicked: root.editing = !root.editing }
         }
