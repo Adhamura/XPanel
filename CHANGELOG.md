@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Per-game profiles now apply when a game starts from Steam (or from XPanel) and are restored
+  when it ends. Settings you change during the game are kept; the Quick Panel shows
+  "Profile: <game>" while one is active. Game Options gain Fan Mode and a "Use this profile when
+  the game starts from Steam" switch.
+- Unit tests (`ctest`), run in CI on Debian and Arch.
+
 ## 1.0.5
 
 - **Fixed**: the 1.0.4 AppImage crashed at start on Wayland (KDE Plasma, SteamOS / Bazzite desktop

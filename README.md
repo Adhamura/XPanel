@@ -42,9 +42,10 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   (**30 W on the charger**) · Manual with separate SPL / SPPT / FPPT.
 - **🔌 Settings that stay set.** The daemon re-applies your mode when you plug or unplug the
   charger, and when the firmware or another tool changes the TDP behind your back.
-- **🗂️ A real Control Center.** Game Library with per-game mode, TDP and control preset; Media
-  Gallery for your screenshots and clips; Settings for performance, lighting, audio, display,
-  connections, shortcuts, updates and battery care.
+- **🗂️ A real Control Center.** Game Library with per-game mode, TDP, fan and control preset,
+  applied when the game starts (also from Steam) and undone when it ends; Media Gallery for your
+  screenshots and clips; Settings for performance, lighting, audio, display, connections,
+  shortcuts, updates and battery care.
 - **🕹️ Its own controller layer.** Remap every button, add a second function while a back paddle
   is held, button repeat, stick and trigger curves, vibration strength, and a Desktop Mode that
   turns the pad into mouse and keyboard. Applied live, no InputPlumber or hhd needed.
@@ -282,15 +283,21 @@ your own risk.
 **Is gyro supported?** The gyro settings are saved, but not applied yet. Calibration is not
 available yet either. There is no FPS limiter (KDE has no global one).
 
-**Does the per-game profile apply when I start a game from Steam?** Only when you start the game
-from XPanel's Game Library for now.
+**Does the per-game profile apply when I start a game from Steam?** Yes. XPanel notices when Steam
+starts a game (native or Proton) and applies the profile you set under Game Library › the game ›
+Game Options (Operating Mode, Manual TDP, Fan Mode, Control Mode); the Quick Panel shows
+"Profile: <game>" while it is active. When the game ends, your previous settings come back —
+except the ones you changed yourself while playing, which stay. Turn off "Use this profile when
+the game starts from Steam" to apply it only when you press Play in XPanel. Installed (non-Steam)
+games get their profile when you start them from the Game Library. XPanel must be running (the
+tray icon); if it was closed during a game, it restores your settings the next time it starts.
 
 ## Roadmap
 
 - **1.0** — ROG Ally X on KDE Plasma: Quick Panel, Control Center, Operating Modes, fan, charge
   limit, lighting, controller layer, release archive and Arch package.
 - **1.1** — Original ROG Ally (Z1 / Z1 Extreme) power limits and controller; per-game profiles
-  for games started from Steam, restored when the game ends.
+  for games started from Steam, restored when the game ends (✅ done).
 - **1.2** — Gyro (aim and mouse), custom fan curve editor, more Aura effects.
 - **Later** — Steam Game Mode (gamescope), GNOME, translations, other ASUS handhelds.
 
