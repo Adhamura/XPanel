@@ -19,6 +19,10 @@ jobs:
         run: DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $(cat packaging/build-deps-debian.txt)
       - name: Build AppImage and release archive
         run: ./build-release.sh --clean
+      - name: Smoke test the AppImage (QML and Qt plugin errors)
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends xvfb xauth
+          packaging/appimage/smoke-test.sh dist/XPanel-*-x86_64.AppImage
       - uses: actions/upload-artifact@v4
         with:
           name: xpanel-linux-x86_64
@@ -53,4 +57,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh packaging/appimage/AppRun packaging/appimage/appimage-install.sh
+      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh packaging/appimage/AppRun packaging/appimage/appimage-install.sh packaging/appimage/smoke-test.sh

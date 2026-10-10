@@ -171,9 +171,12 @@ Remove: `scripts/uninstall.sh` and `sudo scripts/uninstall-daemon.sh`.
 ./build-release.sh --container   # builds in debian:trixie with Docker / Podman, like CI
 ```
 
-On Windows, `build-release.bat` runs the same script inside WSL. To publish a GitHub release,
-run **Actions → Release → Run workflow** on `main` (it tags `v<version>` from `CMakeLists.txt`), or
-push a `v*` tag.
+On Windows, `build-release.bat` runs the same script inside WSL.
+
+**Releases are automatic.** Bump `project(VERSION)` in `CMakeLists.txt`, add a `## <version>`
+section to `CHANGELOG.md` and merge to `main`: GitHub Actions builds the AppImage and the archive,
+starts the AppImage on a virtual screen to catch missing plugins or QML errors, and publishes the
+release `v<version>` with the changelog section as notes.
 
 ## Using XPanel
 
