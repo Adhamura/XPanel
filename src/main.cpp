@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 
     repairEnvironment();
 
-    if (sendToRunning(command.isEmpty() ? "toggle" : command)) {
+    if (sendToRunning(command.isEmpty() ? QByteArray("toggle") : command)) {
         fprintf(stderr, "XPanel: sent '%s' to the running instance\n",
                 command.isEmpty() ? "toggle" : command.constData());
         return 0;
