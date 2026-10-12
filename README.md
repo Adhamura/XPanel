@@ -24,7 +24,7 @@ mapping, performance tuning and battery care. Native C++ / Qt 6, made for KDE Pl
 [**Download**](https://github.com/Adhamura/XPanel/releases/latest) ·
 [Screenshots](#screenshots) · [Why XPanel](#why-xpanel) · [Install](#install) · [FAQ](#faq)
 
-<img src="docs/screenshots/quick-panel.png" width="820" alt="XPanel Quick Panel over a game">
+<img src="docs/screenshots/demo.gif" width="820" alt="XPanel demo: the Quick Panel over a game driven with the D-pad, the Control Mode key map in test mode following sticks, buttons, triggers and a back paddle, then Performance settings and the Game Library">
 
 </div>
 
@@ -96,9 +96,12 @@ familiar Armoury Crate layout to the Linux desktop as one app:
     <td><img src="docs/screenshots/fan-curve.png" alt="Fan curve editor"><br><b>Fan Curve</b> — 8-point custom curve, editable by touch or gamepad, separate GPU curve</td>
     <td><img src="docs/screenshots/update-center.png" alt="Update Center"><br><b>Update Center</b> — XPanel itself (GitHub releases), system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
   </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/quick-panel.png" alt="Quick Panel"><br><b>Quick Panel</b> — opens over the game with the Ally button: Operating Mode, Control Mode, fan, keyboard, monitor, charge limit, lighting, brightness and volume</td>
+  </tr>
 </table>
 
-<sub>Screenshots are made with demo data (made-up games) by <code>tools/screenshots/capture.sh</code>.</sub>
+<sub>Screenshots and the demo are made with demo data (made-up games) by <code>tools/screenshots/capture.sh</code> and <code>tools/screenshots/demo.sh</code>.</sub>
 
 ## How it compares
 
@@ -520,7 +523,7 @@ Bug reports with your device, distro, kernel and `journalctl -u xpanel-daemon -b
 most. The quickest way: **Settings › Feedback** in the app opens a GitHub issue that is already
 filled in with your text and (optionally) your device info; there is a QR code for phones, e.g. in
 Steam Game Mode. For code: `./run.sh` builds and runs; CI builds on Debian 13 (Qt 6.8) and Arch (latest Qt).
-`tools/mapper.sh` maps controller input codes, and `tools/screenshots/capture.sh` makes the
+`tools/mapper.sh` maps controller input codes, `tools/screenshots/demo.sh` records the README demo, and `tools/screenshots/capture.sh` makes the
 README screenshots without an Ally.
 
 ## License
