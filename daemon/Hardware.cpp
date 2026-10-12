@@ -5,8 +5,10 @@
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
+#include <QRegularExpression>
 #include <QThread>
 
+#include <algorithm>
 #include <cerrno>
 #include <cstring>
 #include <fcntl.h>
@@ -265,14 +267,49 @@ QString gpuDevice()
 }
 } // namespace
 
+// Memory reserved for the GPU (UMA frame buffer): the BIOS setting behind asus-armoury's apu_mem
+// (kernel 6.19+ or the CachyOS / Bazzite kernels). Values are GB, 0 = Auto (the BIOS default);
+// the change applies at the next boot.
+namespace {
+const QString kApuMem = QString(kArmoury) + "apu_mem/";
+
+QList<int> apuMemValues()
+{
+    QList<int> gb;
+    for (const QString &v : readFile(kApuMem + "possible_values").split(QRegularExpression("[;,\\s]+"), Qt::SkipEmptyParts)) {
+        bool ok = false;
+        const int n = v.toInt(&ok);
+        if (ok && n >= 0 && !gb.contains(n))
+            gb << n;
+    }
+    if (gb.isEmpty()) { // older drivers: a range only
+        const int lo = attr("apu_mem", "min_value"), hi = attr("apu_mem", "max_value");
+        for (int n = lo; hi > 0 && n <= hi && n <= 64; ++n)
+            gb << n;
+    }
+    std::sort(gb.begin(), gb.end());
+    return gb;
+}
+} // namespace
+
 QJsonObject gpuMemory()
 {
-    return {{"gpuMemSupported", false}, {"gpuMemCurrent", 0}, {"gpuMemOptions", QJsonArray()}};
+    bool ok = false;
+    const int cur = readFile(kApuMem + "current_value").toInt(&ok);
+    const QList<int> gb = apuMemValues();
+    if (!ok || gb.size() < 2)
+        return {{"gpuMemSupported", false}, {"gpuMemCurrent", 0}, {"gpuMemOptions", QJsonArray()}};
+    QJsonArray opts;
+    for (int n : gb)
+        opts.append(n * 1024);
+    return {{"gpuMemSupported", true}, {"gpuMemCurrent", cur * 1024}, {"gpuMemOptions", opts}};
 }
 
-bool applyGpuMemory(int)
+bool applyGpuMemory(int mb)
 {
-    return false; // Windows only
+    if (mb < 0 || mb % 1024 || !apuMemValues().contains(mb / 1024))
+        return false;
+    return writeFile(kApuMem + "current_value", QString::number(mb / 1024));
 }
 
 bool applyCpu(bool eco, const QString &opmode, bool boost)

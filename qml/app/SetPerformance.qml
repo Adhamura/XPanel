@@ -45,7 +45,8 @@ CcPage {
                    onToggled: (v) => device.setValue("cpuBoost", v) } }
 
     CcSection { title: qsTr("GPU Settings") }
-    // Memory Assigned to GPU (UMA frame buffer): Windows only, the daemon reports it when the firmware has it
+    // Memory Assigned to GPU (UMA frame buffer): the daemon reports it when the firmware has it
+    // (Windows: ASUS WMI; Linux: asus-armoury apu_mem)
     readonly property bool gpuMemShown: (device.rev, !!device.value("gpuMemSupported"))
     function gpuMemOptions() {
         const mbs = device.value("gpuMemOptions") || []
@@ -59,7 +60,8 @@ CcPage {
                    current: (device.rev, device.value("gpuMemory"))
                    onPicked: (v) => device.setValue("gpuMemory", v) } }
     CcRow { title: qsTr("Restart required"); visible: page.gpuMemShown && (device.rev, !!device.value("gpuMemPending"))
-            description: qsTr("Restart Windows to apply the new GPU memory size.") }
+            description: Qt.platform.os === "windows" ? qsTr("Restart Windows to apply the new GPU memory size.")
+                                                      : qsTr("Restart the Ally to apply the new GPU memory size.") }
 
     CcRow { visible: !desktop.windows; title: qsTr("GPU clock"); description: qsTr("Auto lets the driver decide. A limit saves power and heat.")
         CcChoice { enabledChoice: device.connected

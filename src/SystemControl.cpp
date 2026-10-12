@@ -763,7 +763,15 @@ void SystemControl::readBattery()
 #else
     const int cap = readFile("/sys/class/power_supply/BAT0/capacity").toInt();
     const QString st = readFile("/sys/class/power_supply/BAT0/status");
-    const bool chg = st == "Charging" || st == "Full" || readFile("/sys/class/power_supply/AC0/online") == "1";
+    // on the charger: any mains supply (the Ally's is not always called AC0), as the daemon checks it
+    bool ac = false;
+    const QDir ps("/sys/class/power_supply");
+    for (const QString &e : ps.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        if (readFile(ps.absoluteFilePath(e) + "/type") == "Mains" && readFile(ps.absoluteFilePath(e) + "/online") == "1") {
+            ac = true;
+            break;
+        }
+    const bool chg = st == "Charging" || st == "Full" || ac;
     if (cap != m_battery || chg != m_charging) {
         m_battery = cap;
         m_charging = chg;

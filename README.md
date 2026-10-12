@@ -78,10 +78,14 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 <table>
   <tr>
     <td width="50%"><img src="docs/screenshots/game-library.png" alt="Game Library"><br><b>Game Library</b> — Steam and installed apps, per-game Operating Mode, TDP and controls</td>
-    <td width="50%"><img src="docs/screenshots/performance.png" alt="Performance settings"><br><b>Performance</b> — Operating Mode, live applied limits, manual SPL / SPPT / FPPT, Eco Mode, GPU clock</td>
+    <td width="50%"><img src="docs/screenshots/performance.png" alt="Performance settings"><br><b>Performance</b> — Operating Mode, live applied limits, manual SPL / SPPT / FPPT, Eco Mode, CPU Boost, GPU clock and memory</td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/control-mode.png" alt="Control Mode"><br><b>Control Mode</b> — Gamepad / Desktop presets, key mapping with paddle-held secondary functions</td>
+    <td><img src="docs/screenshots/control-map-front.png" alt="Control Mode, key map front"><br><b>Control Mode</b> — key map, front: test mode shows held buttons (X + A) and both sticks; the side panel assigns the selected button</td>
+    <td><img src="docs/screenshots/control-map-top.png" alt="Control Mode, key map top"><br><b>Key map, top edge</b> — bumpers and triggers; the trigger fills as you pull it (LT a third, RT most of the way)</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/control-map-back.png" alt="Control Mode, key map back"><br><b>Key map, back</b> — the rear paddles (as held), primary and paddle-held second functions</td>
     <td><img src="docs/screenshots/lighting.png" alt="Lighting"><br><b>Lighting</b> — Aura effects (also dual breathing, strobe, battery level, follow Operating Mode), colors and brightness</td>
   </tr>
   <tr>
@@ -90,7 +94,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
   </tr>
   <tr>
     <td><img src="docs/screenshots/fan-curve.png" alt="Fan curve editor"><br><b>Fan Curve</b> — 8-point custom curve, editable by touch or gamepad, separate GPU curve</td>
-    <td><img src="docs/screenshots/update-center.png" alt="Update Center"><br><b>Update Center</b> — system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
+    <td><img src="docs/screenshots/update-center.png" alt="Update Center"><br><b>Update Center</b> — XPanel itself (GitHub releases), system packages, device firmware (fwupd) and the Ally X BIOS from ASUS</td>
   </tr>
 </table>
 
@@ -188,9 +192,9 @@ logind brightness, `xdg-open` and `x-terminal-emulator`, no KDE-only controls.
 </details>
 
 **Windows 10 / 11 x64 (experimental):** Operating Mode / TDP, fan, charge limit, Aura lighting
-and boot sound through the ASUS System Control Interface (installed on every Ally). Controller
-remapping, the Ally-button panel, brightness / volume sliders and the Linux-only tiles are not
-available on Windows yet. There is **no 32-bit build**: the Ally is a 64-bit device.
+and boot sound through the ASUS System Control Interface (installed on every Ally). Since 1.6
+also controller remapping (programmed into the Ally's controller), gyro, the Ally buttons, system
+tiles, brightness and volume, the Update Center for ASUS BIOS / firmware / drivers. There is **no 32-bit build**: the Ally is a 64-bit device.
 
 ## Install
 
@@ -400,7 +404,7 @@ See the top of `daemon/main.cpp` for all keys.
 
 **Does it work on Windows?** Partly, and experimentally: the installer sets Operating Mode / TDP,
 fan (including a custom curve), charge limit, lighting and boot sound the way Armoury Crate does.
-Controller remapping, gyro and the Ally buttons are Linux-only for now. XPanel is made first for Linux, where there is no
+Since 1.6 also controller remapping, gyro, the Ally buttons and the system tiles. XPanel is made first for Linux, where there is no
 Armoury Crate.
 
 **Does it conflict with Handheld Daemon (hhd), InputPlumber or Decky TDP plugins?** Yes, they
