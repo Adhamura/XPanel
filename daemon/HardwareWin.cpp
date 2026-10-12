@@ -12,6 +12,7 @@
 #include "FanCurve.h"
 
 #include <QHash>
+#include <QJsonArray>
 #include <QProcess>
 #include <QSettings>
 #include <QThread>
@@ -38,6 +39,7 @@ constexpr quint32 kGpuFanCurve = 0x00110025;
 constexpr quint32 kChargeLimit = 0x00120057;
 constexpr quint32 kBootSound = 0x00130022;
 constexpr quint32 kMcuPowersave = 0x001200E2;
+constexpr quint32 kVramMem = 0x000600C4;       // "Memory Assigned to GPU" (UMA frame buffer)
 
 // Power limit ranges: the model's (Model.h). The Linux driver reports them itself; here they are fixed.
 Hardware::Tdp g_tdp; // what was applied last (the firmware cannot be read back reliably)
@@ -58,7 +60,7 @@ HANDLE acpi()
     return h;
 }
 
-QByteArray callMethod(quint32 method, const QByteArray &args)
+QByteArray callMethod(quint32 method, const QByteArray &args, int outSize = 16)
 {
     const HANDLE h = acpi();
     if (h == INVALID_HANDLE_VALUE)
@@ -67,7 +69,7 @@ QByteArray callMethod(quint32 method, const QByteArray &args)
     qToLittleEndian<quint32>(method, in.data());
     qToLittleEndian<quint32>(quint32(args.size()), in.data() + 4);
     memcpy(in.data() + 8, args.constData(), size_t(args.size()));
-    QByteArray out(16, '\0');
+    QByteArray out(outSize, '\0');
     DWORD got = 0;
     if (!DeviceIoControl(h, kControlCode, in.data(), DWORD(in.size()), out.data(), DWORD(out.size()), &got, nullptr)) {
         qWarning("xpanel-daemon: ATKACPI call %08x failed (error %lu)", method, GetLastError());
@@ -113,6 +115,41 @@ int dsts(quint32 id)
         return -1;
     const qint32 v = qFromLittleEndian<qint32>(out.constData());
     return (v & 0x10000) ? (v - 0x10000) : -1;
+}
+
+// VRAM_MEM: a large DSTS (method, length 12, device id, 8 zero bytes), 64 bytes out.
+// dword 0 = status: 0x10000 supported, 0x80000 disabled, 0x20000 unit 512 MB (else 1 MB),
+// low 16 bits = option count. dword at offset 4 = current value. Option i (1..count-1) =
+// uint16 at byte offset 6 + 2 * i; option 0 is "auto" (0). Values are converted to MB.
+struct GpuMem {
+    bool supported = false;
+    int current = 0;      // MB, 0 = auto
+    QList<int> options;   // MB, first entry 0 = auto
+    int unit = 1;         // MB per raw unit
+};
+
+GpuMem readGpuMem()
+{
+    GpuMem g;
+    // callMethod adds method + length (12); the arguments are the device id and 8 zero bytes
+    QByteArray args(12, '\0');
+    qToLittleEndian<quint32>(kVramMem, args.data());
+    const QByteArray out = callMethod(kDSTS, args, 64);
+    if (out.size() < 64)
+        return g;
+    const quint32 status = qFromLittleEndian<quint32>(out.constData());
+    if (!(status & 0x10000) || (status & 0x80000))
+        return g;
+    const int count = int(status & 0xFFFF);
+    if (count < 2 || 6 + 2 * count > out.size())
+        return g;
+    g.unit = (status & 0x20000) ? 512 : 1;
+    g.current = int(qFromLittleEndian<quint32>(out.constData() + 4)) * g.unit;
+    g.options << 0;
+    for (int i = 1; i < count; ++i)
+        g.options << int(qFromLittleEndian<quint16>(out.constData() + 6 + 2 * i)) * g.unit;
+    g.supported = true;
+    return g;
 }
 
 int policyFor(const QString &profile)
@@ -298,7 +335,10 @@ bool applyFan(const QString &preset, const QJsonObject &custom)
         }
         return t + d;
     };
-    QByteArray cpuCurve = QByteArray(temps, 8) + QByteArray(preset == "max" ? maxed : quiet, 8);
+    // Below the first point the firmware keeps the fans off: "max" starts at 20 °C so it also runs at idle
+    static const char maxTemps[8] = {20, 30, 40, 50, 60, 70, 80, 90};
+    QByteArray cpuCurve = preset == "max" ? QByteArray(maxTemps, 8) + QByteArray(maxed, 8)
+                                          : QByteArray(temps, 8) + QByteArray(quiet, 8);
     QByteArray gpuCurve = cpuCurve;
     if (preset == "custom") { // same layout: 8 temperatures, 8 duty values in %
         cpuCurve = bytes(FanCurve::cpu(custom));
@@ -355,14 +395,31 @@ bool applyLighting(const QString &effect, const QString &color, int brightness, 
     return ok;
 }
 
-bool applyCpu(bool eco, const QString &opmode)
+QJsonObject gpuMemory()
+{
+    const GpuMem g = readGpuMem();
+    QJsonArray opts;
+    for (int mb : g.options)
+        opts.append(mb);
+    return {{"gpuMemSupported", g.supported}, {"gpuMemCurrent", g.current}, {"gpuMemOptions", opts}};
+}
+
+bool applyGpuMemory(int mb)
+{
+    const GpuMem g = readGpuMem();
+    if (!g.supported || !g.options.contains(mb))
+        return false;
+    return devs(kVramMem, quint32(mb / g.unit));
+}
+
+bool applyCpu(bool eco, const QString &opmode, bool boostOn)
 {
     // Energy preference 0 (performance) .. 100 (power); boost 0 off, 2 aggressive.
     int epp = 33;
     if (eco || opmode == "silent") epp = 80;
     else if (opmode == "performance") epp = 50;
     else if (opmode == "turbo") epp = 0;
-    const QString boost = eco ? "0" : "2";
+    const QString boost = boostOn ? "2" : "0";
     for (const QString &mode : {QStringLiteral("/setacvalueindex"), QStringLiteral("/setdcvalueindex")}) {
         runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PERFEPP", QString::number(epp)});
         runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PERFBOOSTMODE", boost});

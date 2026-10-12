@@ -14,6 +14,89 @@ Item {
     function val(k, def) { return (rev, config.get(key(k), defaults(k, def))) }
     function put(k, v) { config.set(key(k), v) }
 
+    // Button test: the daemon sends every logical button that goes down while this is on
+    property bool testing: false
+    property string lastPressed: ""
+    property bool showAll: false
+    property var axes: ({})
+    onTestingChanged: { device.setButtonTest(testing); if (!testing) { clearHeld(); axes = ({}) } }
+    onVisibleChanged: { testing = visible; if (!visible) clearHeld() }        // the test runs only while this page is shown
+    Component.onCompleted: testing = visible
+    Component.onDestruction: device.setButtonTest(false)
+
+    // Test mode: the map glows for every button held right now (the daemon sends press and release).
+    // The two menu buttons send press and release 1 ms apart, so they stay lit for 300 ms.
+    property var pressedMap: ({})
+    property var menuUntil: ({})
+    readonly property var menuButtons: ["QAM", "Armoury"]
+    function heldText() {
+        const names = []
+        for (const k of ctrlMap.order) if (pressedMap[k] === true) names.push(itemLabel(k))
+        return names.join(" + ")
+    }
+    readonly property bool selIsSystem: ctrlMap.isSystem(ctrlMap.selected)
+    readonly property bool noPad: ((device.rev, device.value("inputPad")) || "") === ""
+    function clearHeld() { pressedMap = ({}); menuUntil = ({}); menuTimer.stop() }
+    Connections {
+        target: device
+        function onPressed(name) {
+            if (!page.testing) return
+            page.lastPressed = name
+            const m = Object.assign({}, page.pressedMap); m[name] = true
+            page.pressedMap = m
+            if (page.menuButtons.indexOf(name) >= 0) {
+                page.menuUntil[name] = Date.now() + 300
+                menuTimer.restart()
+            }
+            ctrlMap.selected = name
+        }
+        function onAxes(values) { if (page.testing) page.axes = values }
+        function onReleased(name) {
+            if (!page.testing || page.menuButtons.indexOf(name) >= 0) return
+            const m = Object.assign({}, page.pressedMap); delete m[name]
+            page.pressedMap = m
+        }
+    }
+    Timer {
+        id: menuTimer; interval: 50; repeat: true
+        onTriggered: {
+            const now = Date.now(), m = Object.assign({}, page.pressedMap); let any = false
+            for (const k of page.menuButtons) {
+                if (m[k] !== true) continue
+                if (page.menuUntil[k] > now) any = true; else delete m[k]
+            }
+            page.pressedMap = m
+            if (!any) stop()
+        }
+    }
+    // "Open with Ally button": config.button says which Ally menu button opens the Quick Panel
+    // (the other one opens Control Center). "none" = tray only.
+    function menuButtonLabel(side) {
+        const b = (config.rev, config.button)
+        if (b === side) return qsTr("Quick Panel")
+        if (b === "left_button" || b === "right_button") return qsTr("Control Center")
+        return qsTr("Nothing")
+    }
+    function menuButtonSet(side, v) {
+        const other = side === "left_button" ? "right_button" : "left_button"
+        config.button = v === "qp" ? side : (v === "cc" ? other : "none")
+    }
+    readonly property bool selIsMenu: ctrlMap.selected === "QAM" || ctrlMap.selected === "Armoury"
+    readonly property bool selIsPaddle: ctrlMap.selected === "Left paddle" || ctrlMap.selected === "Right paddle"
+    function functionOptions(cat) {
+        const c = categories.find(x => x.id === cat)
+        return c ? c.items.map(it => ({ value: cat + ":" + it, label: itemLabel(it) })) : []
+    }
+    function catOf(v) { return v ? v.split(":")[0] : "pad" }
+    // short text of the primary function of every button, for the map
+    readonly property var mapLabels: {
+        const o = {}
+        for (const b of CD.buttons) o[b] = label(val("map." + b + ".primary", ""))
+        o["QAM"] = menuButtonLabel("left_button")
+        o["Armoury"] = menuButtonLabel("right_button")
+        return o
+    }
+
     // ---------- functions a button can have ----------
     readonly property var categories: [
         { id: "pad", label: qsTr("Gamepad"), items: ["A", "B", "X", "Y", "LB", "RB", "LT", "RT", "View", "Menu", "L3", "R3",
@@ -42,7 +125,7 @@ Item {
     readonly property var itemNames: ({
         "D-pad up": qsTr("D-pad up"), "D-pad down": qsTr("D-pad down"),
         "D-pad left": qsTr("D-pad left"), "D-pad right": qsTr("D-pad right"),
-        "Left paddle": qsTr("Left paddle"), "Right paddle": qsTr("Right paddle"),
+        "Left paddle": qsTr("Left paddle"), "Right paddle": qsTr("Right paddle"), "Power": qsTr("Power"),
         "Left click": qsTr("Left click"), "Right click": qsTr("Right click"), "Middle click": qsTr("Middle click"),
         "Wheel up": qsTr("Wheel up"), "Wheel down": qsTr("Wheel down"), "Back": qsTr("Back"), "Forward": qsTr("Forward"),
         "Enter": qsTr("Enter"), "Space": qsTr("Space"), "Backspace": qsTr("Backspace"),
@@ -52,6 +135,7 @@ Item {
         "Num Enter": qsTr("Num Enter"),
         "Meta+D (desktop)": qsTr("Meta+D (desktop)"), "Screenshot": qsTr("Screenshot"),
         "On-screen keyboard": qsTr("On-screen keyboard"), "Volume up": qsTr("Volume up"),
+        "QAM": qsTr("QAM"), "Armoury": qsTr("Armoury"),
         "Volume down": qsTr("Volume down"), "Mute": qsTr("Mute"), "Disabled": qsTr("Disabled")
     })
     function itemLabel(id) { return itemNames[id] || id }
@@ -71,8 +155,8 @@ Item {
         "active": qsTr("Reading the motion sensor now."),
         "ready": qsTr("Starts when Gyro function is on and a game has the controller."),
         "busy": qsTr("Another program (Handheld Daemon, InputPlumber) is using the motion sensor."),
-        "no device": qsTr("No motion sensor found. It needs the kernel's bmi323 IIO driver.")
-    })[gyroState] || qsTr("Needs xpanel-daemon (Linux).")
+        "no device": desktop.windows ? qsTr("No motion sensor found.") : qsTr("No motion sensor found. It needs the kernel's bmi323 IIO driver.")
+    })[gyroState] || (desktop.windows ? qsTr("Needs xpanel-daemon.") : qsTr("Needs xpanel-daemon (Linux)."))
 
     CcPage {
         anchors.fill: parent
@@ -94,15 +178,135 @@ Item {
                 id: noteText
                 x: 16; y: 12; width: parent.width - 32; wrapMode: Text.WordWrap
                 color: "#e8d9a8"; font.pixelSize: 15
-                text: device.value("inputLayer") === "active"
-                      ? qsTr("XPanel's input layer applies these settings live to the Ally controller (virtual Xbox 360 pad + keyboard / mouse).")
+                text: (device.rev, device.value("inputLayer")) === "active"
+                      ? ((String(device.value("inputMode") || "").indexOf("virtual pad active") >= 0)
+                         ? qsTr("Virtual pad active: games may see two controllers. Plain button remaps are programmed into the controller itself and need no virtual pad.")
+                         : qsTr("XPanel's input layer applies these settings live to the Ally controller (button remaps are programmed into the controller; a virtual Xbox 360 pad is used only for what the controller cannot do)."))
                       : qsTr("XPanel's input layer is not active (%1). The settings are saved and apply when it runs.")
                             .arg(device.value("inputLayer") || qsTr("xpanel-daemon not running"))
             }
         }
 
+        // ----- button test -----
+        CcSection { title: qsTr("Button test"); note: qsTr("Press any button on the Ally, including the back paddles.") }
+        Flow {
+            id: mapFlow
+            width: parent.width; spacing: 20
+            readonly property bool sideBySide: width >= 900
+            ControllerMap {
+                id: ctrlMap
+                width: mapFlow.sideBySide ? mapFlow.width - 360 : mapFlow.width
+                height: implicitHeight
+                pressed: page.pressedMap
+                testing: page.testing
+                axes: page.axes
+                labels: page.mapLabels
+                onPicked: (name) => (page.selIsSystem ? ctrlMap : (page.selIsMenu ? menuDd : catP)).forceActiveFocus()
+            }
+            Column {
+                id: side
+                width: mapFlow.sideBySide ? 340 : mapFlow.width
+                spacing: 10
+                Rectangle {   // the one Test mode control
+                    width: parent.width; height: 52; radius: 3
+                    color: page.testing ? T.accent : "#1c1c22"
+                    border.color: tmArea.containsMouse || activeFocus ? "#ffffff" : (page.testing ? T.accent : "#3a3a44"); border.width: 2
+                    activeFocusOnTab: true
+                    function toggle() { page.lastPressed = ""; page.testing = !page.testing }
+                    Text { anchors.centerIn: parent; font.pixelSize: 20; font.bold: true
+                           text: page.testing ? qsTr("Test mode: on") : qsTr("Test mode: off")
+                           color: page.testing ? "#06222b" : T.text }
+                    MouseArea { id: tmArea; anchors.fill: parent; hoverEnabled: true; onClicked: { parent.forceActiveFocus(); parent.toggle() } }
+                    Keys.onReturnPressed: toggle()
+                    Keys.onSpacePressed: toggle()
+                }
+                Text { visible: page.testing; width: parent.width; wrapMode: Text.WordWrap; color: T.dim; font.pixelSize: 15
+                       text: qsTr("Held: %1").arg(page.heldText() || qsTr("none")) }
+                Text { visible: !page.testing; width: parent.width; wrapMode: Text.WordWrap; color: T.dim; font.pixelSize: 15
+                       text: qsTr("Turn on to see the buttons, sticks and triggers you use.") }
+                Text { visible: page.testing && page.noPad; width: parent.width; wrapMode: Text.WordWrap; color: T.warn; font.pixelSize: 15
+                       text: qsTr("No gamepad input from Windows. Check that the Ally's Control Mode is Gamepad.") }
+                CcChoice {
+                    options: [{ value: "front", label: qsTr("Front") }, { value: "top", label: qsTr("Top") },
+                              { value: "back", label: qsTr("Back") }]
+                    current: ctrlMap.view; onPicked: (v) => ctrlMap.view = v
+                }
+                Text { text: ctrlMap.selected !== "" ? (ctrlMap.selected === "QAM" ? qsTr("Command Center button")
+                                                      : ctrlMap.selected === "Armoury" ? qsTr("Armoury Crate button") : page.itemLabel(ctrlMap.selected))
+                                                    : qsTr("Pick a button")
+                       color: T.text; font.pixelSize: 28; font.bold: true; width: parent.width; elide: Text.ElideRight }
+                Text { visible: ctrlMap.selected === ""; width: parent.width; wrapMode: Text.WordWrap; color: T.dim; font.pixelSize: 15
+                       text: qsTr("Click a button on the drawing, or move with the D-pad and press A.") }
+
+                // volume rocker and power button: not mappable
+                Text {
+                    visible: page.selIsSystem; width: parent.width; wrapMode: Text.WordWrap; color: T.dim; font.pixelSize: 15
+                    text: qsTr("System button: Windows handles it (volume / power). It cannot be remapped.")
+                }
+
+                // QAM / Armoury: what the Ally menu button opens
+                Column {
+                    visible: page.selIsMenu; width: parent.width; spacing: 10
+                    Text { text: qsTr("Open with Ally button"); color: T.dim; font.pixelSize: 15 }
+                    CcDropdown {
+                        id: menuDd; width: parent.width
+                        readonly property string side: ctrlMap.selected === "Armoury" ? "right_button" : "left_button"
+                        options: [{ value: "qp", label: qsTr("Quick Panel") }, { value: "cc", label: qsTr("Control Center") },
+                                  { value: "none", label: qsTr("Nothing") }]
+                        current: { const b = (config.rev, config.button)
+                                   return b === side ? "qp" : (b === "none" ? "none" : "cc") }
+                        onPicked: (v) => page.menuButtonSet(side, v)
+                    }
+                    Text { width: parent.width; wrapMode: Text.WordWrap; color: T.dim; font.pixelSize: 14
+                           text: qsTr("This button opens the chosen panel. The other Ally menu button opens the other one. Nothing: tray only.") }
+                }
+
+                // normal buttons: primary and second function
+                Column {
+                    id: mapCol
+                    visible: ctrlMap.selected !== "" && !page.selIsMenu && !page.selIsSystem; width: parent.width; spacing: 10
+                    readonly property string pk: "map." + ctrlMap.selected + ".primary"
+                    readonly property string sk: "map." + ctrlMap.selected + ".secondary"
+                    readonly property string pv: page.val(pk, "")
+                    readonly property string sv: page.val(sk, "")
+                    Text { text: qsTr("Primary button"); color: T.dim; font.pixelSize: 15 }
+                    CcDropdown {
+                        id: catP; width: parent.width
+                        options: page.categories.map(c => ({ value: c.id, label: c.label }))
+                        current: page.catOf(mapCol.pv)
+                        onPicked: (v) => page.put(mapCol.pk, v + ":" + page.categories.find(c => c.id === v).items[0])
+                    }
+                    CcDropdown {
+                        width: parent.width
+                        options: page.functionOptions(page.catOf(mapCol.pv)); current: mapCol.pv
+                        onPicked: (v) => page.put(mapCol.pk, v)
+                    }
+                    Text { visible: !page.selIsPaddle; text: qsTr("Second function (while a rear paddle is held)")
+                           color: T.dim; font.pixelSize: 15; width: parent.width; wrapMode: Text.WordWrap }
+                    CcDropdown {
+                        visible: !page.selIsPaddle; width: parent.width
+                        options: page.categories.map(c => ({ value: c.id, label: c.label }))
+                        current: page.catOf(mapCol.sv)
+                        onPicked: (v) => page.put(mapCol.sk, v + ":" + page.categories.find(c => c.id === v).items[0])
+                    }
+                    CcDropdown {
+                        visible: !page.selIsPaddle; width: parent.width
+                        options: page.functionOptions(page.catOf(mapCol.sv)); current: mapCol.sv
+                        onPicked: (v) => page.put(mapCol.sk, v)
+                    }
+                    CcButton { text: qsTr("Reset to default"); onClicked: { page.put(mapCol.pk, undefined); page.put(mapCol.sk, undefined) } }
+                }
+            }
+        }
+        CcRow { title: qsTr("Swap back paddles"); description: qsTr("Use this if the left and right back paddles are the wrong way round.")
+            CcSwitch { checked: (page.rev, config.get("control.swapPaddles", false))
+                       onToggled: (v) => config.set("control.swapPaddles", v) } }
+
         // ----- key mapping -----
-        CcSection { title: qsTr("Key Mapping"); note: qsTr("Primary button: normal press. Secondary function: while a rear paddle is held.") }
+        CcSection { title: qsTr("All buttons"); note: qsTr("Primary button: normal press. Secondary function: while a rear paddle is held.") }
+        CcButton { text: page.showAll ? qsTr("Hide the list") : qsTr("Show all buttons"); onClicked: page.showAll = !page.showAll }
+        Column {
+            visible: page.showAll; width: parent.width; spacing: 10
         Repeater {
             model: page.buttons
             CcRow {
@@ -115,6 +319,7 @@ Item {
                                onClicked: picker.show(modelData, "secondary") }
                 }
             }
+        }
         }
 
         // ----- button repeat -----

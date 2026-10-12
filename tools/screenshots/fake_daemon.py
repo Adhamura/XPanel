@@ -2,7 +2,7 @@
 import json, os, socket, sys, threading
 path = sys.argv[1]
 state = {"opmode": "turbo", "tdp": 25, "tdpSlow": 0, "tdpFast": 0, "fan": "auto", "charge": 80,
-         "eco": False, "gpuClock": 0, "lighting": "static", "lightColor": "#ff2d55",
+         "eco": False, "cpuBoost": True, "gpuMemSupported": False, "gpuClock": 0, "lighting": "static", "lightColor": "#ff2d55",
          "lightBrightness": 3, "lightSpeed": "medium", "bootSound": True, "mcuPowersave": False,
          "ac": False, "spl": 25, "sppt": 30, "fppt": 35, "profile": "performance",
          "tdpMin": 5, "tdpMax": 35, "gpuMin": 800, "gpuMax": 2900,

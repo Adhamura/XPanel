@@ -19,7 +19,7 @@ CcPage {
             CcButton {
                 text: modelData.active ? qsTr("Disconnect") : qsTr("Connect"); primary: modelData.active
                 onClicked: modelData.active ? network.disconnectWifi()
-                         : (modelData.secure ? pass.show(modelData.ssid) : network.connectWifi(modelData.ssid, ""))
+                         : ((modelData.secure && !modelData.known) ? pass.show(modelData.ssid) : network.connectWifi(modelData.ssid, ""))
             }
         }
     }

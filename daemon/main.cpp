@@ -18,7 +18,9 @@
 //                                                    ends by itself when that client goes)
 //   client -> {"input": {"calibrate": "gyro"}}      (~1 s at rest; result in "gyroCalibration",
 //                                                    offset saved as "gyroBias" [x, y, z] rad/s)
-//   daemon -> {"event": "special" | "nav" | "action", "name": "..."}   (input layer)
+//   client -> {"input": {"buttonTest": true}}      (events "press" for every logical button, names as in
+//                                                    qml/ControlDefaults.js; ends by itself when that client goes)
+//   daemon -> {"event": "special" | "nav" | "action" | "press", "name": "..."}   (input layer)| "nav" | "action", "name": "..."}   (input layer)
 // Key "control": the resolved Control Mode settings from the app (not echoed in "state").
 // Keys: opmode (silent|performance|turbo|manual), tdp / tdpSlow / tdpFast (W, manual;
 //       tdpSlow / tdpFast 0 = derived from tdp), fan (auto|quiet|max|custom),
@@ -26,9 +28,15 @@
 //       charge (50..100, 100 = off), eco (bool), gpuClock (MHz, 0 = auto),
 //       lighting (off|static|breathing|dualbreathing|colorcycle|rainbow|strobe|battery|followmode),
 //       lightColor / lightColor2 ("#rrggbb"; lightColor2: dual breathing), lightBrightness (0..3),
-//       lightSpeed (low|medium|high), lightDirection (right|left|up|down: rainbow), bootSound, mcuPowersave (bool)
+//       lightSpeed (low|medium|high), lightDirection (right|left|up|down: rainbow), bootSound, mcuPowersave (bool),
+//       cpuBoost (bool, default true; the CPU boost in use is cpuBoost and not eco),
+//       gpuMemory (MB, 0 = auto; "Memory Assigned to GPU", a BIOS setting, Windows only: one of "gpuMemOptions",
+//       not saved in state.json, written to the firmware when set, takes effect after a restart)
 // Read-only state keys include: model (ally|allyx|xboxally|xboxallyx|unknown), modelName, tdpMin/tdpMax (SPL),
-//       spptMin/spptMax, fpptMin/fpptMax (W), modeWatts {silent, performance, turbo, turboAc} (SPL W)
+//       spptMin/spptMax, fpptMin/fpptMax (W), modeWatts {silent, performance, turbo, turboAc} (SPL W),
+//       gpuMemSupported (bool), gpuMemCurrent (MB, the firmware value when the daemon started),
+//       gpuMemOptions ([0 = auto, MB...]), gpuMemPending (bool, true: gpuMemory differs from gpuMemCurrent,
+//       restart to apply). "gpuMemory" in the state is the pending value, else gpuMemCurrent.
 
 #include "Hardware.h"
 #include "Aura.h"
@@ -121,6 +129,13 @@ public:
         connect(&m_input, &InputLayer::special, this, [sendEvent](const QString &n) { sendEvent("special", n); });
         connect(&m_input, &InputLayer::nav, this, [sendEvent](const QString &n) { sendEvent("nav", n); });
         connect(&m_input, &InputLayer::action, this, [sendEvent](const QString &n) { sendEvent("action", n); });
+        connect(&m_input, &InputLayer::pressed, this, [sendEvent](const QString &n) { sendEvent("press", n); });
+        connect(&m_input, &InputLayer::released, this, [sendEvent](const QString &n) { sendEvent("release", n); });
+        connect(&m_input, &InputLayer::axes, this, [this](double lx, double ly, double rx, double ry, double lt, double rt) {
+            const QByteArray msg = QJsonDocument(QJsonObject{{"event", "axes"}, {"lx", lx}, {"ly", ly}, {"rx", rx}, {"ry", ry},
+                                                             {"lt", lt}, {"rt", rt}}).toJson(QJsonDocument::Compact) + "\n";
+            for (QLocalSocket *c : std::as_const(m_clients)) c->write(msg);
+        });
         connect(&m_input, &InputLayer::statusChanged, this, &Daemon::broadcast);
 
         // Watchdog: charger plugged / unplugged, or the TDP changed under us.
@@ -137,7 +152,7 @@ private:
         m_state = QJsonObject{
             {"opmode", "performance"}, {"tdp", 15}, {"fan", "auto"},
             {"charge", Hardware::readChargeLimit()}, {"lighting", "static"},
-            {"tdpSlow", 0}, {"tdpFast", 0}, {"eco", false}, {"gpuClock", 0},
+            {"tdpSlow", 0}, {"tdpFast", 0}, {"eco", false}, {"cpuBoost", true}, {"gpuClock", 0},
             {"lightColor", "#00c8ff"}, {"lightBrightness", 3}, {"lightSpeed", "medium"},
             {"lightColor2", "#ff2d55"}, {"lightDirection", "right"},
             {"bootSound", Hardware::readAttr("boot_sound") == 1},
@@ -147,7 +162,7 @@ private:
         if (f.open(QIODevice::ReadOnly)) {
             const QJsonObject saved = QJsonDocument::fromJson(f.readAll()).object();
             for (auto it = saved.begin(); it != saved.end(); ++it)
-                if (valid(it.key(), it.value()))
+                if (it.key() != "gpuMemory" && valid(it.key(), it.value())) // gpuMemory: the firmware is the truth
                     m_state[it.key()] = it.value();
         }
     }
@@ -175,8 +190,21 @@ private:
         return {qMin(l[k + "Min"].toInt(), qMin(ac.min, bat.min)), qMax(l[k + "Max"].toInt(), qMax(ac.max, bat.max))};
     }
 
+    // "Memory Assigned to GPU": supported flag, boot value and options, read once from the firmware.
+    static const QJsonObject &gpuMemInfo()
+    {
+        static const QJsonObject info = Hardware::gpuMemory();
+        return info;
+    }
+
     static bool valid(const QString &key, const QJsonValue &v)
     {
+        if (key == "gpuMemory") {
+            if (!v.isDouble())
+                return false;
+            const QJsonArray opts = gpuMemInfo()["gpuMemOptions"].toArray();
+            return std::any_of(opts.begin(), opts.end(), [&v](const QJsonValue &o) { return o.toInt() == v.toInt(); });
+        }
         if (key == "opmode") return kOpModes.contains(v.toString());
         if (key == "fan") return kFans.contains(v.toString());
         if (key == "lighting") return kLights.contains(v.toString());
@@ -194,7 +222,7 @@ private:
         if (key == "fanCurve") return FanCurve::valid(v);
         if (key == "lightDirection") return kDirections.contains(v.toString());
         if (key == "lightColor" || key == "lightColor2") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
-        if (key == "eco" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
+        if (key == "eco" || key == "cpuBoost" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
         if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
             const QJsonArray a = v.toArray();
@@ -247,7 +275,8 @@ private:
     void applyTdp()
     {
         Hardware::applyTdp(wantedTdp());
-        Hardware::applyCpu(m_state["eco"].toBool(), m_state["opmode"].toString());
+        Hardware::applyCpu(m_state["eco"].toBool(), m_state["opmode"].toString(),
+                           m_state["cpuBoost"].toBool(true) && !m_state["eco"].toBool());
         // A profile change can reset the fan curve: put ours back.
         if (m_state["fan"].toString() != "auto")
             applyFan();
@@ -300,9 +329,16 @@ private:
         const Model::Info &m = Hardware::model();
         s["modeWatts"] = QJsonObject{{"silent", m.silent.spl}, {"performance", m.performance.spl},
                                      {"turbo", m.turboBattery.spl}, {"turboAc", m.turboAc.spl}};
-        for (const QJsonObject &extra : {Hardware::limits(), Hardware::gpuRange(), m_info})
+        for (const QJsonObject &extra : {Hardware::limits(), Hardware::gpuRange(), m_info, gpuMemInfo()})
             for (auto it = extra.begin(); it != extra.end(); ++it)
                 s[it.key()] = it.value();
+        // gpuMemory: the value chosen since the start (the firmware may report the old one until a restart),
+        // else the firmware value read at the start
+        if (gpuMemInfo()["gpuMemSupported"].toBool()) {
+            const int boot = gpuMemInfo()["gpuMemCurrent"].toInt();
+            s["gpuMemory"] = m_gpuMemWanted >= 0 ? m_gpuMemWanted : boot;
+            s["gpuMemPending"] = m_gpuMemWanted >= 0 && m_gpuMemWanted != boot;
+        }
         return s;
     }
 
@@ -375,6 +411,7 @@ private:
             connect(c, &QLocalSocket::readyRead, this, [this, c] { onRead(c); });
             connect(c, &QLocalSocket::disconnected, this, [this, c] {
                 if (m_grabOwner == c) { m_grabOwner = nullptr; m_input.setGrab(false); }
+                if (m_testOwner == c) { m_testOwner = nullptr; m_input.setButtonTest(false); }
                 m_clients.removeAll(c);
                 c->deleteLater();
             });
@@ -392,6 +429,12 @@ private:
                 m_input.calibrateGyro();
                 continue;
             }
+            if (req["input"].toObject().contains("buttonTest")) {
+                const bool t = req["input"].toObject()["buttonTest"].toBool(false);
+                m_testOwner = t ? c : nullptr;
+                m_input.setButtonTest(t);
+                continue;
+            }
             if (req.contains("input")) {
                 const bool g = req["input"].toObject()["grab"].toBool(false);
                 m_grabOwner = g ? c : nullptr;
@@ -402,6 +445,15 @@ private:
             bool changed = false;
             QStringList apply;
             for (auto it = set.begin(); it != set.end(); ++it) {
+                if (it.key() == "gpuMemory") { // a BIOS setting: not kept in m_state / state.json
+                    const int cur = m_gpuMemWanted >= 0 ? m_gpuMemWanted : gpuMemInfo()["gpuMemCurrent"].toInt();
+                    if (valid(it.key(), it.value()) && it.value().toInt() != cur
+                        && Hardware::applyGpuMemory(it.value().toInt())) {
+                        m_gpuMemWanted = it.value().toInt();
+                        changed = true;
+                    }
+                    continue;
+                }
                 if (!valid(it.key(), it.value()) || m_state[it.key()] == it.value())
                     continue;
                 m_state[it.key()] = it.value();
@@ -409,7 +461,7 @@ private:
                 changed = true;
             }
             if (apply.contains("opmode") || apply.contains("tdp") || apply.contains("tdpSlow") ||
-                apply.contains("tdpFast") || apply.contains("eco")) applyTdp();
+                apply.contains("tdpFast") || apply.contains("eco") || apply.contains("cpuBoost")) applyTdp();
             if (apply.contains("gpuClock")) Hardware::applyGpuClock(m_state["gpuClock"].toInt());
             if (apply.contains("bootSound")) Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);
             if (apply.contains("mcuPowersave")) Hardware::writeAttr("mcu_powersave", m_state["mcuPowersave"].toBool() ? 1 : 0);
@@ -438,8 +490,10 @@ private:
 #endif
     InputLayer m_input;
     QLocalSocket *m_grabOwner = nullptr;
+    QLocalSocket *m_testOwner = nullptr;
     QTimer m_watch;
     bool m_lastAc = false;
+    int m_gpuMemWanted = -1; // gpuMemory written since the start (MB), -1 = none
     int m_lightBattery = -1; // charge the battery-level colour was made for
 };
 

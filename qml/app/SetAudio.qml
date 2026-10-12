@@ -25,13 +25,13 @@ CcPage {
                        onClicked: audio.setDefaultInput(modelData.name) } }
     }
     CcRow { title: qsTr("Microphone level"); visible: !!page.mic
-        CcSlider { width: 460; from: 0; to: 150; unit: " %"; value: page.mic ? page.mic.volume : 0
+        CcSlider { width: 460; from: 0; to: desktop.windows ? 100 : 150; unit: " %"; value: page.mic ? page.mic.volume : 0
                    onMoved: (v) => audio.setInputVolume(audio.defaultInput, v) } }
     CcRow { title: qsTr("Mute microphone"); visible: !!page.mic
         CcSwitch { checked: page.mic ? page.mic.muted : false; onToggled: (v) => audio.setInputMute(audio.defaultInput, v) } }
 
-    CcSection { title: qsTr("AI Noise-Canceling") }
-    CcRow { title: qsTr("AI Noise-Canceling microphone")
+    CcSection { title: qsTr("AI Noise-Canceling"); visible: !desktop.windows }
+    CcRow { title: qsTr("AI Noise-Canceling microphone"); visible: !desktop.windows
             description: audio.noiseCancelAvailable ? qsTr("Removes background noise from your voice (RNNoise).")
                          : qsTr("Needs the RNNoise plugin: sudo pacman -S noise-suppression-for-voice")
         CcSwitch { enabledSwitch: false; checked: false } }

@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.6.0
+
+Windows catches up with Linux: tested on a ROG Ally X with Windows 11 24H2.
+
+- **Visual key map.** Control Mode shows the ROG Ally X as line art (front, top edge and back, redrawn
+  from the ASUS manual) with one view at a time and a 3D flip between them. Tap a button on the
+  drawing (or pick it with the D-pad) and assign it in the side panel; every button shows its current
+  action. **Test mode** lights up the buttons you hold, moves a dot with each stick and fills the
+  triggers as you pull them, on Windows and Linux. **Swap back paddles** if your paddles report the
+  other way round.
+- **Windows controller layer.** Button remaps are programmed into the Ally's controller (MCU) itself,
+  like ASUS does it: no virtual pad, no double input in games. Stick and trigger curves, dead zones,
+  gyro and the second function while a paddle is held use a virtual Xbox 360 pad (ViGEmBus, optional;
+  XPanel says when games may see two controllers). Desktop Mode drives mouse and keyboard. The gyro
+  comes from Windows' motion sensor. XPanel turns the built-in controller on at every start, so a
+  controller switched off by other software comes back by itself. The two menu buttons, both back
+  paddles and the ROG long press work; the panel can be driven with the pad. HidHide is not used: it
+  hides the Ally pad from every program (nefarius/HidHide#178).
+- **Windows Update Center.** BIOS, MCU firmware and drivers for your model from ASUS's support API,
+  compared with what is installed, sorted (updates first, then not installed). **Install** downloads
+  from `dlcdnets.asus.com`, checks ASUS's SHA-256 and runs the official installer with a Windows
+  permission prompt; BIOS and MCU need the charger, at least 20 % battery and a confirmation.
+  **Install all driver updates** does one after another.
+- **Windows system controls.** Volume and mute, Wi-Fi and Bluetooth (tiles and the Connection page:
+  scan, connect, pair), audio devices and microphone, power menu, touch keyboard, refresh rate, display
+  mode, screenshot, show desktop, brightness for the built-in screen and external monitors (DDC/CI,
+  or software dimming when a monitor does not answer DDC/CI on Windows), real-time monitor with CPU and
+  GPU temperature (AMD ADL), fan speed, load and power.
+- **Windows hardware.** Memory Assigned to GPU (BIOS setting, takes effect after a restart), a separate
+  **CPU Boost** switch, fan **Max** now also spins at idle (Linux too), Device Info and battery health
+  read from Windows, Game Library from Steam and the Start Menu with per-game profiles, Media Gallery
+  open / show in folder / move to the Recycle Bin, user name and picture, storage, your own keyboard
+  shortcuts, diagnostics for Windows.
+- **Everywhere.** Pages get a scroll bar you can drag; new dropdown control; the avatar is round.
+- Third-party code: AMD Display Library SDK headers (`third_party/adl/`, MIT) and ViGEmClient
+  (`third_party/vigem/`, MIT).
+
 ## 1.5.0
 
 - **Feedback goes to GitHub.** **Settings › Feedback** (and a "Report a problem" row in

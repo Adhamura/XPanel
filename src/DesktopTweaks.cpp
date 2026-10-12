@@ -16,8 +16,146 @@
 #include <QProcess>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QDesktopServices>
+#include <QUrl>
+
+#ifdef Q_OS_WIN
+#include <QAbstractNativeEventFilter>
+#include <QCoreApplication>
+#include <windows.h>
+#include <setupapi.h>
+#include <hidsdi.h>
+#include <hidpi.h>
+#include "BrightnessWin.h"
+#endif
 
 static const char *kComponent = "xpanel";
+
+#ifdef Q_OS_WIN
+// ---------- Windows global hotkeys (RegisterHotKey, ids 1 = quickpanel, 2 = controlcenter) ----------
+// Qt key sequence ("Meta+Shift+Q") -> MOD_* flags and a virtual key. False when it has no Windows form.
+static bool toHotkey(const QString &keys, UINT &mods, UINT &vk)
+{
+    const QKeySequence seq(keys);
+    if (seq.isEmpty())
+        return false;
+    const QKeyCombination c = seq[0];
+    const Qt::KeyboardModifiers m = c.keyboardModifiers();
+    mods = MOD_NOREPEAT;
+    if (m & Qt::MetaModifier) mods |= MOD_WIN;
+    if (m & Qt::ControlModifier) mods |= MOD_CONTROL;
+    if (m & Qt::AltModifier) mods |= MOD_ALT;
+    if (m & Qt::ShiftModifier) mods |= MOD_SHIFT;
+    if (!(mods & ~UINT(MOD_NOREPEAT)))
+        return false; // a bare key would block normal typing
+    const int k = c.key();
+    vk = 0;
+    if ((k >= Qt::Key_A && k <= Qt::Key_Z) || (k >= Qt::Key_0 && k <= Qt::Key_9))
+        vk = UINT(k);
+    else if (k >= Qt::Key_F1 && k <= Qt::Key_F24)
+        vk = UINT(VK_F1 + (k - Qt::Key_F1));
+    else switch (k) {
+    case Qt::Key_Space: vk = VK_SPACE; break;
+    case Qt::Key_Return: case Qt::Key_Enter: vk = VK_RETURN; break;
+    case Qt::Key_Escape: vk = VK_ESCAPE; break;
+    case Qt::Key_Tab: vk = VK_TAB; break;
+    case Qt::Key_Backspace: vk = VK_BACK; break;
+    case Qt::Key_Insert: vk = VK_INSERT; break;
+    case Qt::Key_Delete: vk = VK_DELETE; break;
+    case Qt::Key_Home: vk = VK_HOME; break;
+    case Qt::Key_End: vk = VK_END; break;
+    case Qt::Key_PageUp: vk = VK_PRIOR; break;
+    case Qt::Key_PageDown: vk = VK_NEXT; break;
+    case Qt::Key_Left: vk = VK_LEFT; break;
+    case Qt::Key_Right: vk = VK_RIGHT; break;
+    case Qt::Key_Up: vk = VK_UP; break;
+    case Qt::Key_Down: vk = VK_DOWN; break;
+    default:
+        if (k > 0 && k < 0x80) { // punctuation: the key that types this character
+            const SHORT r = VkKeyScanW(wchar_t(k));
+            if (r != -1)
+                vk = UINT(r & 0xFF);
+        }
+    }
+    return vk != 0;
+}
+
+class HotkeyFilter : public QAbstractNativeEventFilter {
+public:
+    DesktopTweaks *owner = nullptr;
+    bool nativeEventFilter(const QByteArray &type, void *message, qintptr *) override
+    {
+        if (type != "windows_generic_MSG" && type != "windows_dispatcher_MSG")
+            return false;
+        const MSG *msg = static_cast<const MSG *>(message);
+        if (msg->message != WM_HOTKEY || (msg->wParam != 1 && msg->wParam != 2))
+            return false;
+        emit owner->shortcutPressed(msg->wParam == 2 ? "controlcenter" : "quickpanel");
+        return true;
+    }
+};
+
+static bool registerHotkey(int id, const QString &keys)
+{
+    UnregisterHotKey(nullptr, id);
+    if (keys.isEmpty())
+        return true;
+    UINT mods = 0, vk = 0;
+    return toHotkey(keys, mods, vk) && RegisterHotKey(nullptr, id, mods, vk);
+}
+
+static bool serviceRunning(const wchar_t *name)
+{
+    bool run = false;
+    if (SC_HANDLE scm = OpenSCManagerW(nullptr, nullptr, SC_MANAGER_CONNECT)) {
+        if (SC_HANDLE sv = OpenServiceW(scm, name, SERVICE_QUERY_STATUS)) {
+            SERVICE_STATUS st;
+            run = QueryServiceStatus(sv, &st) && st.dwCurrentState == SERVICE_RUNNING;
+            CloseServiceHandle(sv);
+        }
+        CloseServiceHandle(scm);
+    }
+    return run;
+}
+
+// Vendor usage page 0xFF31 of an ASUS HID device: the Aura lighting collection
+static bool auraHidPresent()
+{
+    GUID g;
+    HidD_GetHidGuid(&g);
+    const HDEVINFO set = SetupDiGetClassDevsW(&g, nullptr, nullptr, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+    if (set == INVALID_HANDLE_VALUE)
+        return false;
+    bool found = false;
+    SP_DEVICE_INTERFACE_DATA ifd{};
+    ifd.cbSize = sizeof(ifd);
+    for (DWORD i = 0; !found && SetupDiEnumDeviceInterfaces(set, nullptr, &g, i, &ifd); ++i) {
+        DWORD size = 0;
+        SetupDiGetDeviceInterfaceDetailW(set, &ifd, nullptr, 0, &size, nullptr);
+        if (size == 0)
+            continue;
+        QByteArray buf(int(size), '\0');
+        auto *d = reinterpret_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W *>(buf.data());
+        d->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
+        if (!SetupDiGetDeviceInterfaceDetailW(set, &ifd, d, size, nullptr, nullptr))
+            continue;
+        const HANDLE h = CreateFileW(d->DevicePath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (h == INVALID_HANDLE_VALUE)
+            continue;
+        HIDD_ATTRIBUTES at{};
+        at.Size = sizeof(at);
+        PHIDP_PREPARSED_DATA pp = nullptr;
+        HIDP_CAPS caps{};
+        if (HidD_GetAttributes(h, &at) && at.VendorID == 0x0B05 && HidD_GetPreparsedData(h, &pp)) {
+            found = HidP_GetCaps(pp, &caps) == HIDP_STATUS_SUCCESS && caps.UsagePage == 0xFF31;
+            HidD_FreePreparsedData(pp);
+        }
+        CloseHandle(h);
+    }
+    SetupDiDestroyDeviceInfoList(set);
+    return found;
+}
+#endif
 
 DesktopTweaks::DesktopTweaks(Config *config, QObject *parent) : QObject(parent), m_config(config)
 {
@@ -100,6 +238,18 @@ static QStringList actionId(const QString &action)
 
 void DesktopTweaks::registerShortcuts()
 {
+#ifdef Q_OS_WIN
+    static HotkeyFilter filter;
+    static bool installed = false;
+    if (!installed) {
+        installed = true;
+        filter.owner = this;
+        QCoreApplication::instance()->installNativeEventFilter(&filter);
+    }
+    registerHotkey(1, shortcut("quickpanel"));
+    registerHotkey(2, shortcut("controlcenter"));
+    return;
+#endif
     // kglobalaccel is KDE's; elsewhere the Ally buttons (through xpanel-daemon) open the panel
     if (!Desktop::caps().shortcuts)
         return;
@@ -130,6 +280,18 @@ bool DesktopTweaks::setShortcut(const QString &action, const QString &keys)
 {
     if (!keys.isEmpty() && QKeySequence(keys).isEmpty())
         return false;
+#ifdef Q_OS_WIN
+    UINT mods = 0, vk = 0;
+    if (!keys.isEmpty() && !toHotkey(keys, mods, vk))
+        return false; // needs a modifier and a key Windows knows
+    const int id = action == "controlcenter" ? 2 : 1;
+    if (!registerHotkey(id, keys)) { // in use by another program: keep the old key
+        registerHotkey(id, shortcut(action));
+        return false;
+    }
+    m_config->set("shortcut." + action, keys);
+    return true;
+#endif
     m_config->set("shortcut." + action, keys);
     registerShortcuts();
     return true;
@@ -162,6 +324,10 @@ bool DesktopTweaks::saveFeedback(const QString &topic, const QString &text)
 
 void DesktopTweaks::openSystemSettings(const QString &module)
 {
+#ifdef Q_OS_WIN
+    QDesktopServices::openUrl(QUrl(module == "kcm_keys" ? "ms-settings:easeofaccess-keyboard" : "ms-settings:yourinfo"));
+    return;
+#endif
     static const QRegularExpression ok("^kcm_[a-z_]+$");
     if (!ok.match(module).hasMatch() || !Desktop::caps().userSettings)
         return;
@@ -181,6 +347,34 @@ QVariantList DesktopTweaks::diagnostics() const
     auto add = [&](const QString &name, bool ok, const QString &detail) {
         out << QVariantMap{{"name", name}, {"ok", ok}, {"detail", detail}};
     };
+#ifdef Q_OS_WIN
+    {
+        QLocalSocket w;
+        w.connectToServer(qEnvironmentVariable("XPANEL_SOCKET", "xpanel"));
+        const bool daemon = w.waitForConnected(500);
+        add(tr("System"), true, QSysInfo::prettyProductName());
+        add("xpanel-daemon", daemon, daemon ? tr("running (pipe \"xpanel\")") : tr("not reachable: start XPanel again, it starts xpanel-daemon.exe"));
+        HANDLE h = CreateFileW(L"\\\\.\\ATKACPI", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                               nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        const bool atk = h != INVALID_HANDLE_VALUE;
+        if (atk)
+            CloseHandle(h);
+        add(tr("ASUS ACPI driver"), atk, atk ? "\\\\.\\ATKACPI" : tr("cannot open \\\\.\\ATKACPI: install the ASUS System Control Interface driver"));
+        const bool aura = auraHidPresent();
+        add(tr("Lighting (Aura HID)"), aura, aura ? tr("ASUS HID, usage page 0xFF31") : tr("no ASUS HID device with usage page 0xFF31"));
+        bool wmi = false;
+        for (const BrightnessWin::Monitor &m : BrightnessWin::enumerate(false))
+            if (m.internal) wmi = true;
+        add(tr("Screen brightness (WMI)"), wmi, wmi ? "WmiMonitorBrightness" : tr("not available for the internal screen"));
+        for (const wchar_t *svc : {L"ArmouryCrateSEService", L"ASUSOptimization"}) {
+            const bool run = serviceRunning(svc);
+            add(tr("Armoury Crate: %1").arg(QString::fromWCharArray(svc)), !run,
+                run ? tr("running: it changes the same settings as XPanel (TDP, fan, lighting). Stop it to avoid conflicts.")
+                    : tr("not running"));
+        }
+        return out;
+    }
+#endif
     QLocalSocket s;
     s.connectToServer("/run/xpanel/xpanel.sock");
     const bool daemon = s.waitForConnected(500);

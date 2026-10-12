@@ -4,6 +4,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QJsonArray>
 #include <QThread>
 
 #include <cerrno>
@@ -182,7 +183,8 @@ bool applyFan(const QString &preset, const QJsonObject &curve)
         }
         const FanCurve::Curve &mine = fan == 2 ? gpuCurve : cpuCurve;
         for (int p = 0; p < 8; ++p) {
-            int temp = temps[p], duty = preset == "max" ? maxed[p] : quiet[p];
+            // below the first point the firmware keeps the fans off: "max" starts at 20 °C so it runs at idle too
+            int temp = preset == "max" ? 20 + 10 * p : temps[p], duty = preset == "max" ? maxed[p] : quiet[p];
             if (preset == "custom") {
                 temp = mine[size_t(p)].temp;
                 duty = FanCurve::toPwm(mine[size_t(p)].percent);
@@ -263,7 +265,17 @@ QString gpuDevice()
 }
 } // namespace
 
-bool applyCpu(bool eco, const QString &opmode)
+QJsonObject gpuMemory()
+{
+    return {{"gpuMemSupported", false}, {"gpuMemCurrent", 0}, {"gpuMemOptions", QJsonArray()}};
+}
+
+bool applyGpuMemory(int)
+{
+    return false; // Windows only
+}
+
+bool applyCpu(bool eco, const QString &opmode, bool boost)
 {
     QString epp = "balance_performance";
     if (eco || opmode == "silent") epp = "power";
@@ -278,7 +290,7 @@ bool applyCpu(bool eco, const QString &opmode)
             ok &= writeFile(base + "/energy_performance_preference", epp);
     }
     if (QFile::exists("/sys/devices/system/cpu/cpufreq/boost"))
-        ok &= writeFile("/sys/devices/system/cpu/cpufreq/boost", eco ? "0" : "1");
+        ok &= writeFile("/sys/devices/system/cpu/cpufreq/boost", boost ? "1" : "0");
     return ok;
 }
 

@@ -13,10 +13,11 @@
 //   GNOME      Mutter: no layer-shell (the panel runs on XWayland), brightness through logind,
 //              Night Light presets, GNOME tools; no refresh rate / display mode / shortcuts
 //   Gamescope  Steam Game Mode (SteamOS, Bazzite ...): the panel is a gamescope external overlay
+//   Windows    Windows 11 (experimental): SystemControlWin.cpp
 //   Other      any other desktop: generic tools (xdg-open, x-terminal-emulator), no KDE features
 namespace Desktop {
 
-enum class Kind { KDE, GNOME, Gamescope, Other };
+enum class Kind { KDE, GNOME, Gamescope, Other, Windows };
 
 // Pure function of the environment (unit tested):
 //   XPANEL_DESKTOP=kde|gnome|gamescope|other   override (testing, unusual sessions)
@@ -73,6 +74,8 @@ class DesktopInfo : public QObject {
     Q_PROPERTY(bool screenshot READ screenshot CONSTANT)
     Q_PROPERTY(bool logout READ logout CONSTANT)
     Q_PROPERTY(bool userSettings READ userSettings CONSTANT)
+    // XPanel runs on Windows (Windows-only sections, Linux-only sections hidden)
+    Q_PROPERTY(bool windows READ windows CONSTANT)
     // Quick Panel tiles that do nothing on this desktop (hidden from the panel and the editor)
     Q_PROPERTY(QStringList unavailableTiles READ unavailableTiles CONSTANT)
 
@@ -92,5 +95,10 @@ public:
     bool screenshot() const { return Desktop::caps().screenshot; }
     bool logout() const { return Desktop::caps().logout; }
     bool userSettings() const { return Desktop::caps().userSettings; }
+#ifdef Q_OS_WIN
+    bool windows() const { return true; }
+#else
+    bool windows() const { return false; }
+#endif
     QStringList unavailableTiles() const;
 };

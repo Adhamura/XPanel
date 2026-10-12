@@ -8,9 +8,13 @@
 
 AudioControl::AudioControl(QObject *parent) : QObject(parent)
 {
+#ifdef Q_OS_WIN
+    winInit();
+#endif
     refresh();
 }
 
+#ifndef Q_OS_WIN // Windows: src/AudioControlWin.cpp
 bool AudioControl::noiseCancelAvailable() const
 {
     // the RNNoise LADSPA plugin (package noise-suppression-for-voice)
@@ -77,3 +81,4 @@ void AudioControl::setInputMute(const QString &name, bool mute)
 {
     runProcess(this, "pactl", {"set-source-mute", name, mute ? "1" : "0"}, [this](const QString &, int) { refresh(); });
 }
+#endif // !Q_OS_WIN

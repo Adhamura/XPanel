@@ -39,13 +39,34 @@ CcPage {
     CcRow { title: qsTr("Eco Mode"); description: qsTr("Saves battery: CPU energy preference \"power\" and no CPU boost.")
         CcSwitch { enabledSwitch: device.connected; checked: (device.rev, !!device.value("eco")); onToggled: (v) => device.setValue("eco", v) } }
 
+    CcRow { title: qsTr("CPU Boost"); description: qsTr("Short bursts above the base clock for games and heavy tasks. Off saves power.")
+        CcSwitch { enabledSwitch: device.connected && !(device.rev, !!device.value("eco"))
+                   checked: (device.rev, device.value("cpuBoost") !== false && !device.value("eco"))
+                   onToggled: (v) => device.setValue("cpuBoost", v) } }
+
     CcSection { title: qsTr("GPU Settings") }
-    CcRow { title: qsTr("GPU clock"); description: qsTr("Auto lets the driver decide. A limit saves power and heat.")
+    // Memory Assigned to GPU (UMA frame buffer): Windows only, the daemon reports it when the firmware has it
+    readonly property bool gpuMemShown: (device.rev, !!device.value("gpuMemSupported"))
+    function gpuMemOptions() {
+        const mbs = device.value("gpuMemOptions") || []
+        return mbs.map(mb => ({ value: mb,
+                                label: mb === 0 ? qsTr("Auto") : (mb % 1024 === 0 ? qsTr("%1 GB").arg(mb / 1024) : qsTr("%1 MB").arg(mb)) }))
+    }
+    CcRow { title: qsTr("Memory Assigned to GPU"); visible: page.gpuMemShown
+            description: qsTr("Video memory reserved for the GPU. Takes effect after a restart.")
+        CcDropdown { enabledChoice: device.connected
+                   options: (device.rev, page.gpuMemOptions())
+                   current: (device.rev, device.value("gpuMemory"))
+                   onPicked: (v) => device.setValue("gpuMemory", v) } }
+    CcRow { title: qsTr("Restart required"); visible: page.gpuMemShown && (device.rev, !!device.value("gpuMemPending"))
+            description: qsTr("Restart Windows to apply the new GPU memory size.") }
+
+    CcRow { visible: !desktop.windows; title: qsTr("GPU clock"); description: qsTr("Auto lets the driver decide. A limit saves power and heat.")
         CcChoice { enabledChoice: device.connected
                    options: [{ value: "auto", label: qsTr("Auto") }, { value: "limit", label: qsTr("Limit") }]
                    current: (device.rev, device.value("gpuClock") > 0 ? "limit" : "auto")
                    onPicked: (v) => device.setValue("gpuClock", v === "auto" ? 0 : Math.round((device.value("gpuMax") || 2700) * 0.75)) } }
-    CcRow { title: qsTr("GPU clock limit"); visible: device.value("gpuClock") > 0
+    CcRow { title: qsTr("GPU clock limit"); visible: !desktop.windows && device.value("gpuClock") > 0
         CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
                    value: (device.rev, device.value("gpuClock") || 0); onMoved: (v) => device.setValue("gpuClock", v) } }
 

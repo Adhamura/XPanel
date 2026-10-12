@@ -43,7 +43,12 @@ bool applyLighting(const QString &effect, const QString &color, int brightness, 
 int batteryPercent();                 // 0..100, -1 = no battery
 
 // CPU energy preference + boost (amd-pstate-epp). eco = save power.
-bool applyCpu(bool eco, const QString &opmode);
+// boost = allow CPU boost (the caller passes cpuBoost && !eco).
+bool applyCpu(bool eco, const QString &opmode, bool boost);
+// "Memory Assigned to GPU" (UMA frame buffer, BIOS setting, Windows only; Linux: not supported).
+// {gpuMemSupported, gpuMemCurrent (MB, 0 = auto), gpuMemOptions ([0 = auto, MB...])}
+QJsonObject gpuMemory();
+bool applyGpuMemory(int mb);            // takes effect after a restart
 // GPU max clock in MHz, 0 = automatic.
 bool applyGpuClock(int mhz);
 QJsonObject gpuRange();                 // {gpuMin, gpuMax} MHz

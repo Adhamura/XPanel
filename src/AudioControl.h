@@ -26,10 +26,18 @@ public:
     Q_INVOKABLE void setInputVolume(const QString &name, int percent);
     Q_INVOKABLE void setInputMute(const QString &name, bool mute);
 
+#ifdef Q_OS_WIN
+    ~AudioControl() override;
+#endif
+
 signals:
     void changed();
 
 private:
+#ifdef Q_OS_WIN
+    void winInit();
+    void *m_mm = nullptr; // device-change notification client
+#endif
     QVariantList parse(const QString &json, bool inputs) const;
     QVariantList m_outputs, m_inputs;
     QString m_defOut, m_defIn;

@@ -38,6 +38,7 @@ Item {
     Text { anchors.right: parent.right; anchors.rightMargin: 32; y: 32
            text: qsTr("%n item(s)  ·  ~/Pictures, ~/Videos", "", page.shown.length); color: T.dim; font.pixelSize: 16 }
 
+    CcScrollBar { flickable: grid }
     GridView {
         id: grid
         anchors.top: bar.bottom; anchors.topMargin: 20; anchors.left: parent.left; anchors.leftMargin: 32

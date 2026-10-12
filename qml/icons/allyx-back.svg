@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="43 12 378 160" width="756" height="320">
+<title>ROG Ally X rear view, mirrored horizontally so the user's left paddle is on the left; viewBox = crop box 43 12 378 160 of back.png</title>
+<g id="art" inkscape:label="art (rear view, mirrored)" transform="matrix(-1 0 0 1 464 0)">
+<g id="body" inkscape:label="body">
+<path id="outline" d="M232,168.5 L66,168.5 C54,168.5 44.5,148 44.5,118 C44.5,80 47,50 55,34.5 C55.5,27 60,17 70,15 L96.5,15 C98.6,15 98.6,19.5 96,19.5 L232,19.5 C365.4,19.5 365.4,15 367.5,15 L394,15 C404,17 408.5,27 409,34.5 C417,50 419.5,80 419.5,118 C419.5,148 410,168.5 398,168.5 L232,168.5 Z" fill="#1a1a20" stroke="#c8c8d2" stroke-width="1.2" stroke-linejoin="round"/>
+<path id="trigger-lower-a" d="M55,34.5 C70,32.6 90,30 95.5,20" fill="none" stroke="#c8c8d2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-lower-b" d="M409,34.5 C394,32.6 374,30 368.5,20" fill="none" stroke="#c8c8d2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-1-a" d="M66,17.5 L94.5,17.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-1-b" d="M398,17.5 L369.5,17.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-2-a" d="M68,20.5 L93,20.5" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-2-b" d="M396,20.5 L371,20.5" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-3-a" d="M56.5,30 C59,27.5 62,24.3 66,24.3 L90,24.3" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="trigger-line-3-b" d="M407.5,30 C405,27.5 402,24.3 398,24.3 L374,24.3" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="shoulder-line-1-a" d="M52,38 C70,34.3 92,29 112,28.5 L232,28.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="shoulder-line-1-b" d="M412,38 C394,34.3 372,29 352,28.5 L232,28.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="shoulder-line-2-a" d="M76,31.5 C86,28.6 98,25 110,24.5 L232,24.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="shoulder-line-2-b" d="M388,31.5 C378,28.6 366,25 354,24.5 L232,24.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-edge-upper-a" d="M109.5,26 L110.4,73" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-edge-upper-b" d="M354.5,26 L353.6,73" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-edge-lower-a" d="M112,99 L112,152 C112,160 111.6,163 110.5,165.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-edge-lower-b" d="M352,99 L352,152 C352,160 352.4,163 353.5,165.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-diag-upper-a" d="M72,36 C78,44 86,55 92.5,65" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-diag-upper-b" d="M392,36 C386,44 378,55 371.5,65" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-diag-lower-a" d="M46.5,71 C55,72.5 60,78 65,85 C80,106 98,132 108.5,155" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-diag-lower-b" d="M417.5,71 C409,72.5 404,78 399,85 C384,106 366,132 355.5,155" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-bottom-curve-a" d="M49.5,145 C55,152 62,155 75,156 C88,157 98,158.5 105,162" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grip-bottom-curve-b" d="M414.5,145 C409,152 402,155 389,156 C376,157 366,158.5 359,162" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="bottom-inner-a" d="M57,161 C60,164 64,165.5 72,165.5 L232,165.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="bottom-inner-b" d="M407,161 C404,164 400,165.5 392,165.5 L232,165.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="vent-a" d="M108,23.6 L174.5,23.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="vent-slots-a" fill="#8a8a96"><rect x="105.7" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="114.99" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="124.27" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="133.56" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="142.84" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="152.13" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="161.41" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="170.7" y="20.4" width="5.6" height="2.2" rx="1.1"/></g>
+<path id="vent-b" d="M289.5,23.6 L356,23.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="vent-slots-b" fill="#8a8a96"><rect x="352.7" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="343.41" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="334.13" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="324.84" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="315.56" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="306.27" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="296.99" y="20.4" width="5.6" height="2.2" rx="1.1"/><rect x="287.7" y="20.4" width="5.6" height="2.2" rx="1.1"/></g>
+<g id="cover" inkscape:label="back cover (simplified)">
+<path id="diag-outer" d="M142.2,161.5 L271.6,32.1" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="diag-inner" d="M149.2,161.5 L278.6,32.1" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="diag-cap-bottom" d="M142.2,161.5 L149.2,161.5" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="diag-cap-top" d="M271.6,32.1 L278.6,32.1" fill="none" stroke="#8a8a96" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="panel-base" d="M149.2,161.5 L218,161.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="panel-top" d="M278.6,32.1 L348,32.1" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="grille" d="M289.77,55.19 L296.56,48.41 M301.2,55.19 L307.99,48.41 M312.63,55.19 L319.42,48.41 M324.06,55.19 L330.85,48.41 M335.49,55.19 L342.28,48.41 M280.14,58.49 L286.93,51.71 M291.57,58.49 L298.36,51.71 M303,58.49 L309.79,51.71 M314.43,58.49 L321.22,51.71 M325.86,58.49 L332.65,51.71 M337.29,58.49 L344.08,51.71 M279.2,65.92 L285.99,59.14 M290.63,65.92 L297.42,59.14 M302.06,65.92 L308.85,59.14 M313.49,65.92 L320.28,59.14 M324.92,65.92 L331.71,59.14 M336.35,65.92 L343.14,59.14 M269.57,69.22 L276.36,62.44 M281,69.22 L287.79,62.44 M292.43,69.22 L299.22,62.44 M303.86,69.22 L310.65,62.44 M315.29,69.22 L322.08,62.44 M326.72,69.22 L333.51,62.44 M338.15,69.22 L344.94,62.44 M268.63,76.65 L275.41,69.87 M280.06,76.65 L286.84,69.87 M291.49,76.65 L298.27,69.87 M302.92,76.65 L309.7,69.87 M314.35,76.65 L321.13,69.87 M325.78,76.65 L332.56,69.87 M337.21,76.65 L343.99,69.87 M270.43,79.95 L277.21,73.17 M281.86,79.95 L288.64,73.17 M293.29,79.95 L300.07,73.17 M304.72,79.95 L311.5,73.17 M316.15,79.95 L322.93,73.17 M327.58,79.95 L334.36,73.17 M339.01,79.95 L345.79,73.17 M269.49,87.38 L276.27,80.6 M280.92,87.38 L287.7,80.6 M292.35,87.38 L299.13,80.6 M303.78,87.38 L310.56,80.6 M315.21,87.38 L321.99,80.6 M326.64,87.38 L333.42,80.6 M338.07,87.38 L344.85,80.6 M271.29,90.68 L278.07,83.9 M282.72,90.68 L289.5,83.9 M294.15,90.68 L300.93,83.9 M305.58,90.68 L312.36,83.9 M317.01,90.68 L323.79,83.9 M328.44,90.68 L335.22,83.9" fill="none" stroke="#c8c8d2" stroke-width="1.1" stroke-linecap="round"/>
+</g>
+<g id="screws" fill="none" stroke="#c8c8d2" stroke-width="1.1"><circle cx="101" cy="34.2" r="1.85"/><circle cx="363" cy="34.2" r="1.85"/><circle cx="122.2" cy="162.2" r="1.85"/><circle cx="341.8" cy="162.2" r="1.85"/><circle cx="232" cy="32.5" r="1.85"/><circle cx="232" cy="162.2" r="1.85"/></g>
+</g>
+<g id="Right-paddle" inkscape:label="Right paddle">
+<path id="Right-paddle-shape" d="M80.5,68.1 C80.5,66.66 81.66,65.5 83.1,65.5 L96.01,65.5 C96.64,65.5 97.25,65.75 97.7,66.2 L112.3,80.8 C112.75,81.25 113,81.86 113,82.49 L113,96.7 C113,97.22 112.83,97.72 112.52,98.14 L108.98,102.86 C108.68,103.26 108.2,103.5 107.7,103.5 L101.2,103.5 C100.75,103.5 100.33,103.32 100.03,102.99 L81.14,82.69 C80.73,82.25 80.5,81.66 80.5,81.06 L80.5,68.1 Z" fill="#1a1a20" stroke="#c8c8d2" stroke-width="1.2" stroke-linejoin="round"/>
+<path id="Right-paddle-bevel" d="M83,81.2 L99,98.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Right-paddle-face-diag" d="M94.6,68.2 L102,76.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Right-paddle-face-left" d="M102,76.5 L102,96" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Right-paddle-face-top" d="M102,76.5 L111.2,80.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Right-paddle-face-bottom" d="M102,96 L111.2,95" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Right-paddle-face-foot" d="M102,96 L101.2,103" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g id="Left-paddle" inkscape:label="Left paddle">
+<path id="Left-paddle-shape" d="M383.5,68.1 C383.5,66.66 382.34,65.5 380.9,65.5 L367.99,65.5 C367.36,65.5 366.75,65.75 366.3,66.2 L351.7,80.8 C351.25,81.25 351,81.86 351,82.49 L351,96.7 C351,97.22 351.17,97.72 351.48,98.14 L355.02,102.86 C355.32,103.26 355.8,103.5 356.3,103.5 L362.8,103.5 C363.25,103.5 363.67,103.32 363.97,102.99 L382.86,82.69 C383.27,82.25 383.5,81.66 383.5,81.06 L383.5,68.1 Z" fill="#1a1a20" stroke="#c8c8d2" stroke-width="1.2" stroke-linejoin="round"/>
+<path id="Left-paddle-bevel" d="M381,81.2 L365,98.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Left-paddle-face-diag" d="M369.4,68.2 L362,76.5" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Left-paddle-face-left" d="M362,76.5 L362,96" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Left-paddle-face-top" d="M362,76.5 L352.8,80.6" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Left-paddle-face-bottom" d="M362,96 L352.8,95" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Left-paddle-face-foot" d="M362,96 L362.8,103" fill="none" stroke="#8a8a96" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g></svg>

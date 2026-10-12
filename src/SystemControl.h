@@ -10,6 +10,10 @@
 #include <QDBusMessage>
 #include <vector>
 #include <functional>
+#ifdef Q_OS_WIN
+#include <QVector>
+#include "BrightnessWin.h"
+#endif
 
 // Everything that is not in xpanel-daemon: screen brightness, volume, battery, radios,
 // refresh rate, sensors, and the desktop / system actions (KDE, GNOME, Steam Game Mode: see Desktop.h).
@@ -113,21 +117,32 @@ private:
     void readRefresh();
     void readStats();
     void tickClock();
+#ifdef Q_OS_WIN
+    void winSetRadio(bool wifi, bool on);
+#endif
 
     // A display whose brightness we can set: from org.kde.ScreenBrightness (KDE), or without KDE
     // the internal panel through logind (/sys/class/backlight) and DDC/CI monitors through ddcutil.
-    enum class BlSource { Kde, Backlight, Ddc };
+    enum class BlSource { Kde, Backlight, Ddc, Win };
     struct BlDisplay {
         QString id;        // "display0" (KDE), "backlight", "ddc1"
         QString path;      // /org/kde/ScreenBrightness/display0 ; backlight device name ; ddcutil display number
         QString label;
+        QString gdi;       // Windows: GDI source name, as QScreen::name()
         bool internal = false;
+        bool soft = false; // Windows: dimmed with a gamma ramp (no DDC/CI)
         int max = 100;
         int pct = 50;
         BlSource source = BlSource::Kde;
     };
     bool readBacklight(BlDisplay &out) const;
     void scanDdc();
+#ifdef Q_OS_WIN
+    void winScan(bool withDdc);
+    void winScanDone(const QVector<BrightnessWin::Monitor> &res);
+    QVector<BrightnessWin::Monitor> m_winMon;
+    bool m_winScanning = false, m_winRescan = false, m_winRescanDdc = false;
+#endif
     void flushDdc();
     void writeBrightness(const BlDisplay &d, int percent);
     std::vector<BlDisplay> m_all;     // everything the service lists

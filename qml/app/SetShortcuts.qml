@@ -6,12 +6,13 @@ CcPage {
     id: page
     property string msg
     CcSection { title: qsTr("Keyboard Shortcuts")
-                note: desktop.shortcuts ? qsTr("Global shortcuts, for an external keyboard. Write keys like  Meta+Shift+C  or  Ctrl+Alt+G.")
+                note: desktop.windows ? qsTr("Global shortcuts, for an external keyboard. Write keys like  Meta+Shift+C  or  Ctrl+Alt+G  (Meta is the Windows key). A shortcut needs at least one modifier key.")
+                      : desktop.shortcuts ? qsTr("Global shortcuts, for an external keyboard. Write keys like  Meta+Shift+C  or  Ctrl+Alt+G.")
                       : qsTr("Global shortcuts use KDE's shortcut service: not available %1.").arg(desktop.where) + " "
                         + (desktop.gamescope ? qsTr("The Ally buttons work everywhere.")
                            : qsTr("The Ally buttons work everywhere; for a keyboard key, bind the command  XPanel --toggle  (or  XPanel --app ) in your desktop's keyboard settings.")) }
     Repeater {
-        model: !desktop.shortcuts ? [] : [{ id: "quickpanel", title: qsTr("Open / close Quick Panel") }, { id: "controlcenter", title: qsTr("Open Control Center") }]
+        model: !(desktop.shortcuts || desktop.windows) ? [] : [{ id: "quickpanel", title: qsTr("Open / close Quick Panel") }, { id: "controlcenter", title: qsTr("Open Control Center") }]
         CcRow { title: modelData.title
             Row { spacing: 10
                 CcField { id: keys; width: 260; text: tweaks.shortcut(modelData.id) }
@@ -20,6 +21,6 @@ CcPage {
                 CcButton { text: qsTr("Clear"); onClicked: { keys.text = ""; tweaks.setShortcut(modelData.id, "") } } } }
     }
     Text { text: page.msg; color: T.dim; font.pixelSize: 16 }
-    CcRow { visible: desktop.shortcuts; title: qsTr("All KDE shortcuts"); description: qsTr("XPanel's shortcuts also appear in KDE System Settings › Shortcuts › XPanel.")
+    CcRow { visible: desktop.shortcuts && !desktop.windows; title: qsTr("All KDE shortcuts"); description: qsTr("XPanel's shortcuts also appear in KDE System Settings › Shortcuts › XPanel.")
         CcButton { text: qsTr("Open"); onClicked: tweaks.openSystemSettings("kcm_keys") } }
 }

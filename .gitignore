@@ -21,6 +21,7 @@ __pycache__/
 # Local logs and dumps
 *.log
 
-# Release builds (build-release.sh)
+# Release builds (build-release.sh, build-release.bat)
 build-release/
+build-release-win/
 dist/

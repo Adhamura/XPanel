@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void calibrateGyro();
     // true: the Ally pad drives XPanel (menus), not the game
     void setGrab(bool grab);
+    // true: the daemon sends "press" events for every logical button (Control Mode button test)
+    Q_INVOKABLE void setButtonTest(bool on);
 
 signals:
     void connectedChanged();
@@ -38,6 +40,9 @@ signals:
     void special(const QString &name); // Ally buttons: left_button, left_button_long, right_button
     void nav(const QString &name);     // menu navigation while grabbed: up down left right a b x y lb rb
     void action(const QString &name);  // functions XPanel runs for the input layer: osk
+    void released(const QString &name); // button test: a logical button went up
+    void axes(const QVariantMap &values); // button test: lx ly rx ry (-1..1, y up), lt rt (0..1)
+    void pressed(const QString &name);  // button test: a logical button went down (names as in ControlDefaults.js)
 
 private:
     void connectNow();
@@ -49,6 +54,7 @@ private:
     QTimer m_retry;
     int m_rev = 0;
     bool m_grab = false;
+    bool m_test = false;
     bool m_ready = false;
     QString m_error;
 };

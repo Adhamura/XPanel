@@ -61,6 +61,7 @@ Item {
     }
 
     // ---------- games ----------
+    CcScrollBar { flickable: grid }
     GridView {
         id: grid
         anchors.top: bar.bottom; anchors.topMargin: 20
@@ -96,7 +97,7 @@ Item {
                     visible: !modelData.cover
                     x: 4; y: 4; width: cover.width; height: cover.height; color: "#1d1d25"
                     Image { anchors.centerIn: parent; width: Math.min(parent.width, parent.height) * 0.45; height: width
-                            source: modelData.icon ? "image://theme/" + modelData.icon : ""; sourceSize: Qt.size(128, 128) }
+                            source: modelData.icon ? (String(modelData.icon).indexOf("file:") === 0 ? modelData.icon : "image://theme/" + modelData.icon) : ""; sourceSize: Qt.size(128, 128) }
                 }
                 Text {
                     x: page.listView ? 80 : 10

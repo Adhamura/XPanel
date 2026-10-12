@@ -178,22 +178,7 @@ static bool sendToRunning(const QByteArray &cmd)
 }
 
 #ifdef Q_OS_WIN
-// Global hotkeys (the Ally's own buttons need the input layer, which is Linux-only so far).
-class HotkeyFilter : public QAbstractNativeEventFilter {
-public:
-    std::function<void(int)> onHotkey;
-    bool nativeEventFilter(const QByteArray &type, void *message, qintptr *) override
-    {
-        if (type != "windows_generic_MSG" && type != "windows_dispatcher_MSG")
-            return false;
-        const MSG *msg = static_cast<const MSG *>(message);
-        if (msg->message != WM_HOTKEY)
-            return false;
-        onHotkey(int(msg->wParam));
-        return true;
-    }
-};
-
+// Global hotkeys: registered by DesktopTweaks (shortcut.* settings, default Win+Shift+Q / Win+Shift+C).
 // xpanel-daemon runs in the user's session on Windows: start it when it is not running.
 static void startDaemon()
 {
@@ -292,14 +277,6 @@ int main(int argc, char **argv)
 
 #ifdef Q_OS_WIN
     startDaemon();
-    HotkeyFilter hotkeys;
-    hotkeys.onHotkey = [&](int id) {
-        if (id == 1) panel.toggle();
-        else if (id == 2) panel.appOpen() ? panel.closeApp() : panel.openApp();
-    };
-    app.installNativeEventFilter(&hotkeys);
-    RegisterHotKey(nullptr, 1, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, 'Q'); // Quick Panel
-    RegisterHotKey(nullptr, 2, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, 'C'); // Control Center
 #else
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, g_sigFd) == 0) {
         auto *sn = new QSocketNotifier(g_sigFd[1], QSocketNotifier::Read, &app);
@@ -406,7 +383,12 @@ int main(int argc, char **argv)
     };
     textOf(trayMenu.addAction(QString(), [&] { panel.requestOpen(); }),
            [] { return QCoreApplication::translate("Tray", "Open Quick Panel"); });
-    textOf(trayMenu.addAction(QIcon::fromTheme("configure"), QString(), [&] { panel.openApp(); }),
+#ifdef Q_OS_WIN
+    const QIcon configureIcon(":/qml/icons/gear.svg"); // no icon theme on Windows
+#else
+    const QIcon configureIcon = QIcon::fromTheme("configure");
+#endif
+    textOf(trayMenu.addAction(configureIcon, QString(), [&] { panel.openApp(); }),
            [] { return QCoreApplication::translate("Tray", "Control Center"); });
     QMenu *pages = trayMenu.addMenu(QString());
     titleOf(pages, [] { return QCoreApplication::translate("Tray", "Control Center pages"); });

@@ -8,6 +8,8 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QUrl>
+#include <QDir>
+#include <QDesktopServices>
 
 namespace Desktop {
 
@@ -27,6 +29,10 @@ static Kind fromName(const QString &raw)
 
 Kind detect(const QProcessEnvironment &env)
 {
+#ifdef Q_OS_WIN
+    Q_UNUSED(env);
+    return Kind::Windows;
+#endif
     const QString forced = env.value("XPANEL_DESKTOP").trimmed().toLower();
     if (forced == "kde") return Kind::KDE;
     if (forced == "gnome") return Kind::GNOME;
@@ -70,6 +76,7 @@ QString id(Kind k)
     case Kind::KDE: return "kde";
     case Kind::GNOME: return "gnome";
     case Kind::Gamescope: return "gamescope";
+    case Kind::Windows: return "windows";
     case Kind::Other: break;
     }
     return "other";
@@ -81,6 +88,7 @@ QString label(Kind k)
     case Kind::KDE: return "KDE Plasma";
     case Kind::GNOME: return "GNOME";
     case Kind::Gamescope: return "Steam Game Mode";
+    case Kind::Windows: return "Windows";
     case Kind::Other: break;
     }
     return QCoreApplication::translate("Desktop", "Other desktop");
@@ -106,6 +114,12 @@ Caps capabilities(Kind k, const std::function<bool(const QString &)> &haveTool, 
     case Kind::Gamescope:
         // Steam owns the screen: screenshots (Steam + R1), power menu and keyboard are Steam's
         c.tray = false;
+        break;
+    case Kind::Windows:
+        // SysWin (SystemControlWin.cpp): DisplayConfig, ChangeDisplaySettings, Qt screen grab, Shell
+        c.refreshRate = c.displayMode = true;
+        c.showDesktop = c.screenshot = c.logout = true;
+        c.screenshotTool = "qt";
         break;
     case Kind::Other:
         for (const char *t : {"spectacle", "gnome-screenshot", "grim"})
@@ -143,6 +157,12 @@ QStringList terminalCommand(const QString &terminal, const QStringList &cmd)
 
 bool runInTerminal(const QStringList &cmd)
 {
+#ifdef Q_OS_WIN
+    // cmd.exe: run the command, then wait for a key so the output can be read
+    QStringList args{"/c", "start", "XPanel", "cmd.exe", "/k"};
+    args += cmd;
+    return QProcess::startDetached("cmd.exe", args);
+#endif
     QStringList order;
     switch (current()) {
     case Kind::KDE: order = {"konsole", "x-terminal-emulator", "kgx", "ptyxis", "gnome-terminal", "xterm"}; break;
@@ -158,6 +178,13 @@ bool runInTerminal(const QStringList &cmd)
 
 void showInFileManager(const QString &path, bool selectFile)
 {
+#ifdef Q_OS_WIN
+    if (selectFile)
+        QProcess::startDetached("explorer.exe", {"/select," + QDir::toNativeSeparators(path)});
+    else
+        QProcess::startDetached("explorer.exe", {QDir::toNativeSeparators(path)});
+    return;
+#endif
     if (current() == Kind::KDE && !QStandardPaths::findExecutable("dolphin").isEmpty()) {
         QProcess::startDetached("dolphin", selectFile ? QStringList{"--select", path} : QStringList{path});
         return;
@@ -184,6 +211,7 @@ QString DesktopInfo::where() const
     switch (Desktop::current()) {
     case Desktop::Kind::Gamescope: return tr("in Steam Game Mode");
     case Desktop::Kind::Other: return tr("on this desktop");
+    case Desktop::Kind::Windows: return tr("on Windows");
     default: break;
     }
     return tr("on %1").arg(label());
