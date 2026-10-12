@@ -45,10 +45,33 @@ shot() { import -window root "$WORK/shot.png"; }
 shot  # the panel window is transparent outside the panel; there is no compositor, so paste it on the background
 convert "$HOME/background.png" \( "$WORK/shot.png" -crop 960x1080+0+0 +repage \) -geometry +0+0 -composite \
     -resize 1600x900 -strip "$OUT/quick-panel.png"
-for p in library:game-library control:control-mode gallery:media-gallery settings/performance:performance \
+for p in library:game-library gallery:media-gallery settings/performance:performance \
          settings/lighting:lighting settings/battery:battery settings/update:update-center; do
     "$BIN" --app "${p%%:*}" >/dev/null; sleep 4; shot
     convert "$WORK/shot.png" -crop 1600x900+0+0 +repage -strip "$OUT/${p##*:}.png"
 done
+# Control Mode key map in test mode: scripted gamepad input through the fake daemon flips the
+# drawing to the view of the last pressed button and opens its assignment on the side panel
+pad() {  # pad '{"event": "press", "name": "A"}' ...
+    python3 - "$XPANEL_SOCKET" "$@" <<'EOF'
+import socket, sys, time
+s = socket.socket(socket.AF_UNIX); s.connect(sys.argv[1])
+for m in sys.argv[2:]: s.sendall(m.encode() + b"\n"); time.sleep(0.05)
+time.sleep(0.2); s.close()
+EOF
+}
+mapshot() { sleep 2; shot; convert "$WORK/shot.png" -crop 1600x900+0+0 +repage -strip "$OUT/$1.png"; }
+"$BIN" --app control >/dev/null; sleep 4
+pad '{"event": "axes", "lx": 0.55, "ly": 0.4, "rx": -0.35, "ry": -0.5, "lt": 0, "rt": 0}' \
+    '{"event": "press", "name": "X"}' '{"event": "press", "name": "A"}'
+mapshot control-map-front
+pad '{"event": "release", "name": "X"}' '{"event": "release", "name": "A"}' \
+    '{"event": "axes", "lx": -0.6, "ly": 0, "rx": 0.5, "ry": 0, "lt": 0.35, "rt": 0.8}' \
+    '{"event": "press", "name": "LB"}' '{"event": "press", "name": "RT"}'
+mapshot control-map-top
+pad '{"event": "release", "name": "LB"}' '{"event": "release", "name": "RT"}' \
+    '{"event": "axes", "lx": 0, "ly": 0, "rx": 0, "ry": 0, "lt": 0, "rt": 0}' \
+    '{"event": "press", "name": "Right paddle"}'
+mapshot control-map-back
 "$BIN" --quit >/dev/null 2>&1 || true
 echo "Screenshots written to $OUT"
