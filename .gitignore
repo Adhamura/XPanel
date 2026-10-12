@@ -25,3 +25,4 @@ __pycache__/
 build-release/
 build-release-win/
 dist/
+docs/screenshots/demo.mp4

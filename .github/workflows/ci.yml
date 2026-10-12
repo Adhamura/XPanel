@@ -81,4 +81,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh packaging/appimage/AppRun packaging/appimage/appimage-install.sh packaging/appimage/smoke-test.sh
+      - run: shellcheck -S warning build-release.sh run.sh scripts/*.sh tools/mapper.sh tools/screenshots/capture.sh tools/screenshots/demo.sh packaging/appimage/AppRun packaging/appimage/appimage-install.sh packaging/appimage/smoke-test.sh
