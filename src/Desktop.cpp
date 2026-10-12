@@ -9,7 +9,6 @@
 #include <QStandardPaths>
 #include <QUrl>
 #include <QDir>
-#include <QDesktopServices>
 
 namespace Desktop {
 
