@@ -20,6 +20,19 @@
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QTimer>
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <QPointer>
+#include <QThreadPool>
+#include <QDesktopServices>
+#include <QImage>
+#include <QPainter>
+#include <QPixmap>
+#include <QUrl>
+#include <thread>
+#include "BrightnessWin.h"
+#include "SystemControlWin.h"
+#endif
 
 static QString readFile(const QString &fn)
 {
@@ -79,7 +92,11 @@ SystemControl::SystemControl(QObject *parent) : QObject(parent)
     }
     // Without KDE: DDC/CI monitors through ddcutil (slow, so only at start and when screens change)
     m_ddcFlush.setSingleShot(true);
+#ifdef Q_OS_WIN
+    m_ddcFlush.setInterval(150);
+#else
     m_ddcFlush.setInterval(250);
+#endif
     connect(&m_ddcFlush, &QTimer::timeout, this, &SystemControl::flushDdc);
     enumerateDisplays();
     scanDdc();
@@ -87,6 +104,10 @@ SystemControl::SystemControl(QObject *parent) : QObject(parent)
     connect(&m_slow, &QTimer::timeout, this, [this] {
         readBattery();
         tickClock();
+#ifdef Q_OS_WIN
+        readBrightness(); // Windows' own slider can change the internal panel (cheap WMI read)
+        QThreadPool::globalInstance()->start([] { BrightnessWin::reapplySoft(); }); // gamma ramps reset on sleep
+#endif
     });
     m_slow.start(5000);
     connect(&m_fast, &QTimer::timeout, this, &SystemControl::readStats);
@@ -101,6 +122,26 @@ SystemControl::SystemControl(QObject *parent) : QObject(parent)
                       QString::number(m_pendingVolume / 100.0, 'f', 2)});
         m_pendingVolume = -1;
     });
+
+#ifdef Q_OS_WIN
+    // Volume: Core Audio callbacks (Windows slider, hardware keys, other apps, default device change)
+    {
+        QPointer<SystemControl> self(this);
+        SysWin::audioInit([self](bool deviceChanged) {
+            if (!self)
+                return;
+            QMetaObject::invokeMethod(self.data(), [self, deviceChanged] {
+                if (!self)
+                    return;
+                if (deviceChanged)
+                    SysWin::audioRebind();
+                self->readVolume();
+            }, Qt::QueuedConnection);
+        });
+    }
+    // refresh rate / display mode follow screens being plugged in or switched
+    connect(&m_screenDebounce, &QTimer::timeout, this, &SystemControl::readRefresh);
+#endif
 
     refreshAll();
 }
@@ -164,18 +205,108 @@ void SystemControl::watchScreen(QScreen *screen)
 
 void SystemControl::rescanDisplays()
 {
+#ifdef Q_OS_WIN
+    winScan(true);
+    return;
+#endif
     enumerateDisplays();
     scanDdc();
 }
 
 void SystemControl::readBrightness()
 {
+#ifdef Q_OS_WIN
+    winScan(false);
+    return;
+#endif
     enumerateDisplays();
 }
+
+#ifdef Q_OS_WIN
+// Windows: displays come from BrightnessWin (WMI for the internal panel, DDC/CI for external
+// monitors). The scan runs on a worker thread: DDC/CI reads take 50-500 ms per monitor.
+// withDdc = false only re-reads the internal panel and keeps the known external values.
+void SystemControl::winScan(bool withDdc)
+{
+    if (m_winScanning) {
+        m_winRescan = true;
+        m_winRescanDdc = m_winRescanDdc || withDdc;
+        return;
+    }
+    m_winScanning = true;
+    QPointer<SystemControl> self(this);
+    QThreadPool::globalInstance()->start([self, withDdc] {
+        const QVector<BrightnessWin::Monitor> res = BrightnessWin::enumerate(withDdc);
+        if (!self)
+            return;
+        QMetaObject::invokeMethod(self.data(), [self, res] {
+            if (!self)
+                return;
+            self->winScanDone(res);
+        }, Qt::QueuedConnection);
+    });
+}
+
+void SystemControl::winScanDone(const QVector<BrightnessWin::Monitor> &res)
+{
+    m_winScanning = false;
+    QVector<BrightnessWin::Monitor> merged;
+    int ext = 0;
+    for (BrightnessWin::Monitor m : res) {
+        const BlDisplay *known = nullptr;
+        for (const BlDisplay &b : m_all)
+            if (b.id == m.id)
+                known = &b;
+        if (m.pct < 0) {             // external monitor not read this time
+            if (!known)
+                continue;
+            m.pct = known->pct;
+        } else if (known) {          // the value just written can still be on its way
+            const auto it = m_lastSet.constFind(m.id);
+            if (it != m_lastSet.constEnd() && it->isValid() && it->elapsed() < 1000)
+                m.pct = known->pct;
+        }
+        if (!m.internal) {
+            ++ext;
+            if (m.label.isEmpty())
+                m.label = tr("Monitor %1").arg(ext);
+        }
+        merged.push_back(m);
+    }
+    m_winMon = merged;
+    enumerateDisplays();
+    if (m_winRescan) {
+        const bool d = m_winRescanDdc;
+        m_winRescan = m_winRescanDdc = false;
+        winScan(d);
+    }
+}
+#endif
 
 // Ask the service which displays it knows (all of them, active or not) and read their values.
 void SystemControl::enumerateDisplays()
 {
+#ifdef Q_OS_WIN
+    {
+        std::vector<BlDisplay> all;
+        for (const BrightnessWin::Monitor &m : std::as_const(m_winMon)) {
+            BlDisplay b;
+            b.id = m.id;
+            b.path = m.id;
+            b.gdi = m.gdi;
+            b.label = m.label;
+            b.internal = m.internal;
+            b.soft = m.soft;
+            b.max = 100;
+            b.pct = m.pct;
+            b.source = BlSource::Win;
+            all.push_back(b);
+        }
+        m_all = all;
+        updateActiveDisplays();
+        return;
+    }
+#endif
     QStringList ids;
     {
         QDBusInterface root(kBlService, "/org/kde/ScreenBrightness", kBlService);
@@ -268,6 +399,10 @@ bool SystemControl::readBacklight(BlDisplay &out) const
 // already covers them on Plasma, and Game Mode shows one screen: only GNOME and other desktops.
 void SystemControl::scanDdc()
 {
+#ifdef Q_OS_WIN
+    winScan(true);
+    return;
+#endif
     const Desktop::Kind k = Desktop::current();
     if (k == Desktop::Kind::KDE || k == Desktop::Kind::Gamescope || m_ddcScanning
         || QStandardPaths::findExecutable("ddcutil").isEmpty())
@@ -330,6 +465,41 @@ void SystemControl::scanDdc()
 // ddcutil takes ~0.1-0.5 s per write: send only the latest value, one write per monitor at a time.
 void SystemControl::flushDdc()
 {
+#ifdef Q_OS_WIN
+    for (auto it = m_ddcPending.begin(); it != m_ddcPending.end();) {
+        const QString id = it.key();
+        if (m_ddcBusy.value(id)) {
+            ++it;
+            continue;
+        }
+        const int pct = it.value();
+        it = m_ddcPending.erase(it);
+        BrightnessWin::Monitor mon;
+        bool found = false;
+        for (const BrightnessWin::Monitor &m : std::as_const(m_winMon))
+            if (m.id == id) {
+                mon = m;
+                found = true;
+            }
+        if (!found)
+            continue;
+        m_ddcBusy[id] = true;
+        QPointer<SystemControl> self(this);
+        QThreadPool::globalInstance()->start([self, mon, pct, id] {
+            BrightnessWin::setPercent(mon, pct);
+            if (!self)
+                return;
+            QMetaObject::invokeMethod(self.data(), [self, id] {
+                if (!self)
+                    return;
+                self->m_ddcBusy[id] = false;
+                if (self->m_ddcPending.contains(id))
+                    self->m_ddcFlush.start();
+            }, Qt::QueuedConnection);
+        });
+    }
+    return;
+#endif
     for (auto it = m_ddcPending.begin(); it != m_ddcPending.end();) {
         const QString num = it.key();
         if (m_ddcBusy.value(num)) {
@@ -367,6 +537,11 @@ void SystemControl::writeBrightness(const BlDisplay &d, int percent)
         QDBusConnection::systemBus().asyncCall(msg);
         break;
     }
+    case BlSource::Win:
+        m_ddcPending[d.id] = percent; // written on a worker thread, latest value only (flushDdc)
+        if (!m_ddcFlush.isActive())
+            m_ddcFlush.start();
+        break;
     case BlSource::Ddc:
         m_ddcPending[d.path] = raw;
         if (!m_ddcFlush.isActive())
@@ -383,6 +558,22 @@ void SystemControl::updateActiveDisplays()
     bool mirror = false;
     const QList<QScreen *> screens = QGuiApplication::screens();
     if (!screens.isEmpty()) {
+#ifdef Q_OS_WIN
+        // Only displays on an active Windows source (QScreen::name() is the GDI name, e.g. DISPLAY1).
+        // Duplicate mode: several entries share one source, they merge into one bar.
+        QStringList names;
+        for (QScreen *s : screens)
+            names << s->name();
+        for (const BlDisplay &b : m_all)
+            if (b.gdi.isEmpty() || names.contains(b.gdi, Qt::CaseInsensitive))
+                act.push_back(b);
+        if (act.size() >= 2) {
+            mirror = true;
+            for (const BlDisplay &b : act)
+                if (b.gdi.compare(act.front().gdi, Qt::CaseInsensitive) != 0)
+                    mirror = false;
+        }
+#else
         int nInt = 0, nExt = 0;
         QStringList extModels;
         for (QScreen *s : screens) {
@@ -415,9 +606,10 @@ void SystemControl::updateActiveDisplays()
             ext = int(match.size()) == nExt ? match : std::vector<BlDisplay>(ext.begin(), ext.begin() + nExt);
         }
         act.insert(act.end(), ext.begin(), ext.end());
+#endif
 
         // Mirror: two or more active screens with identical geometry
-        if (screens.size() >= 2) {
+        if (screens.size() >= 2 && !mirror) {
             mirror = true;
             for (QScreen *s : screens)
                 if (s->geometry().isEmpty() || s->geometry() != screens.first()->geometry())
@@ -434,10 +626,12 @@ void SystemControl::updateActiveDisplays()
     QVariantList var;
     if (mirror) {
         var << QVariantMap{{"id", "mirror"}, {"label", tr("Both screens")},
-                           {"internal", act.front().internal}, {"brightness", act.front().pct}};
+                           {"internal", act.front().internal}, {"brightness", act.front().pct},
+                           {"soft", act.front().soft}};
     } else {
         for (const BlDisplay &b : act)
-            var << QVariantMap{{"id", b.id}, {"label", b.label}, {"internal", b.internal}, {"brightness", b.pct}};
+            var << QVariantMap{{"id", b.id}, {"label", b.label}, {"internal", b.internal}, {"brightness", b.pct},
+                         {"soft", b.soft}};
     }
     const bool availBefore = !m_active.empty();
     const int primaryBefore = m_brightness;
@@ -507,6 +701,15 @@ void SystemControl::setBrightness(int percent)
 // ---------- volume ----------
 void SystemControl::readVolume()
 {
+#ifdef Q_OS_WIN
+    const SysWin::Volume v = SysWin::audioGet();
+    if (v.ok && (v.percent != m_volume || v.muted != m_muted)) {
+        m_volume = v.percent;
+        m_muted = v.muted;
+        emit volumeChanged();
+    }
+    return;
+#endif
     run("wpctl", {"get-volume", "@DEFAULT_AUDIO_SINK@"}, [this](const QString &out) {
         // "Volume: 0.45" or "Volume: 0.45 [MUTED]"
         static const QRegularExpression re("Volume:\\s*([0-9.]+)");
@@ -523,6 +726,10 @@ void SystemControl::setVolume(int percent)
 {
     m_volume = qBound(0, percent, 100);
     emit volumeChanged();
+#ifdef Q_OS_WIN
+    SysWin::audioSetVolume(m_volume);
+    return;
+#endif
     m_pendingVolume = m_volume;
     m_volumeDebounce.start();
 }
@@ -531,12 +738,29 @@ void SystemControl::toggleMute()
 {
     m_muted = !m_muted;
     emit volumeChanged();
+#ifdef Q_OS_WIN
+    SysWin::audioSetMute(m_muted);
+    return;
+#endif
     run("wpctl", {"set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"});
 }
 
 // ---------- battery / clock ----------
 void SystemControl::readBattery()
 {
+#ifdef Q_OS_WIN
+    SYSTEM_POWER_STATUS sps;
+    if (!GetSystemPowerStatus(&sps) || (sps.BatteryFlag & 128) /* no battery */ || sps.BatteryLifePercent > 100)
+        return;
+    const int wcap = sps.BatteryLifePercent;
+    const bool wchg = (sps.BatteryFlag & 8) || sps.ACLineStatus == 1; // charging or on AC
+    if (wcap != m_battery || wchg != m_charging) {
+        m_battery = wcap;
+        m_charging = wchg;
+        emit batteryChanged();
+    }
+    return;
+#else
     const int cap = readFile("/sys/class/power_supply/BAT0/capacity").toInt();
     const QString st = readFile("/sys/class/power_supply/BAT0/status");
     const bool chg = st == "Charging" || st == "Full" || readFile("/sys/class/power_supply/AC0/online") == "1";
@@ -545,6 +769,7 @@ void SystemControl::readBattery()
         m_charging = chg;
         emit batteryChanged();
     }
+#endif
 }
 
 void SystemControl::tickClock()
@@ -559,6 +784,25 @@ void SystemControl::tickClock()
 // ---------- radios ----------
 void SystemControl::readRadios()
 {
+#ifdef Q_OS_WIN
+    // WinRT calls block: worker thread, then back to the GUI thread
+    QPointer<SystemControl> self(this);
+    std::thread([self] {
+        const SysWin::Radios r = SysWin::radiosRead();
+        if (!self || !r.ok)
+            return;
+        QMetaObject::invokeMethod(self.data(), [self, r] {
+            if (!self)
+                return;
+            if (r.wifi != self->m_wifi || r.bluetooth != self->m_bluetooth) {
+                self->m_wifi = r.wifi;
+                self->m_bluetooth = r.bluetooth;
+                emit self->radiosChanged();
+            }
+        }, Qt::QueuedConnection);
+    }).detach();
+    return;
+#endif
     run("nmcli", {"radio", "wifi"}, [this](const QString &out) {
         const bool on = out.trimmed() == "enabled";
         if (on != m_wifi) {
@@ -579,6 +823,10 @@ void SystemControl::setWifi(bool on)
 {
     m_wifi = on;
     emit radiosChanged();
+#ifdef Q_OS_WIN
+    winSetRadio(true, on);
+    return;
+#endif
     run("nmcli", {"radio", "wifi", on ? "on" : "off"}, [this](const QString &) { readRadios(); });
 }
 
@@ -586,6 +834,10 @@ void SystemControl::setBluetooth(bool on)
 {
     m_bluetooth = on;
     emit radiosChanged();
+#ifdef Q_OS_WIN
+    winSetRadio(false, on);
+    return;
+#endif
     // rfkill first: when the radio is soft-blocked, bluetoothctl cannot power it on.
     run("rfkill", {on ? "unblock" : "block", "bluetooth"}, [this, on](const QString &) {
         run("bluetoothctl", {"power", on ? "on" : "off"}, [this](const QString &) {
@@ -599,6 +851,21 @@ void SystemControl::readRefresh()
 {
     if (!Desktop::caps().refreshRate && !Desktop::caps().displayMode)
         return; // kscreen-doctor is KDE's
+#ifdef Q_OS_WIN
+    {
+        const SysWin::DisplayState d = SysWin::displayRead();
+        if (!d.ok)
+            return;
+        m_extName = d.hasExternal ? QString("external") : QString();
+        m_displayMode = d.mode;
+        emit displayChanged();
+        if (d.refresh > 0 && d.refresh != m_refresh) {
+            m_refresh = d.refresh;
+            emit refreshChanged();
+        }
+        return;
+    }
+#endif
     run("kscreen-doctor", {"-j"}, [this](const QString &out) {
         const QJsonArray outputs = QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray();
         // display layout: which screens are on, and where
@@ -643,6 +910,39 @@ void SystemControl::toggleRefreshRate()
 {
     if (!Desktop::caps().refreshRate)
         return;
+#ifdef Q_OS_WIN
+    {
+        // 60 <-> 120 Hz on the built-in panel, at its current resolution
+        QPointer<SystemControl> self(this);
+        std::thread([self] {
+            const SysWin::DisplayState d = SysWin::displayRead();
+            int target = 0;
+            if (d.ok && d.rates.size() >= 2) {
+                const int want = d.refresh > 90 ? 60 : 120;
+                int bestDiff = 1 << 30;
+                for (int r : d.rates)
+                    if (qAbs(r - want) < bestDiff) {
+                        bestDiff = qAbs(r - want);
+                        target = r;
+                    }
+                if (target == d.refresh)
+                    target = 0;
+            }
+            if (target > 0 && self) {
+                QMetaObject::invokeMethod(self.data(), [self, target] {
+                    if (self) {
+                        self->m_refresh = target;
+                        emit self->refreshChanged();
+                    }
+                }, Qt::QueuedConnection);
+                SysWin::displaySetRefresh(target);
+            }
+            if (self)
+                QMetaObject::invokeMethod(self.data(), [self] { if (self) self->readRefresh(); }, Qt::QueuedConnection);
+        }).detach();
+        return;
+    }
+#endif
     run("kscreen-doctor", {"-j"}, [this](const QString &out) {
         const QJsonArray outputs = QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray();
         for (const QJsonValue &ov : outputs) {
@@ -687,6 +987,24 @@ void SystemControl::setDisplayMode(const QString &mode)
 {
     if (!Desktop::caps().displayMode)
         return;
+#ifdef Q_OS_WIN
+    {
+        if (mode != "handheld" && !hasExternal())
+            return; // no external screen: nothing to switch
+        m_displayMode = mode;
+        emit displayChanged();
+        QPointer<SystemControl> self(this);
+        std::thread([self, mode] {
+            SysWin::displaySetMode(mode);
+            if (self)
+                QMetaObject::invokeMethod(self.data(), [self] {
+                    if (self)
+                        QTimer::singleShot(800, self.data(), &SystemControl::readRefresh);
+                }, Qt::QueuedConnection);
+        }).detach();
+        return;
+    }
+#endif
     run("kscreen-doctor", {"-j"}, [this, mode](const QString &out) {
         QJsonObject edp, ext;
         for (const QJsonValue &ov : QJsonDocument::fromJson(out.toUtf8()).object().value("outputs").toArray()) {
@@ -737,6 +1055,23 @@ void SystemControl::setDisplayMode(const QString &mode)
 // ---------- sensors ----------
 void SystemControl::readStats()
 {
+#ifdef Q_OS_WIN
+    {
+        const SysWin::Stats w = SysWin::statsRead();
+        if (w.cpuLoad >= 0)
+            m_cpuLoad = w.cpuLoad;
+        if (w.gpuLoad >= 0)
+            m_gpuLoad = w.gpuLoad;
+        m_cpuTemp = w.cpuTemp;
+        m_gpuTemp = w.gpuTemp;
+        m_socWatts = w.socWatts;
+        m_fanRpm = w.fanRpm;
+        m_batWatts = w.batteryWatts;
+        m_ramMb = w.ramUsedMb;
+        emit statsChanged();
+        return;
+    }
+#endif
     // CPU load from /proc/stat
     const QStringList f = readFile("/proc/stat").section('\n', 0, 0).split(' ', Qt::SkipEmptyParts);
     if (f.size() > 5) {
@@ -779,6 +1114,10 @@ void SystemControl::readStats()
 // ---------- actions ----------
 void SystemControl::showDesktop()
 {
+#ifdef Q_OS_WIN
+    SysWin::showDesktop();
+    return;
+#endif
     if (!Desktop::caps().showDesktop)
         return; // only KWin has a "Show Desktop" to call
     QDBusMessage msg = QDBusMessage::createMethodCall(
@@ -789,6 +1128,10 @@ void SystemControl::showDesktop()
 
 void SystemControl::openKeyboard()
 {
+#ifdef Q_OS_WIN
+    std::thread([] { SysWin::openKeyboard(); }).detach();
+    return;
+#endif
     QDBusInterface vk("org.kde.KWin", "/VirtualKeyboard", "org.kde.kwin.VirtualKeyboard");
     if (vk.isValid() && vk.property("available").toBool()) {
         QDBusMessage msg = QDBusMessage::createMethodCall(
@@ -812,6 +1155,40 @@ void SystemControl::openKeyboard()
 
 void SystemControl::screenshot()
 {
+#ifdef Q_OS_WIN
+    // Wait for the panel to slide away, then save every screen as one PNG in Pictures/Screenshots.
+    QTimer::singleShot(450, this, [] {
+        const QList<QScreen *> screens = QGuiApplication::screens();
+        if (screens.isEmpty())
+            return;
+        QRect vg;
+        qreal scale = 1.0;
+        for (QScreen *s : screens) {
+            vg = vg.united(s->geometry());
+            scale = qMax(scale, s->devicePixelRatio());
+        }
+        QImage img(QSize(qRound(vg.width() * scale), qRound(vg.height() * scale)), QImage::Format_RGB32);
+        img.fill(Qt::black);
+        {
+            QPainter p(&img);
+            for (QScreen *s : screens) {
+                const QPixmap px = s->grabWindow(0);
+                const QRect g = s->geometry();
+                p.drawPixmap(QRect(qRound((g.x() - vg.x()) * scale), qRound((g.y() - vg.y()) * scale),
+                                   qRound(g.width() * scale), qRound(g.height() * scale)), px);
+            }
+        }
+        QString dir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+        if (dir.isEmpty())
+            dir = QDir::homePath();
+        dir += "/Screenshots";
+        QDir().mkpath(dir);
+        const QString file = dir + "/XPanel_" + QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + ".png";
+        if (!img.save(file, "PNG"))
+            qWarning("XPanel: cannot save screenshot %s", qPrintable(file));
+    });
+    return;
+#endif
     // Wait for the panel to slide away first.
     const QString tool = Desktop::caps().screenshotTool;
     if (tool.isEmpty())
@@ -826,6 +1203,11 @@ void SystemControl::screenshot()
 
 void SystemControl::power(const QString &what)
 {
+#ifdef Q_OS_WIN
+    if (what == "suspend" || what == "reboot" || what == "poweroff" || what == "logout")
+        std::thread([what] { SysWin::power(what); }).detach(); // sleep blocks until resume
+    return;
+#endif
     if (what == "logout") {
         if (!Desktop::caps().logout)
             return;
@@ -850,3 +1232,24 @@ void SystemControl::power(const QString &what)
     if (what == "suspend" || what == "reboot" || what == "poweroff")
         QProcess::startDetached("systemctl", {what});
 }
+
+#ifdef Q_OS_WIN
+// Wi-Fi / Bluetooth switch through Windows.Devices.Radios. When Windows refuses (no access),
+// the matching Settings page opens instead.
+void SystemControl::winSetRadio(bool wifi, bool on)
+{
+    QPointer<SystemControl> self(this);
+    std::thread([self, wifi, on] {
+        const bool ok = SysWin::radioSet(wifi, on);
+        if (!self)
+            return;
+        QMetaObject::invokeMethod(self.data(), [self, wifi, ok] {
+            if (!self)
+                return;
+            if (!ok)
+                QDesktopServices::openUrl(QUrl(wifi ? "ms-settings:network-wifi" : "ms-settings:bluetooth"));
+            QTimer::singleShot(500, self.data(), &SystemControl::readRadios);
+        }, Qt::QueuedConnection);
+    }).detach();
+}
+#endif

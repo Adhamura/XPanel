@@ -40,11 +40,15 @@ public:
     QJsonObject status() const;                  // for the daemon state
     void calibrateGyro();                        // ~1 s at rest -> gyroBiasChanged()
     void setGyroBias(const QJsonArray &bias);    // [x, y, z] rad/s, device frame
+    void setButtonTest(bool on);                 // true: pressed() for every logical button (Control Mode button test)
 
 signals:
     void special(const QString &name);      // quickpanel, left_button_long, right_button, right_button_long
     void nav(const QString &name);          // up, down, left, right, a, b, x, y, lb, rb
     void action(const QString &name);       // functions the app runs: osk
+    void pressed(const QString &name);      // button test: logical button went down (names as ControlDefaults.js)
+    void released(const QString &name); // button test: a logical button went up
+    void axes(double lx, double ly, double rx, double ry, double lt, double rt); // button test: sticks -1..1 (y up), triggers 0..1
     void unknownKey(int code);
     void statusChanged();
     void gyroBiasChanged(const QJsonArray &bias); // new calibration, to be saved
@@ -98,6 +102,8 @@ private:
 
     QJsonObject m_control;
     bool m_grab = false;
+    bool m_buttonTest = false;
+    QSet<QString> m_testDown;   // logical buttons held, for pressed()
 
     // raw pad state
     QHash<int, int> m_abs;      // ABS code -> value

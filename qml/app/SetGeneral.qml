@@ -38,11 +38,12 @@ Item {
         CcSection { title: qsTr("Device Info") }
         Repeater {
             model: [[qsTr("Model"), (device.rev, device.value("model") && device.value("model") !== "unknown"
-                                           ? device.value("modelName") + "  (" + page.info.model + ")" : page.info.vendor + " " + page.info.model)],
-                    [qsTr("Processor"), qsTr("%1 (%2 threads)").arg(page.info.cpu).arg(page.info.cores)],
+                                           ? device.value("modelName") + (page.info.model ? "  (" + page.info.model + ")" : "")
+                                           : [page.info.vendor, page.info.model].filter(Boolean).join(" ") + (page.info.board ? " (" + page.info.board + ")" : ""))],
+                    [qsTr("Processor"), page.info.cpu ? qsTr("%1 (%2 threads)").arg(page.info.cpu).arg(page.info.cores) : ""],
                     [qsTr("Graphics"), page.info.gpu], [qsTr("Memory"), page.info.ram], [qsTr("Display"), page.info.display],
-                    ["BIOS", page.info.bios + "  (" + page.info.biosDate + ")"],
-                    [qsTr("Serial number"), device.value("serial") || qsTr("shown when xpanel-daemon runs")],
+                    ["BIOS", (page.info.bios || "") + (page.info.bios && page.info.biosDate ? "  (" + page.info.biosDate + ")" : "")],
+                    [qsTr("Serial number"), device.value("serial") || page.info.serial || qsTr("shown when xpanel-daemon runs")],
                     [qsTr("System"), page.info.os], [qsTr("Kernel"), page.info.kernel]]
             CcRow { title: modelData[0]; Text { text: modelData[1] || "—"; color: T.text; font.pixelSize: 18 } }
         }
@@ -62,7 +63,7 @@ Item {
         }
 
         CcSection { title: qsTr("About") }
-        CcRow { title: "XPanel"; description: qsTr("Quick Panel and Control Center for the ROG Ally on Linux")
+        CcRow { title: "XPanel"; description: qsTr("Quick Panel and Control Center for the ROG Ally")
             Text { text: qsTr("Version %1").arg(appVersion); color: T.text; font.pixelSize: 18 } }
         CcRow { title: qsTr("Service"); description: device.error ? qsTr("No access: %1").arg(device.error) : qsTr("xpanel-daemon (TDP, fan, charge limit, lighting)")
             Text { text: device.connected ? qsTr("Running") : device.error ? qsTr("No access") : qsTr("Not running"); color: device.connected ? T.text : T.warn; font.pixelSize: 18 } }

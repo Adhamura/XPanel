@@ -3,7 +3,14 @@
 
 #include <algorithm>
 
-#ifndef Q_OS_WIN
+#ifdef Q_OS_WIN
+#include "GameLibrary.h"
+#include <QCoreApplication>
+#include <QSet>
+#include <QSettings>
+#include <windows.h>
+#include <tlhelp32.h>
+#else
 #include <QCoreApplication>
 #include <QSet>
 #include <dirent.h>
@@ -19,10 +26,8 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 
 void GameWatcher::start()
 {
-#ifndef Q_OS_WIN // Windows: no game detection yet
     poll();
     m_timer.start();
-#endif
 }
 
 QString GameWatcher::titleOf(const QString &id) const
@@ -34,8 +39,63 @@ QString GameWatcher::titleOf(const QString &id) const
 }
 
 #ifdef Q_OS_WIN
-void GameWatcher::poll() {}
 QString GameWatcher::classify(int) const { return {}; }
+
+// Windows: the Steam game from the registry (RunningAppID), plus library apps found by exe name.
+void GameWatcher::poll()
+{
+    QSet<QString> running;
+    QList<QString> fresh;
+    const quint32 appid = QSettings("HKEY_CURRENT_USER/Software/Valve/Steam", QSettings::NativeFormat)
+                              .value("RunningAppID", 0).toUInt();
+    if (appid) {
+        const QString id = "steam:" + QString::number(appid);
+        if (!ProfileRules::isIgnoredSteamAppId(QString::number(appid)) &&
+            !(m_titleOf && ProfileRules::isSteamToolName(m_titleOf(id))))
+            running.insert(id);
+    }
+    const QHash<QString, QString> exes = GameLibrary::exeIds();
+    if (!exes.isEmpty()) {
+        const DWORD self = GetCurrentProcessId();
+        HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if (snap != INVALID_HANDLE_VALUE) {
+            PROCESSENTRY32W pe;
+            pe.dwSize = sizeof pe;
+            for (BOOL ok = Process32FirstW(snap, &pe); ok; ok = Process32NextW(snap, &pe)) {
+                if (pe.th32ProcessID == self)
+                    continue;
+                const auto it = exes.constFind(QString::fromWCharArray(pe.szExeFile).toLower());
+                if (it != exes.constEnd())
+                    running.insert(it.value());
+            }
+            CloseHandle(snap);
+        }
+    }
+    QStringList ended;
+    for (auto it = m_games.begin(); it != m_games.end();) {
+        if (running.contains(it.key())) { ++it; continue; }
+        ended << it.key();
+        it = m_games.erase(it);
+    }
+    for (const QString &id : std::as_const(running)) // new games (several at once: any order)
+        if (!m_games.contains(id))
+            m_games.insert(id, ++m_seq);
+
+    QString newest;
+    quint64 best = 0;
+    for (auto it = m_games.begin(); it != m_games.end(); ++it)
+        if (it.value() > best) { best = it.value(); newest = it.key(); }
+
+    for (const QString &id : std::as_const(ended))
+        emit gameEnded(id);
+    if (newest != m_current) {
+        m_current = newest;
+        m_currentTitle = newest.isEmpty() ? QString() : titleOf(newest);
+        if (!newest.isEmpty())
+            emit gameStarted(m_current, m_currentTitle);
+        emit currentChanged();
+    }
+}
 #else
 
 static QByteArray readProc(int pid, const char *file, qsizetype max)

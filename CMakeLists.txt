@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.5.0 LANGUAGES CXX)
+project(XPanel VERSION 1.6.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -79,7 +79,7 @@ qt_add_qml_module(XPanel
         qml/Theme.js
         qml/ControlDefaults.js
         qml/app/AppWindow.qml qml/app/CcPage.qml qml/app/CcButton.qml qml/app/CcSwitch.qml
-        qml/app/CcSlider.qml qml/app/CcChoice.qml qml/app/CcRow.qml qml/app/CcSection.qml qml/app/CcField.qml
+        qml/app/CcSlider.qml qml/app/CcChoice.qml qml/app/CcDropdown.qml qml/app/CcScrollBar.qml qml/app/ControllerMap.qml qml/app/ControllerMapHotspots.js qml/app/CcRow.qml qml/app/CcSection.qml qml/app/CcField.qml
         qml/app/LibraryPage.qml qml/app/ControlPage.qml qml/app/GalleryPage.qml qml/app/UserPage.qml
         qml/app/SettingsPage.qml qml/app/SetGeneral.qml qml/app/SetPerformance.qml qml/app/SetUpdate.qml
         qml/app/SetCalibration.qml qml/app/SetLighting.qml qml/app/SetAudio.qml
@@ -114,10 +114,21 @@ target_compile_definitions(XPanel PRIVATE XPANEL_VERSION="${PROJECT_VERSION}")
 target_link_libraries(XPanel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Quick Qt6::Network Qt6::DBus Qt6::Svg)
 if(WIN32)
     # Windows (experimental): no console window, app icon, global hotkeys (user32)
-    set_target_properties(XPanel PROPERTIES WIN32_EXECUTABLE ON)
+    set_target_properties(XPanel PROPERTIES WIN32_EXECUTABLE ON CXX_STANDARD 20) # C++/WinRT coroutines need C++20 on newer MSVC
     target_sources(XPanel PRIVATE packaging/windows/xpanel.rc)
     target_compile_definitions(XPanel PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(XPanel PRIVATE user32)
+    target_sources(XPanel PRIVATE src/UpdateCenterWin.cpp src/BrightnessWin.cpp)
+    target_link_libraries(XPanel PRIVATE user32 setupapi shell32 dxva2 wbemuuid ole32 oleaut32)
+    target_link_libraries(XPanel PRIVATE gdi32) # gamma ramp (software dimming)
+    target_link_libraries(XPanel PRIVATE advapi32) # registry reads in DeviceInfo
+    target_sources(XPanel PRIVATE src/NetworkControlWin.cpp src/AudioControlWin.cpp) # WLAN API + WinRT Bluetooth, Core Audio
+    target_link_libraries(XPanel PRIVATE wlanapi windowsapp)
+    target_link_libraries(XPanel PRIVATE hid xinput secur32) # controllers, user name
+    target_link_libraries(XPanel PRIVATE uuid) # CLSID_ShellLink (Game Library Start Menu scan)
+    target_sources(XPanel PRIVATE src/SystemControlWin.cpp src/SystemControlWin.h) # volume, radios, power, display, sensors
+    target_link_libraries(XPanel PRIVATE pdh powrprof windowsapp)
+    target_sources(XPanel PRIVATE src/AmdAdlWin.cpp src/AmdAdlWin.h) # AMD GPU temp/power via ADL (loaded at run time)
+    target_include_directories(XPanel PRIVATE third_party/adl/include)
 endif()
 
 if(LayerShellQt_FOUND)
@@ -151,11 +162,14 @@ endif()
 # Linux: root service with the input layer. Windows: ASUS ACPI + HID backend in the user session.
 if(WIN32)
     add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/HardwareWin.cpp
-        daemon/InputLayerStub.h)
-    set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON)
+        daemon/InputLayerStub.h daemon/InputLayerWin.cpp daemon/InputLayerWinHelpers.h
+        daemon/AllyMcu.h daemon/AllyMcuWin.h daemon/AllyMcuWin.cpp
+        daemon/GyroWin.cpp daemon/GyroWin.h daemon/GyroMath.h daemon/GyroMath.cpp third_party/vigem/src/ViGEmClient.cpp)
+    target_include_directories(xpanel-daemon PRIVATE third_party/vigem/include)
+    set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON CXX_STANDARD 20) # C++/WinRT (GyroWin.cpp)
     target_sources(xpanel-daemon PRIVATE packaging/windows/xpanel.rc)
     target_compile_definitions(xpanel-daemon PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(xpanel-daemon PRIVATE hid setupapi)
+    target_link_libraries(xpanel-daemon PRIVATE hid setupapi xinput windowsapp)
 else()
     add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/Hardware.cpp
         daemon/InputLayer.h daemon/InputLayer.cpp daemon/Imu.h daemon/Imu.cpp daemon/GyroMath.h daemon/GyroMath.cpp)

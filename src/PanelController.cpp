@@ -7,6 +7,11 @@
 #include <QGuiApplication>
 #include <QScreen>
 
+#ifdef Q_OS_WIN
+#include <vector>
+#include <windows.h>
+#endif
+
 #ifdef XPANEL_HAVE_XCB
 #include <QtGui/qguiapplication_platform.h>
 #if QT_CONFIG(xcb)
@@ -19,6 +24,34 @@
 
 #ifdef XPANEL_HAVE_LAYERSHELL
 #include <LayerShellQt/Window>
+#endif
+
+#ifdef Q_OS_WIN
+// GDI name ("\.\DISPLAY1") of the active internal panel: QueryDisplayConfig target with an
+// internal or embedded DisplayPort output. Empty when there is none.
+static QString internalGdiName()
+{
+    UINT32 np = 0, nm = 0;
+    if (GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &np, &nm) != ERROR_SUCCESS)
+        return {};
+    std::vector<DISPLAYCONFIG_PATH_INFO> paths(np);
+    std::vector<DISPLAYCONFIG_MODE_INFO> modes(nm);
+    if (QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &np, paths.data(), &nm, modes.data(), nullptr) != ERROR_SUCCESS)
+        return {};
+    for (UINT32 i = 0; i < np; ++i) {
+        const DISPLAYCONFIG_VIDEO_OUTPUT_TECHNOLOGY t = paths[i].targetInfo.outputTechnology;
+        if (t != DISPLAYCONFIG_OUTPUT_TECHNOLOGY_INTERNAL && t != DISPLAYCONFIG_OUTPUT_TECHNOLOGY_DISPLAYPORT_EMBEDDED)
+            continue;
+        DISPLAYCONFIG_SOURCE_DEVICE_NAME src = {};
+        src.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+        src.header.size = sizeof(src);
+        src.header.adapterId = paths[i].sourceInfo.adapterId;
+        src.header.id = paths[i].sourceInfo.id;
+        if (DisplayConfigGetDeviceInfo(&src.header) == ERROR_SUCCESS)
+            return QString::fromWCharArray(src.viewGdiDeviceName);
+    }
+    return {};
+}
 #endif
 
 // Steam Game Mode: gamescope composites an X11 window over the game when the window has the
@@ -108,10 +141,17 @@ void PanelController::openApp(const QString &page)
     }
     // full screen on the handheld's own screen, a normal window elsewhere
     QScreen *s = QGuiApplication::primaryScreen();
+    bool internal = false;
+#ifdef Q_OS_WIN
+    const QString gdi = internalGdiName(); // the Ally's panel; the primary screen when it is not active
     for (QScreen *sc : QGuiApplication::screens())
-        if (sc->name().startsWith("eDP")) s = sc;
+        if (!gdi.isEmpty() && sc->name() == gdi) { s = sc; internal = true; }
+#else
+    for (QScreen *sc : QGuiApplication::screens())
+        if (sc->name().startsWith("eDP")) { s = sc; internal = true; }
+#endif
     if (s) m_app->setScreen(s);
-    if (s && s->name().startsWith("eDP") && QGuiApplication::screens().size() == 1)
+    if (s && internal && QGuiApplication::screens().size() == 1)
         m_app->showFullScreen();
     else
         m_app->show();

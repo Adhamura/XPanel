@@ -62,7 +62,7 @@ Item {
         target: device
         function onStateChanged() {
             const names = { opmode: qsTr("Operating Mode"), charge: qsTr("Charge limit"), lighting: qsTr("Lighting"),
-                            fan: qsTr("Fan curve"), eco: qsTr("Eco Mode"), gpuClock: qsTr("GPU clock") }
+                            fan: qsTr("Fan curve"), eco: qsTr("Eco Mode"), cpuBoost: qsTr("CPU Boost"), gpuClock: qsTr("GPU clock") }
             const st = {}
             for (const k in names) {
                 const v = device.value(k)

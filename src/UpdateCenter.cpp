@@ -4,7 +4,9 @@
 
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QDir>
+#include <QProcess>
 #include <QFile>
 #include <QNetworkReply>
 #include <QRegularExpression>
@@ -34,6 +36,10 @@ void UpdateCenter::done()
 {
     if (--m_pending > 0)
         return;
+#ifdef Q_OS_WIN
+    m_lastCheck = QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm");
+    emit changed();
+#else
     m_packages = m_collect;
     // drivers & firmware packages: installed version + pending update
     QMap<QString, QString> pending;
@@ -51,12 +57,32 @@ void UpdateCenter::done()
     }
     m_lastCheck = QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm");
     emit changed();
+#endif
 }
 
 void UpdateCenter::check()
 {
     if (m_pending > 0)
         return;
+#ifdef Q_OS_WIN
+    checkWin();
+#else
+    checkLinux();
+#endif
+}
+
+#ifndef Q_OS_WIN
+// Windows has no pacman or fwupd: see UpdateCenterWin.cpp
+void UpdateCenter::download(const QString &, const QString &, const QString &, const QString &) {}
+void UpdateCenter::cancelDownload() {}
+void UpdateCenter::install(const QVariantMap &) {}
+void UpdateCenter::installAllDrivers() {}
+void UpdateCenter::restartNow() {}
+void UpdateCenter::openStore(const QString &) {}
+#endif
+
+void UpdateCenter::checkLinux()
+{
     m_collect.clear();
     m_firmware.clear();
     m_pending = 5;
@@ -236,8 +262,13 @@ void UpdateCenter::restartToFirmware()
 
 void UpdateCenter::openUrl(const QString &url)
 {
+#ifdef Q_OS_WIN
+    if (url.startsWith("https://"))
+        QDesktopServices::openUrl(QUrl(url));
+#else
     if (url.startsWith("https://"))
         QProcess::startDetached("xdg-open", {url});
+#endif
 }
 
 void UpdateCenter::updatePackages()

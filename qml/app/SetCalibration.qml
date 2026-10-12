@@ -25,8 +25,8 @@ CcPage {
     CcRow { title: qsTr("Gyro")
             description: qsTr("Put the Ally on a flat table and do not touch it, then press Start (about 1 second).")
                          + (cal.gyroResult ? "  " + cal.gyroResult : "")
-                         + (cal.gyroState === "no device" && !cal.gyroResult ? "  " + qsTr("No motion sensor found.") : "")
-                         + (cal.gyroState === "" ? "  " + qsTr("Needs xpanel-daemon (Linux).") : "")
+                         + (cal.gyroState === "no device" && !cal.gyroResult ? "  " + (desktop.windows ? qsTr("No motion sensor found.") : qsTr("No motion sensor found.")) : "")
+                         + (cal.gyroState === "" ? "  " + (desktop.windows ? qsTr("Needs xpanel-daemon.") : qsTr("Needs xpanel-daemon (Linux).")) : "")
         CcButton { text: qsTr("Start"); enabledButton: cal.gyroState === "ready" || cal.gyroState === "active"
                    onClicked: device.calibrateGyro() } }
     CcRow { title: qsTr("Stick and trigger limits for now"); description: qsTr("Dead zones and trigger ranges in Control Mode work as a calibration.")

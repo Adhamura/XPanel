@@ -32,4 +32,6 @@ Flickable {
         }
     }
     Behavior on contentY { NumberAnimation { duration: 120 } }
+    // parented to the page itself (not its content) so it stays in place while the content scrolls
+    CcScrollBar { parent: page; flickable: page }
 }

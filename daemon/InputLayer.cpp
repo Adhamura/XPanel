@@ -346,6 +346,12 @@ QJsonObject InputLayer::preset() const
     return m_control[p].toObject();
 }
 
+void InputLayer::setButtonTest(bool on)
+{
+    m_buttonTest = on;
+    m_testDown.clear();
+}
+
 void InputLayer::setGrab(bool grab)
 {
     if (grab == m_grab)
@@ -451,7 +457,10 @@ void InputLayer::readPad()
             if (e.type == EV_KEY) {
                 if (e.value == 2) continue;
                 if (kRawSpecial.contains(e.code)) {
-                    if (e.value) emit special(kRawSpecial[e.code]);
+                    if (e.value) {
+                        if (m_buttonTest) emit pressed(e.code == KEY_F16 ? "QAM" : "Armoury");
+                        emit special(kRawSpecial[e.code]);
+                    }
                     continue;
                 }
                 if (!kRawButtons.contains(e.code)) {
@@ -486,7 +495,10 @@ void InputLayer::readKeyboard(int fd)
             // source and the keyboard copy goes on unchanged, so a press never opens twice.
             const bool padHasIt = m_pad >= 0 && testBit(m_pad, EV_KEY, e.code);
             if (kRawSpecial.contains(e.code) && !padHasIt) {
-                if (e.value) emit special(kRawSpecial[e.code]);
+                if (e.value) {
+                    if (m_buttonTest) emit pressed(e.code == KEY_F16 ? "QAM" : "Armoury");
+                    emit special(kRawSpecial[e.code]);
+                }
                 continue;
             }
             if ((e.code == KEY_F17 || e.code == KEY_F18) && !padHasIt) {
@@ -600,6 +612,19 @@ void InputLayer::frame()
         const double s = r > 0 ? shapeStick(r, c) / r : 0;
         x *= s; y *= s;
     };
+    if (m_buttonTest) { // raw stick and trigger values for the button test drawing (at most ~30 per second, only on change)
+        static qint64 lastAt = 0;
+        static double last[6] = {2, 2, 2, 2, 2, 2};
+        const double cur[6] = {lx, -ly, rx, -ry, trigger(ABS_Z), trigger(ABS_RZ)};
+        const qint64 t = QDateTime::currentMSecsSinceEpoch();
+        bool diff = false;
+        for (int i = 0; i < 6; ++i) if (std::abs(cur[i] - last[i]) > 0.005) diff = true;
+        if (diff && t - lastAt >= 33) {
+            lastAt = t;
+            for (int i = 0; i < 6; ++i) last[i] = cur[i];
+            emit axes(cur[0], cur[1], cur[2], cur[3], cur[4], cur[5]);
+        }
+    }
     shape(lx, ly, p["lstick"].toObject());
     shape(rx, ry, p["rstick"].toObject());
     const QJsonObject tl = p["lt"].toObject();
@@ -609,7 +634,14 @@ void InputLayer::frame()
 
     // logical buttons held now
     QSet<QString> now;
-    for (int k : std::as_const(m_keysDown)) now.insert(kRawButtons.value(k));
+    // "swapPaddles": the two back paddle names trade places, right where raw codes become logical buttons
+    const bool swapPaddles = m_control["swapPaddles"].toBool(false);
+    for (int k : std::as_const(m_keysDown)) {
+        QString name = kRawButtons.value(k);
+        if (swapPaddles && name == "Left paddle") name = "Right paddle";
+        else if (swapPaddles && name == "Right paddle") name = "Left paddle";
+        now.insert(name);
+    }
     const int hx = m_abs.value(ABS_HAT0X), hy = m_abs.value(ABS_HAT0Y);
     if (hy < 0) now.insert("D-pad up");
     if (hy > 0) now.insert("D-pad down");
@@ -617,6 +649,14 @@ void InputLayer::frame()
     if (hx > 0) now.insert("D-pad right");
     if (lt > 127) now.insert("LT");
     if (rt > 127) now.insert("RT");
+
+    if (m_buttonTest) { // Control Mode button test: report every button that went down
+        for (const QString &b : std::as_const(now))
+            if (!m_testDown.contains(b)) emit pressed(b);
+        for (const QString &b : std::as_const(m_testDown))
+            if (!now.contains(b)) emit released(b);
+        m_testDown = now;
+    }
 
     if (m_grab) {
         // menu navigation for XPanel: D-pad or left stick, face buttons, bumpers

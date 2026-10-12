@@ -4,12 +4,18 @@
 #include <QRegularExpression>
 #include <QSet>
 
-NetworkControl::NetworkControl(QObject *parent) : QObject(parent) {}
+NetworkControl::NetworkControl(QObject *parent) : QObject(parent)
+{
+#ifdef Q_OS_WIN
+    winInit();
+#endif
+}
 
 void NetworkControl::begin() { ++m_busy; emit busyChanged(); }
 void NetworkControl::end() { m_busy = qMax(0, m_busy - 1); emit busyChanged(); }
 void NetworkControl::setMessage(const QString &m) { m_message = m; emit messageChanged(); }
 
+#ifndef Q_OS_WIN // Windows: src/NetworkControlWin.cpp
 // nmcli -t escapes ':' inside values as "\:"
 static QStringList splitTerse(const QString &line)
 {
@@ -130,3 +136,4 @@ void NetworkControl::removeBluetooth(const QString &mac)
 {
     runProcess(this, "bluetoothctl", {"remove", mac}, [this](const QString &, int) { listBluetooth(); });
 }
+#endif // !Q_OS_WIN

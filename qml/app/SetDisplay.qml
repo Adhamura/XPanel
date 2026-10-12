@@ -13,7 +13,8 @@ CcPage {
         { id: "night", name: qsTr("Night"), note: qsTr("Very warm, for the evening (3400 K).") }
     ]
     CcSection { title: qsTr("Color presets")
-                note: !desktop.colorPresets ? qsTr("Not available %1.").arg(desktop.where)
+                note: desktop.windows ? qsTr("Not available on Windows.")
+                      : !desktop.colorPresets ? qsTr("Not available %1.").arg(desktop.where)
                       : desktop.kde ? qsTr("Screen colour presets. They use KDE Night Color, so they apply to the whole screen.")
                       : qsTr("Screen colour presets. They use GNOME Night Light (always on), so they apply to the whole screen.") }
     Repeater {
@@ -24,6 +25,7 @@ CcPage {
     }
     CcSection { title: qsTr("Display")
                 note: desktop.displayMode ? ""
+                      : desktop.windows ? qsTr("Display mode and refresh rate are not available on Windows.")
                       : desktop.gamescope ? qsTr("Display mode, refresh rate and wide colour use KDE's display settings: in Steam Game Mode, use Steam's Display settings.")
                       : qsTr("Display mode, refresh rate and wide colour use KDE's display settings: not available %1.").arg(desktop.where) }
     CcRow { visible: desktop.displayMode; title: qsTr("Display mode")
@@ -48,6 +50,7 @@ CcPage {
                 ? sys.displays[index] : { id: "", label: "", internal: true, brightness: sys.brightness }
             title: sys.displays.length > 1 || (sys.displays.length === 1 && !e.internal)
                    ? qsTr("Brightness \u2014 %1").arg(e.label) : qsTr("Brightness")
+            description: e.soft ? qsTr("Software dimming (this monitor does not accept DDC/CI on Windows).") : ""
             CcSlider { width: 460; from: 1; to: 100; unit: " %"; value: row.e.brightness
                        onMoved: (v) => { if (row.e.id === "") sys.setBrightness(v); else sys.setDisplayBrightness(row.e.id, v) } }
         }

@@ -20,6 +20,7 @@ DeviceClient::DeviceClient(QObject *parent) : QObject(parent)
     connect(&m_sock, &QLocalSocket::connected, this, [this] {
         send({{"get", true}});
         if (m_grab) send({{"input", QJsonObject{{"grab", true}}}});
+        if (m_test) send({{"input", QJsonObject{{"buttonTest", true}}}});
     });
     connect(&m_sock, &QLocalSocket::disconnected, this, [this] {
         if (m_ready) {
@@ -61,10 +62,16 @@ void DeviceClient::onRead()
     while (m_sock.canReadLine()) {
         const QJsonObject msg = QJsonDocument::fromJson(m_sock.readLine()).object();
         if (msg.contains("event")) {
+            if (msg["event"].toString() == "axes") {
+                emit axes(msg.toVariantMap());
+                continue;
+            }
             const QString kind = msg["event"].toString(), name = msg["name"].toString();
             if (kind == "special") emit special(name);
             else if (kind == "nav") emit nav(name);
             else if (kind == "action") emit action(name);
+            else if (kind == "press") emit pressed(name);
+            else if (kind == "release") emit released(name);
             continue;
         }
         if (msg.contains("error")) {
@@ -106,6 +113,14 @@ void DeviceClient::setGrab(bool grab)
         return;
     m_grab = grab;
     send({{"input", QJsonObject{{"grab", grab}}}});
+}
+
+void DeviceClient::setButtonTest(bool on)
+{
+    if (on == m_test)
+        return;
+    m_test = on;
+    send({{"input", QJsonObject{{"buttonTest", on}}}});
 }
 
 void DeviceClient::calibrateGyro()

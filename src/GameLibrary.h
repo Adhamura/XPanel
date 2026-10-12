@@ -23,6 +23,8 @@ public:
     Q_INVOKABLE void launch(const QString &id);
     // name of a game id, also of Steam tools and hidden games ("" when unknown)
     QString titleOf(const QString &id) const;
+    // Windows: exe file name (lower case) -> "app:<id>" of the library apps; GameWatcher reads it
+    static QHash<QString, QString> exeIds() { return s_exeIds; }
 
 signals:
     void gamesChanged();
@@ -31,6 +33,8 @@ signals:
 private:
     QVariantList scanSteam();
     QVariantMap desktopEntry(const QString &path) const;
+    QVariantList scanApps(bool withIcons) const; // Windows: Start Menu shortcuts
+    static QHash<QString, QString> s_exeIds;
     Config *m_config;
     QVariantList m_games;
     QHash<QString, QString> m_steamNames; // app id -> name, tools included
