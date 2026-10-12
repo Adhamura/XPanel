@@ -138,6 +138,7 @@ QVariantMap DeviceInfo::info() const
     m["serial"] = smbiosSerial();
 #else
     m["model"] = readFile("/sys/class/dmi/id/product_name");
+    m["board"] = readFile("/sys/class/dmi/id/board_name");
     m["vendor"] = readFile("/sys/class/dmi/id/sys_vendor");
     m["bios"] = readFile("/sys/class/dmi/id/bios_version");
     m["biosDate"] = readFile("/sys/class/dmi/id/bios_date");

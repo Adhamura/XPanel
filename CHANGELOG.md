@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.1
+
+- **Memory Assigned to GPU on Linux.** Settings › Performance › GPU Settings now also works on
+  Linux. It reads and writes the BIOS UMA size through the `asus-armoury` kernel driver's `apu_mem`
+  attribute (Auto, 1 to 8 GB on the Ally X) and applies it at the next boot, as on Windows. It needs a
+  kernel with `asus-armoury` (6.19+, or CachyOS / Bazzite kernels); without it the row stays hidden.
+- **Linux fixes.** The charging state follows any mains supply, not only one named `AC0`. Device Info
+  shows the board name. The Game Library also finds Steam in `~/.steam/steam` and the Flatpak.
+- **Docs.** README screenshots of the Control Mode key map (front, top and back) in test mode, made by
+  `tools/screenshots/capture.sh` with scripted pad input. The Windows notes are up to date with 1.6.
+
 ## 1.6.0
 
 Windows catches up with Linux: tested on a ROG Ally X with Windows 11 24H2.

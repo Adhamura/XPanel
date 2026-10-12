@@ -192,9 +192,9 @@ logind brightness, `xdg-open` and `x-terminal-emulator`, no KDE-only controls.
 </details>
 
 **Windows 10 / 11 x64 (experimental):** Operating Mode / TDP, fan, charge limit, Aura lighting
-and boot sound through the ASUS System Control Interface (installed on every Ally). Controller
-remapping, the Ally-button panel, brightness / volume sliders and the Linux-only tiles are not
-available on Windows yet. There is **no 32-bit build**: the Ally is a 64-bit device.
+and boot sound through the ASUS System Control Interface (installed on every Ally). Since 1.6
+also controller remapping (programmed into the Ally's controller), gyro, the Ally buttons, system
+tiles, brightness and volume, the Update Center for ASUS BIOS / firmware / drivers. There is **no 32-bit build**: the Ally is a 64-bit device.
 
 ## Install
 
@@ -404,7 +404,7 @@ See the top of `daemon/main.cpp` for all keys.
 
 **Does it work on Windows?** Partly, and experimentally: the installer sets Operating Mode / TDP,
 fan (including a custom curve), charge limit, lighting and boot sound the way Armoury Crate does.
-Controller remapping, gyro and the Ally buttons are Linux-only for now. XPanel is made first for Linux, where there is no
+Since 1.6 also controller remapping, gyro, the Ally buttons and the system tiles. XPanel is made first for Linux, where there is no
 Armoury Crate.
 
 **Does it conflict with Handheld Daemon (hhd), InputPlumber or Decky TDP plugins?** Yes, they

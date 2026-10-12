@@ -42,7 +42,13 @@ static QString steamRoot()
         p = "C:/Program Files (x86)/Steam";
     return QDir::cleanPath(QDir::fromNativeSeparators(p));
 #else
-    return QDir::homePath() + "/.local/share/Steam";
+    // native, the ~/.steam/steam link of Debian / Ubuntu packages, Flatpak
+    const QString home = QDir::homePath();
+    for (const QString &p : {home + "/.local/share/Steam", home + "/.steam/steam",
+                             home + "/.var/app/com.valvesoftware.Steam/.local/share/Steam"})
+        if (QFile::exists(p + "/steamapps"))
+            return QFileInfo(p).canonicalFilePath();
+    return home + "/.local/share/Steam";
 #endif
 }
 
