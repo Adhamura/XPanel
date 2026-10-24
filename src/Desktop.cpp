@@ -224,5 +224,6 @@ QStringList DesktopInfo::unavailableTiles() const
     if (!c.displayMode) out << "display";
     if (!c.showDesktop) out << "desktop";
     if (!c.screenshot) out << "screenshot";
+    if (windows()) out << "cpuclock" << "gpuclock";
     return out;
 }

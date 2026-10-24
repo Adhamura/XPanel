@@ -44,6 +44,10 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 - **⚡ Operating Modes like on Windows.** Silent 13 W · Performance 17 W · Turbo 25 W
   (**30 W on the charger**) · Manual with separate SPL / SPPT / FPPT. On the original ROG Ally:
   Silent 10 W · Performance 15 W · Turbo 25 W (30 W on the charger), as ASUS sets them.
+  **Lock boost to SPL** keeps SPPT / FPPT at the Manual watts, so the chip never draws more.
+- **🧮 CPU and GPU clocks, your call.** Quick Panel tiles for the CPU and GPU clock: Auto (the
+  driver decides), a Range (minimum and maximum) or one Fixed clock. Cap the CPU to keep it cool,
+  or keep the GPU from idling at 800 MHz. The Real-time Monitor shows both clocks live.
 - **🔌 Settings that stay set.** The daemon re-applies your mode when you plug or unplug the
   charger, and when the firmware or another tool changes the TDP behind your back.
 - **🗂️ A real Control Center.** Game Library with per-game mode, TDP, fan and control preset,
@@ -331,7 +335,9 @@ is not listed, is not installed.
 | Y | E | edit the Quick Panel tiles |
 | LB / RB | PgUp / PgDn | volume (panel) · switch section (Control Center) |
 
-Tiles change on each press (Silent → Performance → Turbo → Manual → Silent). The Control Center
+Tiles change on each press (Silent → Performance → Turbo → Manual → Silent). Manual TDP, CPU Clock
+and GPU Clock open a pop-up instead: ▲ ▼ pick a row, ◀ ▶ change a value (or tap the arrows), A on
+**Mode** switches Auto → Range → Fixed, A on **Lock boost to SPL** turns the lock on or off. The Control Center
 also opens from the gear icon, the tray menu, Meta+Shift+C or `XPanel --app [page]`, where page
 is `library`, `control`, `gallery`, `user`, `settings` or `settings/<section>`.
 Settings are kept in `~/.config/XPanel/config.json`.
@@ -495,6 +501,8 @@ tray icon); if it was closed during a game, it restores your settings the next t
 - **1.2** — ✅ Gyro (aim and mouse); ✅ custom fan curve editor; ✅ more Aura effects (dual
   breathing, rainbow direction, strobe, battery level, follow Operating Mode). Not yet tested on
   hardware.
+- **1.7** — ✅ CPU and GPU clock control (Auto / Range / Fixed) on Linux; ✅ lock boost to SPL;
+  ✅ clocks in the Real-time Monitor.
 - **Later** — ✅ GNOME (experimental); ✅ Steam Game Mode / gamescope (experimental); ✅ other
   ASUS handhelds: ROG Xbox Ally and ROG Xbox Ally X (experimental, untested on hardware);
   ✅ translations: German, Spanish, French, Italian, Japanese, Korean, Brazilian Portuguese,

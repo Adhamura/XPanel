@@ -428,14 +428,24 @@ bool applyCpu(bool eco, const QString &opmode, bool boostOn)
     return true;
 }
 
-bool applyGpuClock(int mhz)
+bool applyGpuClock(int minMhz, int maxMhz)
 {
-    return mhz <= 0; // not available on Windows yet (the AMD driver owns the GPU clock)
+    return minMhz <= 0 && maxMhz <= 0; // not available on Windows yet (the AMD driver owns the GPU clock)
 }
 
 QJsonObject gpuRange()
 {
     return {{"gpuMin", 0}, {"gpuMax", 0}};
+}
+
+bool applyCpuClock(int minMhz, int maxMhz)
+{
+    return minMhz <= 0 && maxMhz <= 0;
+}
+
+QJsonObject cpuRange()
+{
+    return {{"cpuMin", 0}, {"cpuMax", 0}};
 }
 
 int readAttr(const QString &name)

@@ -13,6 +13,17 @@ Item {
     property var onStep: null        // function(item, newValue)
     visible: false
 
+    component Arrow: Text {
+        property int dir
+        property int row
+        width: 48 * ch.s; height: 64 * ch.s
+        horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+        text: dir < 0 ? "◀" : "▶"
+        color: arrowMouse.pressed ? T.text : T.accent
+        font.pixelSize: 26 * ch.s
+        MouseArea { id: arrowMouse; anchors.fill: parent; onClicked: { ch.index = parent.row; ch.adjust(parent.dir) } }
+    }
+
     function show(t, list, pick, step) {
         title = t; items = list; onPick = pick; onStep = step || null
         index = 0
@@ -34,8 +45,8 @@ Item {
     function accept() {
         const it = items[index]
         if (!it || it.stepper) return
-        if (onPick) onPick(it)
-        hide()
+        if (!(onPick && onPick(it)))
+            hide()
     }
 
     // dim the panel behind
@@ -71,27 +82,37 @@ Item {
                         color: T.text
                         font.pixelSize: 28 * ch.s
                     }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: { ch.index = index; if (!modelData.stepper) ch.accept() }
+                    }
                     Text {
+                        visible: !modelData.stepper
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right; anchors.rightMargin: 22 * ch.s
-                        text: modelData.stepper ? "◀  " + modelData.value + (modelData.unit || "") + "  ▶"
-                                                : (modelData.sub || "")
-                        color: modelData.selected || modelData.stepper ? T.accent : T.dim
+                        text: modelData.sub || ""
+                        color: modelData.selected ? T.accent : T.dim
                         font.pixelSize: 26 * ch.s
+                    }
+                    Row {
+                        visible: !!modelData.stepper
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right; anchors.rightMargin: 10 * ch.s
+                        Arrow { dir: -1; row: index }
+                        Text {
+                            width: 170 * ch.s; height: 64 * ch.s
+                            horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+                            text: modelData.stepper ? modelData.value + (modelData.unit || "") : ""
+                            color: T.accent
+                            font.pixelSize: 26 * ch.s
+                        }
+                        Arrow { dir: 1; row: index }
                     }
                     Rectangle {
                         visible: !!modelData.selected
                         width: 6 * ch.s; height: parent.height - 20 * ch.s
                         anchors.verticalCenter: parent.verticalCenter
                         color: T.accent
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: (m) => {
-                            ch.index = index
-                            if (modelData.stepper) ch.adjust(m.x > width / 2 ? 1 : -1)
-                            else ch.accept()
-                        }
                     }
                 }
             }

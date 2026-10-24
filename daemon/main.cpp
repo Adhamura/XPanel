@@ -23,9 +23,10 @@
 //   daemon -> {"event": "special" | "nav" | "action" | "press", "name": "..."}   (input layer)| "nav" | "action", "name": "..."}   (input layer)
 // Key "control": the resolved Control Mode settings from the app (not echoed in "state").
 // Keys: opmode (silent|performance|turbo|manual), tdp / tdpSlow / tdpFast (W, manual;
-//       tdpSlow / tdpFast 0 = derived from tdp), fan (auto|quiet|max|custom),
+//       tdpSlow / tdpFast 0 = derived from tdp), tdpLock (bool, manual: SPPT = FPPT = SPL), fan (auto|quiet|max|custom),
 //       fanCurve ({"cpu": [[°C, %] x 8], "gpu": [...]}, gpu optional; used by fan "custom", see FanCurve.h),
-//       charge (50..100, 100 = off), eco (bool), gpuClock (MHz, 0 = auto),
+//       charge (50..100, 100 = off), eco (bool), gpuClock / gpuClockMin (max / min MHz, 0 = auto),
+//       cpuClock / cpuClockMin (max / min MHz for every core, 0 = no limit),
 //       lighting (off|static|breathing|dualbreathing|colorcycle|rainbow|strobe|battery|followmode),
 //       lightColor / lightColor2 ("#rrggbb"; lightColor2: dual breathing), lightBrightness (0..3),
 //       lightSpeed (low|medium|high), lightDirection (right|left|up|down: rainbow), bootSound, mcuPowersave (bool),
@@ -145,6 +146,13 @@ public:
         qInfo("xpanel-daemon: ready on %s", qPrintable(kSocketPath));
     }
 
+    ~Daemon() override
+    {
+        // the sockets die after m_clients; their "disconnected" handlers must not run then
+        for (QLocalSocket *c : std::as_const(m_clients))
+            c->disconnect(this);
+    }
+
 private:
     // ---------- state ----------
     void load()
@@ -152,7 +160,8 @@ private:
         m_state = QJsonObject{
             {"opmode", "performance"}, {"tdp", 15}, {"fan", "auto"},
             {"charge", Hardware::readChargeLimit()}, {"lighting", "static"},
-            {"tdpSlow", 0}, {"tdpFast", 0}, {"eco", false}, {"cpuBoost", true}, {"gpuClock", 0},
+            {"tdpSlow", 0}, {"tdpFast", 0}, {"tdpLock", false}, {"eco", false}, {"cpuBoost", true}, {"gpuClock", 0},
+            {"gpuClockMin", 0}, {"cpuClock", 0}, {"cpuClockMin", 0},
             {"lightColor", "#00c8ff"}, {"lightBrightness", 3}, {"lightSpeed", "medium"},
             {"lightColor2", "#ff2d55"}, {"lightDirection", "right"},
             {"bootSound", Hardware::readAttr("boot_sound") == 1},
@@ -216,13 +225,14 @@ private:
             const Model::Range r = tdpRange(key);
             return w >= (key == "tdp" ? r.min : 0) && w <= r.max;
         }
-        if (key == "gpuClock") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 4000;
+        if (key == "gpuClock" || key == "gpuClockMin") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 4000;
+        if (key == "cpuClock" || key == "cpuClockMin") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 8000;
         if (key == "lightBrightness") return v.isDouble() && v.toInt() >= 0 && v.toInt() <= 3;
         if (key == "lightSpeed") return kSpeeds.contains(v.toString());
         if (key == "fanCurve") return FanCurve::valid(v);
         if (key == "lightDirection") return kDirections.contains(v.toString());
         if (key == "lightColor" || key == "lightColor2") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
-        if (key == "eco" || key == "cpuBoost" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
+        if (key == "eco" || key == "cpuBoost" || key == "tdpLock" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
         if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
             const QJsonArray a = v.toArray();
@@ -246,7 +256,8 @@ private:
         } else {
             const int w = m_state["tdp"].toInt();
             const int slow = m_state["tdpSlow"].toInt(), fast = m_state["tdpFast"].toInt();
-            t = {w, slow > 0 ? slow : w + 5, fast > 0 ? fast : w + 10,
+            const bool lock = m_state["tdpLock"].toBool();
+            t = {w, lock ? w : (slow > 0 ? slow : w + 5), lock ? w : (fast > 0 ? fast : w + 10),
                  w <= 13 ? "low-power" : (w <= 20 ? "balanced" : "performance")};
         }
         return t;
@@ -277,9 +288,21 @@ private:
         Hardware::applyTdp(wantedTdp());
         Hardware::applyCpu(m_state["eco"].toBool(), m_state["opmode"].toString(),
                            m_state["cpuBoost"].toBool(true) && !m_state["eco"].toBool());
+        // a boost change resets the cores' max clock
+        applyCpuClock();
         // A profile change can reset the fan curve: put ours back.
         if (m_state["fan"].toString() != "auto")
             applyFan();
+    }
+
+    void applyGpuClock()
+    {
+        Hardware::applyGpuClock(m_state["gpuClockMin"].toInt(), m_state["gpuClock"].toInt());
+    }
+
+    void applyCpuClock()
+    {
+        Hardware::applyCpuClock(m_state["cpuClockMin"].toInt(), m_state["cpuClock"].toInt());
     }
 
     void applyAll()
@@ -288,7 +311,7 @@ private:
         applyFan();
         Hardware::applyChargeLimit(m_state["charge"].toInt());
         applyLighting();
-        Hardware::applyGpuClock(m_state["gpuClock"].toInt());
+        applyGpuClock();
         Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);
         Hardware::writeAttr("mcu_powersave", m_state["mcuPowersave"].toBool() ? 1 : 0);
     }
@@ -329,7 +352,7 @@ private:
         const Model::Info &m = Hardware::model();
         s["modeWatts"] = QJsonObject{{"silent", m.silent.spl}, {"performance", m.performance.spl},
                                      {"turbo", m.turboBattery.spl}, {"turboAc", m.turboAc.spl}};
-        for (const QJsonObject &extra : {Hardware::limits(), Hardware::gpuRange(), m_info, gpuMemInfo()})
+        for (const QJsonObject &extra : {Hardware::limits(), Hardware::gpuRange(), Hardware::cpuRange(), m_info, gpuMemInfo()})
             for (auto it = extra.begin(); it != extra.end(); ++it)
                 s[it.key()] = it.value();
         // gpuMemory: the value chosen since the start (the firmware may report the old one until a restart),
@@ -461,8 +484,9 @@ private:
                 changed = true;
             }
             if (apply.contains("opmode") || apply.contains("tdp") || apply.contains("tdpSlow") ||
-                apply.contains("tdpFast") || apply.contains("eco") || apply.contains("cpuBoost")) applyTdp();
-            if (apply.contains("gpuClock")) Hardware::applyGpuClock(m_state["gpuClock"].toInt());
+                apply.contains("tdpFast") || apply.contains("tdpLock") || apply.contains("eco") || apply.contains("cpuBoost")) applyTdp();
+            else if (apply.contains("cpuClock") || apply.contains("cpuClockMin")) applyCpuClock();
+            if (apply.contains("gpuClock") || apply.contains("gpuClockMin")) applyGpuClock();
             if (apply.contains("bootSound")) Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);
             if (apply.contains("mcuPowersave")) Hardware::writeAttr("mcu_powersave", m_state["mcuPowersave"].toBool() ? 1 : 0);
             if (apply.contains("fan") || (apply.contains("fanCurve") && m_state["fan"] == "custom")) applyFan();
