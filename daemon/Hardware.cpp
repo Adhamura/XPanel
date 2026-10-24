@@ -350,21 +350,64 @@ QJsonObject gpuRange()
     return o;
 }
 
-bool applyGpuClock(int mhz)
+bool applyGpuClock(int minMhz, int maxMhz)
 {
     const QString dev = gpuDevice();
     if (dev.isEmpty())
         return false;
-    if (mhz <= 0) {
+    if (minMhz <= 0 && maxMhz <= 0) {
         writeFile(dev + "/pp_od_clk_voltage", "r");
         writeFile(dev + "/pp_od_clk_voltage", "c");
         return writeFile(dev + "/power_dpm_force_performance_level", "auto");
     }
     const QJsonObject r = gpuRange();
-    mhz = qBound(r["gpuMin"].toInt(), mhz, r["gpuMax"].toInt());
+    const int lo = r["gpuMin"].toInt(), hi = r["gpuMax"].toInt();
+    const int top = maxMhz > 0 ? qBound(lo, maxMhz, hi) : hi;
+    const int bottom = minMhz > 0 ? qBound(lo, minMhz, top) : lo;
     bool ok = writeFile(dev + "/power_dpm_force_performance_level", "manual");
-    ok &= writeFile(dev + "/pp_od_clk_voltage", QString("s 1 %1").arg(mhz));
+    ok &= writeFile(dev + "/pp_od_clk_voltage", QString("s 0 %1").arg(bottom));
+    ok &= writeFile(dev + "/pp_od_clk_voltage", QString("s 1 %1").arg(top));
     ok &= writeFile(dev + "/pp_od_clk_voltage", "c");
+    return ok;
+}
+
+namespace {
+const QString kCpuFreq = "/sys/devices/system/cpu/cpufreq/";
+
+QStringList cpuPolicies()
+{
+    QStringList out;
+    for (const QString &p : QDir(kCpuFreq).entryList({"policy*"}, QDir::Dirs))
+        out << kCpuFreq + p + "/";
+    return out;
+}
+} // namespace
+
+QJsonObject cpuRange()
+{
+    const QStringList pols = cpuPolicies();
+    if (pols.isEmpty())
+        return {{"cpuMin", 0}, {"cpuMax", 0}};
+    return {{"cpuMin", readFile(pols.first() + "cpuinfo_min_freq").toInt() / 1000},
+            {"cpuMax", readFile(pols.first() + "cpuinfo_max_freq").toInt() / 1000}};
+}
+
+bool applyCpuClock(int minMhz, int maxMhz)
+{
+    bool ok = true;
+    for (const QString &pol : cpuPolicies()) {
+        const int lo = readFile(pol + "cpuinfo_min_freq").toInt(), hi = readFile(pol + "cpuinfo_max_freq").toInt();
+        if (hi <= 0)
+            continue;
+        const int top = maxMhz > 0 ? qBound(lo, maxMhz * 1000, hi) : hi;
+        // amd-pstate's own default floor, so "no limit" matches what the driver set at boot
+        const int floor = readFile(pol + "amd_pstate_lowest_nonlinear_freq").toInt();
+        const int bottom = minMhz > 0 ? qBound(lo, minMhz * 1000, top) : qBound(lo, floor > 0 ? floor : lo, top);
+        // lower the floor first: the kernel refuses a max below the current min
+        ok &= writeFile(pol + "scaling_min_freq", QString::number(lo));
+        ok &= writeFile(pol + "scaling_max_freq", QString::number(top));
+        ok &= writeFile(pol + "scaling_min_freq", QString::number(bottom));
+    }
     return ok;
 }
 

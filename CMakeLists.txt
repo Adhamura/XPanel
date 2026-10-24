@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.6.1 LANGUAGES CXX)
+project(XPanel VERSION 1.7.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -73,6 +73,7 @@ qt_add_qml_module(XPanel
         qml/Tile.qml
         qml/VSlider.qml
         qml/Chooser.qml
+        qml/TilePopups.qml
         qml/EditPanel.qml
         qml/StatsStrip.qml
         qml/MonitorOsd.qml

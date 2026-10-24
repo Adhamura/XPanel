@@ -39,6 +39,8 @@ class SystemControl : public QObject {
     // Sensors (Real-time Monitor)
     Q_PROPERTY(int cpuLoad READ cpuLoad NOTIFY statsChanged)
     Q_PROPERTY(int cpuTemp READ cpuTemp NOTIFY statsChanged)
+    Q_PROPERTY(int cpuMhz READ cpuMhz NOTIFY statsChanged)
+    Q_PROPERTY(int gpuMhz READ gpuMhz NOTIFY statsChanged)
     Q_PROPERTY(int gpuLoad READ gpuLoad NOTIFY statsChanged)
     Q_PROPERTY(int gpuTemp READ gpuTemp NOTIFY statsChanged)
     Q_PROPERTY(int fanRpm READ fanRpm NOTIFY statsChanged)
@@ -67,6 +69,8 @@ public:
 
     int cpuLoad() const { return m_cpuLoad; }
     int cpuTemp() const { return m_cpuTemp; }
+    int cpuMhz() const { return m_cpuMhz; }
+    int gpuMhz() const { return m_gpuMhz; }
     int gpuLoad() const { return m_gpuLoad; }
     int gpuTemp() const { return m_gpuTemp; }
     int fanRpm() const { return m_fanRpm; }
@@ -173,7 +177,8 @@ private:
 
     QString m_hwCpu, m_hwGpu, m_hwFan, m_gpuBusy;
     quint64 m_lastIdle = 0, m_lastTotal = 0;
-    int m_cpuLoad = 0, m_cpuTemp = 0, m_gpuLoad = 0, m_gpuTemp = 0, m_fanRpm = 0, m_ramMb = 0;
+    int m_cpuLoad = 0, m_cpuTemp = 0, m_gpuLoad = 0, m_gpuTemp = 0, m_fanRpm = 0, m_ramMb = 0, m_cpuMhz = 0, m_gpuMhz = 0;
+    QStringList m_cpuFreqFiles;
     double m_socWatts = 0, m_batWatts = 0;
 
     QTimer m_slow;   // battery, clock, radios

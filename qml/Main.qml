@@ -43,6 +43,8 @@ Item {
         { id: "refresh",    title: qsTr("Refresh Rate"),      icon: "refresh" },
         { id: "display",    title: qsTr("Display Mode"),      icon: "display" },
         { id: "tdp",        title: qsTr("Manual TDP"),        icon: "sliders" },
+        { id: "cpuclock",   title: qsTr("CPU Clock"),         icon: "cpu" },
+        { id: "gpuclock",   title: qsTr("GPU Clock"),         icon: "gpu" },
         { id: "wifi",       title: qsTr("Wi-Fi"),             icon: "wifi" },
         { id: "bluetooth",  title: qsTr("Bluetooth"),         icon: "bluetooth" },
         { id: "screenshot", title: qsTr("Screenshot"),        icon: "screenshot" }
@@ -106,7 +108,7 @@ Item {
         }
         case "tdp": {
             const w = device.value("tdp")
-            return { value: device.connected ? w + "W" : off,
+            return { value: !device.connected ? off : device.value("tdpLock") ? qsTr("%1W locked").arg(w) : w + "W",
                      badge: device.value("opmode") === "manual" ? qsTr("ON") : "" }
         }
         case "ctrlmode": {
@@ -126,6 +128,9 @@ Item {
             const e = labelOf(fanModes, device.value("fan"))
             return { value: e ? e.label : off }
         }
+        case "cpuclock":
+        case "gpuclock":
+            return device.connected ? popups.tileInfo(id === "cpuclock" ? "cpu" : "gpu") : { value: off }
         case "monitor":  return { value: config.monitorOsd ? qsTr("On") : qsTr("Off") }
         case "refresh":  return { value: sys.refreshRate > 0 ? sys.refreshRate + "Hz" : "" }
         case "display": {
@@ -147,21 +152,16 @@ Item {
         const i = list.findIndex(m => m.value === cur)
         device.setValue(key, list[(i + 1) % list.length].value)
     }
-    function stepTdp() {
-        if (!device.connected) return
-        const lo = device.value("tdpMin") || 7, hi = device.value("tdpMax") || 30
-        let w = (device.value("tdp") || 15) + 2
-        if (w > hi) w = lo
-        device.setValue("tdp", w)
-        if (device.value("opmode") !== "manual") device.setValue("opmode", "manual")
-    }
+    TilePopups { id: popups; chooser: chooser }
     function activateTile(id) {
         switch (id) {
+        case "cpuclock": popups.openClock("cpu"); return
+        case "gpuclock": popups.openClock("gpu"); return
         case "opmode":   cycle("opmode", opModes); return
         case "charge":   cycle("charge", chargeModes); return
         case "rgb":      cycle("lighting", rgbModes); return
         case "fan":      cycle("fan", fanCycle()); return
-        case "tdp":      stepTdp(); return
+        case "tdp":      popups.openTdp(); return
         case "ctrlmode": {
             const i = ctrlModes.findIndex(m => m.value === config.get("control.preset", "gamepad"))
             config.set("control.preset", ctrlModes[(i + 1) % ctrlModes.length].value)

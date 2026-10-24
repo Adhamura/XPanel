@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.7.0
+
+- **CPU and GPU clock control (Linux).** Two new Quick Panel tiles, **CPU Clock** and **GPU Clock**.
+  Ⓐ opens a pop-up with a **Mode** row: **Auto** (the driver decides), **Range** (you set the minimum
+  and maximum) or **Fixed** (one exact clock). ◀ ▶ change the values in 100 MHz steps. A lower CPU
+  maximum keeps the CPU cooler; a higher GPU minimum stops the GPU from idling at 800 MHz. The same
+  limits are in Settings › Performance (GPU minimum clock, CPU maximum / minimum clock). The daemon
+  writes `cpufreq` `scaling_min_freq` / `scaling_max_freq` on every core and the amdgpu
+  `pp_od_clk_voltage` range, keeps them in its state and applies them again at start and after a
+  CPU Boost change. Add the tiles with Ⓨ (Edit). Not on Windows.
+- **Lock boost to SPL.** Settings › Performance › Manual and the Quick Panel's Manual TDP tile: SPPT
+  and FPPT equal SPL, so the chip never draws more than the set watts (without it they are SPL + 5 W
+  and + 10 W, which is why the SoC power could read above the Manual TDP).
+- **Manual TDP tile pop-up.** Ⓐ on the tile opens SPL (◀ ▶, 1 W steps) and the boost lock, instead of
+  stepping +2 W on each press.
+- **Real-time Monitor shows clocks.** CPU (average of all cores) and GPU clock in MHz next to load and
+  temperature.
+- **Fixes.** The daemon no longer crashes when it stops while the app is connected. The ◀ ▶ arrows in
+  the Quick Panel pop-ups now each have their own touch / click area (before, a click on ◀ could raise
+  the value).
+- **Update note.** The new settings need the new daemon. With the AppImage run
+  `sudo ./XPanel-*-x86_64.AppImage --install` again; from source, `sudo scripts/install-daemon.sh`.
+
 ## 1.6.1
 
 - **Memory Assigned to GPU on Linux.** Settings › Performance › GPU Settings now also works on

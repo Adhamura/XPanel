@@ -49,9 +49,12 @@ bool applyCpu(bool eco, const QString &opmode, bool boost);
 // {gpuMemSupported, gpuMemCurrent (MB, 0 = auto), gpuMemOptions ([0 = auto, MB...])}
 QJsonObject gpuMemory();
 bool applyGpuMemory(int mb);            // takes effect after a restart
-// GPU max clock in MHz, 0 = automatic.
-bool applyGpuClock(int mhz);
+// GPU min / max clock in MHz, 0 = no limit; both 0 = automatic.
+bool applyGpuClock(int minMhz, int maxMhz);
 QJsonObject gpuRange();                 // {gpuMin, gpuMax} MHz
+// CPU min / max clock in MHz for every core, 0 = no limit.
+bool applyCpuClock(int minMhz, int maxMhz);
+QJsonObject cpuRange();                 // {cpuMin, cpuMax} MHz
 // asus-armoury enumeration attributes (boot_sound, mcu_powersave)
 int readAttr(const QString &name);
 bool writeAttr(const QString &name, int value);

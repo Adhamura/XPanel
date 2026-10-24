@@ -28,10 +28,13 @@ CcPage {
         CcSlider { width: 460; from: device.value("tdpMin") || 7; to: device.value("tdpMax") || 30; unit: " W"; enabledSlider: device.connected
                    value: (device.rev, device.value("tdp") || 15)
                    onMoved: (v) => { device.setValue("tdp", v); if (!page.manual) device.setValue("opmode", "manual") } } }
-    CcRow { title: qsTr("SPPT — slow boost")
+    readonly property bool tdpLock: (device.rev, !!device.value("tdpLock"))
+    CcRow { title: qsTr("Lock boost to SPL"); description: qsTr("SPPT and FPPT equal SPL: the chip never draws more than the set watts.")
+        CcSwitch { enabledSwitch: device.connected; checked: page.tdpLock; onToggled: (v) => device.setValue("tdpLock", v) } }
+    CcRow { title: qsTr("SPPT — slow boost"); visible: !page.tdpLock
         CcSlider { width: 460; from: 0; to: (device.rev, device.value("spptMax") || 43); unit: " W"; enabledSlider: device.connected
                    value: (device.rev, device.value("tdpSlow") || 0); onMoved: (v) => device.setValue("tdpSlow", v) } }
-    CcRow { title: qsTr("FPPT — fast boost")
+    CcRow { title: qsTr("FPPT — fast boost"); visible: !page.tdpLock
         CcSlider { width: 460; from: 0; to: (device.rev, device.value("fpptMax") || 53); unit: " W"; enabledSlider: device.connected
                    value: (device.rev, device.value("tdpFast") || 0); onMoved: (v) => device.setValue("tdpFast", v) } }
 
@@ -66,11 +69,31 @@ CcPage {
     CcRow { visible: !desktop.windows; title: qsTr("GPU clock"); description: qsTr("Auto lets the driver decide. A limit saves power and heat.")
         CcChoice { enabledChoice: device.connected
                    options: [{ value: "auto", label: qsTr("Auto") }, { value: "limit", label: qsTr("Limit") }]
-                   current: (device.rev, device.value("gpuClock") > 0 ? "limit" : "auto")
-                   onPicked: (v) => device.setValue("gpuClock", v === "auto" ? 0 : Math.round((device.value("gpuMax") || 2700) * 0.75)) } }
+                   current: (device.rev, device.value("gpuClock") > 0 || device.value("gpuClockMin") > 0 ? "limit" : "auto")
+                   onPicked: (v) => { if (v === "auto") device.setValue("gpuClockMin", 0)
+                                      device.setValue("gpuClock", v === "auto" ? 0 : Math.round((device.value("gpuMax") || 2700) * 0.75)) } } }
     CcRow { title: qsTr("GPU clock limit"); visible: !desktop.windows && device.value("gpuClock") > 0
         CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
                    value: (device.rev, device.value("gpuClock") || 0); onMoved: (v) => device.setValue("gpuClock", v) } }
+    CcRow { title: qsTr("GPU minimum clock"); visible: !desktop.windows
+            description: qsTr("Keeps the GPU from dropping below this clock. Uses more power at idle.")
+        CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
+                   enabledSlider: device.connected
+                   value: (device.rev, device.value("gpuClockMin") || device.value("gpuMin") || 800)
+                   onMoved: (v) => device.setValue("gpuClockMin", v <= (device.value("gpuMin") || 800) ? 0 : v) } }
+
+    CcSection { title: qsTr("CPU clock"); visible: !desktop.windows
+                note: qsTr("Limits for every core. A lower maximum keeps the CPU cooler.") }
+    CcRow { title: qsTr("CPU maximum clock"); visible: !desktop.windows
+        CcSlider { width: 460; from: device.value("cpuMin") || 400; to: device.value("cpuMax") || 5100; stepSize: 100; unit: " MHz"
+                   enabledSlider: device.connected
+                   value: (device.rev, device.value("cpuClock") || device.value("cpuMax") || 5100)
+                   onMoved: (v) => device.setValue("cpuClock", v >= (device.value("cpuMax") || 5100) ? 0 : v) } }
+    CcRow { title: qsTr("CPU minimum clock"); visible: !desktop.windows
+        CcSlider { width: 460; from: device.value("cpuMin") || 400; to: device.value("cpuMax") || 5100; stepSize: 100; unit: " MHz"
+                   enabledSlider: device.connected
+                   value: (device.rev, device.value("cpuClockMin") || device.value("cpuMin") || 400)
+                   onMoved: (v) => device.setValue("cpuClockMin", v <= (device.value("cpuMin") || 400) ? 0 : v) } }
 
     CcSection { title: qsTr("Fan"); note: page.fanCustom ? qsTr("Custom curve: 8 points of fan speed over temperature. Changes apply a moment after you let go.") : "" }
     CcRow { title: qsTr("Fan Mode")

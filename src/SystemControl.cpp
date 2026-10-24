@@ -1101,6 +1101,22 @@ void SystemControl::readStats()
             pw = readFile(m_hwGpu + "/power1_input");
         m_socWatts = pw.toDouble() / 1e6;
     }
+    if (m_cpuFreqFiles.isEmpty()) {
+        const QDir cpus("/sys/devices/system/cpu");
+        for (const QString &e : cpus.entryList({"cpu[0-9]*"}, QDir::Dirs)) {
+            const QString f = cpus.absoluteFilePath(e) + "/cpufreq/scaling_cur_freq";
+            if (QFile::exists(f))
+                m_cpuFreqFiles << f;
+        }
+    }
+    if (!m_cpuFreqFiles.isEmpty()) {
+        qint64 sumKhz = 0;
+        for (const QString &f : std::as_const(m_cpuFreqFiles))
+            sumKhz += readFile(f).toLongLong();
+        m_cpuMhz = int(sumKhz / m_cpuFreqFiles.size() / 1000);
+    }
+    if (!m_hwGpu.isEmpty())
+        m_gpuMhz = int(readFile(m_hwGpu + "/freq1_input").toLongLong() / 1000000);
     if (!m_gpuBusy.isEmpty())
         m_gpuLoad = readFile(m_gpuBusy).toInt();
     if (!m_hwFan.isEmpty())

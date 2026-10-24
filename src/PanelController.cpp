@@ -235,7 +235,7 @@ void PanelController::prepareOsdWindow()
     m_osd->setColor(Qt::transparent);
     m_osd->setTitle(tr("XPanel Monitor"));
     m_osd->setResizeMode(QQuickView::SizeRootObjectToView);
-    m_osd->resize(560, 44);
+    m_osd->resize(800, 44);
 #ifdef XPANEL_HAVE_LAYERSHELL
     if (m_backend == Backend::LayerShell) {
         if (auto *ls = LayerShellQt::Window::get(m_osd)) {
@@ -256,7 +256,7 @@ void PanelController::prepareOsdWindow()
     m_osd->setFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool |
                     Qt::WindowTransparentForInput | Qt::WindowDoesNotAcceptFocus);
     if (QScreen *s = QGuiApplication::primaryScreen())
-        m_osd->setPosition(s->geometry().right() - 560 - 12, s->geometry().top() + 12);
+        m_osd->setPosition(s->geometry().right() - 800 - 12, s->geometry().top() + 12);
 }
 
 void PanelController::updateOsd()
