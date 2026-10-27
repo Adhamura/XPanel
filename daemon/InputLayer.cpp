@@ -196,6 +196,7 @@ bool InputLayer::openPad(const QString &node)
         return false;
     }
     m_pad = fd;
+    applyGain();
     // Hide the raw pad (event node, joystick node, hidraw) from games: they use our virtual pad.
     QStringList files{"/dev/input/" + node};
     const QString dev = "/sys/class/input/" + node + "/device/";
@@ -326,7 +327,7 @@ void InputLayer::release()
     m_savedModes.clear();
     delete m_padN; m_padN = nullptr;
     delete m_vpadN; m_vpadN = nullptr;
-    if (m_pad >= 0) { ioctl(m_pad, EVIOCGRAB, 0); ::close(m_pad); m_pad = -1; }
+    if (m_pad >= 0) { setPadGain(0xFFFF); ioctl(m_pad, EVIOCGRAB, 0); ::close(m_pad); m_pad = -1; }
     while (!m_kbds.isEmpty()) closeKeyboard(m_kbds.first().fd);
     if (m_vpad >= 0) { ioctl(m_vpad, UI_DEV_DESTROY); ::close(m_vpad); m_vpad = -1; }
     if (m_vkbm >= 0) { ioctl(m_vkbm, UI_DEV_DESTROY); ::close(m_vkbm); m_vkbm = -1; }
@@ -336,8 +337,34 @@ void InputLayer::release()
 
 void InputLayer::setControl(const QJsonObject &control)
 {
+    const bool wasOn = vibrationOn();
     m_control = control;
+    if (wasOn != vibrationOn())
+        applyGain();
     updateGyro();
+}
+
+bool InputLayer::vibrationOn() const
+{
+    return m_control["vibration"].toBool(true);
+}
+
+void InputLayer::applyGain()
+{
+    setPadGain(vibrationOn() ? m_ffGain : 0);
+}
+
+// The gain belongs to the device, not to one client: 0 also mutes games that opened the raw pad
+// before it was hidden (SDL hotplug can win the race after the pad re-appears).
+void InputLayer::setPadGain(int gain)
+{
+    if (m_pad < 0)
+        return;
+    input_event e {};
+    e.type = EV_FF;
+    e.code = FF_GAIN;
+    e.value = gain;
+    (void)!::write(m_pad, &e, sizeof(e));
 }
 
 QJsonObject InputLayer::preset() const
@@ -523,7 +550,7 @@ void InputLayer::readKeyboard(int fd)
     }
 }
 
-// Force feedback from games on the virtual pad -> the real motors, scaled by Vibration.
+// Force feedback from games on the virtual pad -> the real motors, scaled by Vibration (none while it is off).
 void InputLayer::readVirtualPad()
 {
     input_event ev[32];
@@ -555,11 +582,14 @@ void InputLayer::readVirtualPad()
             er.retval = 0;
             ioctl(m_vpad, UI_END_FF_ERASE, &er);
         } else if (e.type == EV_FF && m_pad >= 0) {
-            input_event out = e;
-            if (e.code != FF_GAIN) {
-                if (!m_ffMap.contains(e.code)) continue;
-                out.code = m_ffMap[e.code];
+            if (e.code == FF_GAIN) {
+                m_ffGain = e.value;
+                applyGain();
+                continue;
             }
+            if (!m_ffMap.contains(e.code) || (e.value && !vibrationOn())) continue;
+            input_event out = e;
+            out.code = m_ffMap[e.code];
             (void)!::write(m_pad, &out, sizeof(out));
         }
     }

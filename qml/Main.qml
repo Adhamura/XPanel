@@ -34,6 +34,7 @@ Item {
     readonly property var allTiles: [
         { id: "opmode",     title: qsTr("Operating Mode"),    icon: "opmode" },
         { id: "ctrlmode",   title: qsTr("Control Mode"),      icon: "ctrlmode" },
+        { id: "vibration",  title: qsTr("Vibration"),         icon: "vibration" },
         { id: "fan",        title: qsTr("Fan Curve"),         icon: "fan" },
         { id: "keyboard",   title: qsTr("Keyboard"),          icon: "keyboard" },
         { id: "monitor",    title: qsTr("Real-time Monitor"), icon: "monitor" },
@@ -131,6 +132,7 @@ Item {
         case "cpuclock":
         case "gpuclock":
             return device.connected ? popups.tileInfo(id === "cpuclock" ? "cpu" : "gpu") : { value: off }
+        case "vibration":return { value: config.get("control.vibration", true) ? qsTr("On") : qsTr("Off") }
         case "monitor":  return { value: config.monitorOsd ? qsTr("On") : qsTr("Off") }
         case "refresh":  return { value: sys.refreshRate > 0 ? sys.refreshRate + "Hz" : "" }
         case "display": {
@@ -171,6 +173,7 @@ Item {
         case "desktop":   panel.requestClose(); sys.showDesktop(); return
         case "screenshot":panel.requestClose(); sys.screenshot(); return
         case "monitor":   config.monitorOsd = !config.monitorOsd; return
+        case "vibration": config.set("control.vibration", !config.get("control.vibration", true)); return
         case "refresh":   sys.toggleRefreshRate(); return
         case "display": {
             if (!sys.hasExternal) return

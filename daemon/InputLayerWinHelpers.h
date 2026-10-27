@@ -87,6 +87,8 @@ std::shared_ptr<const Cfg> parseCfg(const QJsonObject &control)
     c->rtEnd = p["rt"].toObject()["end"].toDouble(96);
     c->vibL = p["vibration"].toObject()["left"].toDouble(100);
     c->vibR = p["vibration"].toObject()["right"].toDouble(100);
+    if (!control["vibration"].toBool(true))
+        c->vibL = c->vibR = 0;
     const QJsonObject g = p["gyro"].toObject();
     c->gyroMode = g["mode"].toString("off");
     c->ratchet = g["ratchet"].toBool(false);

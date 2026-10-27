@@ -57,6 +57,7 @@ familiar Armoury Crate layout to the Linux desktop as one app:
 - **🕹️ Its own controller layer.** Remap every button, add a second function while a back paddle
   is held, button repeat, stick and trigger curves, vibration strength, and a Desktop Mode that
   turns the pad into mouse and keyboard. Applied live, no InputPlumber or hhd needed.
+  **Vibration on / off** from a Quick Panel tile mutes all rumble from games at once.
 - **🔋 Battery care.** Charge limit (e.g. 80 %), battery health, capacity and charge cycles.
 - **🌈 Aura lighting.** Static, breathing, dual breathing (two colors), color cycle, rainbow
   (with a direction), strobe, and two effects that follow the system: battery level (red to
@@ -335,7 +336,7 @@ is not listed, is not installed.
 | Y | E | edit the Quick Panel tiles |
 | LB / RB | PgUp / PgDn | volume (panel) · switch section (Control Center) |
 
-Tiles change on each press (Silent → Performance → Turbo → Manual → Silent). Manual TDP, CPU Clock
+Tiles change on each press (Silent → Performance → Turbo → Manual → Silent; Vibration On ↔ Off). Manual TDP, CPU Clock
 and GPU Clock open a pop-up instead: ▲ ▼ pick a row, ◀ ▶ change a value (or tap the arrows), A on
 **Mode** switches Auto → Range → Fixed, A on **Lock boost to SPL** turns the lock on or off. The Control Center
 also opens from the gear icon, the tray menu, Meta+Shift+C or `XPanel --app [page]`, where page
@@ -503,6 +504,7 @@ tray icon); if it was closed during a game, it restores your settings the next t
   hardware.
 - **1.7** — ✅ CPU and GPU clock control (Auto / Range / Fixed) on Linux; ✅ lock boost to SPL;
   ✅ clocks in the Real-time Monitor.
+- **1.8** — ✅ Vibration on / off (Quick Panel tile and Control Mode switch).
 - **Later** — ✅ GNOME (experimental); ✅ Steam Game Mode / gamescope (experimental); ✅ other
   ASUS handhelds: ROG Xbox Ally and ROG Xbox Ally X (experimental, untested on hardware);
   ✅ translations: German, Spanish, French, Italian, Japanese, Korean, Brazilian Portuguese,

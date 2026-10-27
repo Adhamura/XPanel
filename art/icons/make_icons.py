@@ -81,6 +81,9 @@ ICONS = {
     "ctrlmode": s("body", '<path d="M18 18H46C54 18 59 24 60 33L61 42C62 50 54 53 49 47L44 41H20L15 47C10 53 2 50 3 42L4 33C5 24 10 18 18 18Z"/>')
               + s("dpad", '<path d="M18 25V35M13 30H23"/>')
               + f("buttons", '<circle cx="44" cy="27" r="3"/><circle cx="50" cy="33" r="3"/>'),
+    # Vibration: handheld between two zigzag waves
+    "vibration": s("device", '<rect x="21" y="10" width="22" height="44" rx="4"/>')
+               + s("waves", '<path d="M13 19L7 25.5L13 32L7 38.5L13 45M51 19L57 25.5L51 32L57 38.5L51 45"/>'),
     # Manual TDP / settings: three sliders
     "sliders": s("rails", '<path d="M14 8V56M32 8V56M50 8V56"/>')
              + f("knobs", '<rect x="7" y="15" width="14" height="10" rx="3"/><rect x="25" y="36" width="14" height="10" rx="3"/>'

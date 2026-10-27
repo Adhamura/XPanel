@@ -378,12 +378,15 @@ Item {
 
         // ----- vibration -----
         CcSection { title: qsTr("Vibration") }
+        CcRow { title: qsTr("Vibration"); description: qsTr("Rumble from games, for all presets. Also on the Quick Panel's Vibration tile.")
+            CcSwitch { id: vibSwitch; checked: (page.rev, config.get("control.vibration", true))
+                       onToggled: (v) => config.set("control.vibration", v) } }
         CcRow { title: qsTr("Left side")
-            CcSlider { width: 420; from: 0; to: 100; stepSize: 5; unit: " %"; value: page.val("vibration.left", 100)
-                       onMoved: (v) => page.put("vibration.left", v) } }
+            CcSlider { width: 420; from: 0; to: 100; stepSize: 5; unit: " %"; enabledSlider: vibSwitch.checked
+                       value: page.val("vibration.left", 100); onMoved: (v) => page.put("vibration.left", v) } }
         CcRow { title: qsTr("Right side")
-            CcSlider { width: 420; from: 0; to: 100; unit: " %"; value: page.val("vibration.right", 100)
-                       onMoved: (v) => page.put("vibration.right", v) } }
+            CcSlider { width: 420; from: 0; to: 100; unit: " %"; enabledSlider: vibSwitch.checked
+                       value: page.val("vibration.right", 100); onMoved: (v) => page.put("vibration.right", v) } }
 
         // ----- gyro -----
         CcSection { title: qsTr("Gyro"); note: qsTr("The Ally's motion sensor as mouse or right stick. It runs only while a game has the controller (not while XPanel is open).") }

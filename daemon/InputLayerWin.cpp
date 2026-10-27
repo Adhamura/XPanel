@@ -379,8 +379,11 @@ void InputLayer::Core::applyMode(const Cfg &c)
     if (m != modeNow.exchange(m) || appliedCfg != cfgNow())
         changed();
     appliedCfg = cfgNow();
+    const bool mute = c.vibL == 0 && c.vibR == 0 && (vibL.load() != 0 || vibR.load() != 0);
     vibL = c.vibL;
     vibR = c.vibR;
+    if (mute)
+        rumble(0, 0);
 }
 
 // ---------------------------------------------------------------- functions (Linux runFunction)
