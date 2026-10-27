@@ -67,6 +67,9 @@ private:
     double axis(int code) const;    // stick: -1..1 from the pad's own range
     double trigger(int code) const; // trigger: 0..1 from the pad's own range
     void readVirtualPad(); // force feedback requests from games
+    bool vibrationOn() const;
+    void applyGain();      // game gain, or 0 while Vibration is off
+    void setPadGain(int gain);
     void frame();          // one input frame (EV_SYN): compute and write the outputs
     void tick();           // 125 Hz: mouse / scroll from sticks, repeats, nav repeats
 
@@ -121,6 +124,7 @@ private:
 
     // force feedback: virtual effect id -> physical effect id
     QHash<int, int> m_ffMap;
+    int m_ffGain = 0xFFFF;  // last gain a game set on the virtual pad
 
     // gyro
     Imu *m_imu = nullptr;

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.8.0
+
+- **Vibration on / off.** A new Quick Panel tile, **Vibration**, turns all controller rumble on or
+  off with one press (add it with Ⓨ Edit). The same switch is at the top of Control Mode ›
+  Vibration, for all presets; the Left / Right strength sliders are greyed out while it is off.
+  On Linux the daemon sets the force-feedback gain of the real pad to 0, so rumble also stops for a
+  game that opened the raw pad directly (SDL can reach it in the short time after the pad
+  re-appears, before XPanel hides it again). Rumble that is playing stops at once. On Windows the
+  motors get 0 through the virtual pad.
+- **Update note.** The switch needs the new daemon. With the AppImage run
+  `sudo ./XPanel-*-x86_64.AppImage --install` again; from source, `sudo scripts/install-daemon.sh`.
+
 ## 1.7.0
 
 - **CPU and GPU clock control (Linux).** Two new Quick Panel tiles, **CPU Clock** and **GPU Clock**.

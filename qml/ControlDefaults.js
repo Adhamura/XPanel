@@ -41,7 +41,8 @@ function defaultFor(preset, k, def) {
 
 // Everything the input layer needs, with defaults filled in. get(key, fallback) reads the config.
 function resolve(get) {
-    var out = { preset: get("control.preset", "gamepad") , swapPaddles: get("control.swapPaddles", false) }
+    var out = { preset: get("control.preset", "gamepad") , swapPaddles: get("control.swapPaddles", false),
+                vibration: get("control.vibration", true) }
     var presets = ["gamepad", "desktop"]
     for (var i = 0; i < presets.length; ++i) {
         var p = presets[i]
