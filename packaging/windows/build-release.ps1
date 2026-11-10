@@ -2,13 +2,14 @@
 # Called by build-release.bat (repo root) and by GitHub Actions.
 #
 #   build-release.bat                          use Qt from $env:QT_ROOT_DIR / -Qt, MSVC, Ninja
-#   build-release.bat -Qt C:\Qt\6.8.3\msvc2022_64 -Clean
+#   build-release.bat -Qt C:\Qt\6.8.3\msvc2022_64 -Clean -Install
 #
 # Needs: Qt 6 for MSVC (x64), Visual Studio 2022 Build Tools (C++), CMake, Ninja, Inno Setup 6.
 # Windows support is experimental (see README).
 param(
     [string]$Qt = $env:QT_ROOT_DIR,
-    [switch]$Clean
+    [switch]$Clean,
+    [switch]$Install
 )
 $ErrorActionPreference = 'Stop'
 $Root = (Resolve-Path "$PSScriptRoot\..\..").Path
@@ -16,14 +17,33 @@ Set-Location $Root
 
 $Version = (Select-String -Path CMakeLists.txt -Pattern '^project\(XPanel VERSION ([0-9.]+)').Matches[0].Groups[1].Value
 if (-not $Version) { throw 'Cannot read the version from CMakeLists.txt' }
+if (-not $Qt) {
+    $qtCandidates = @(
+        "C:\Qt\6.8.3\msvc2022_64",
+        "C:\Qt\6.8.2\msvc2022_64"
+    )
+    foreach ($cand in $qtCandidates) {
+        if (Test-Path "$cand\bin\windeployqt.exe") {
+            $Qt = $cand
+            break
+        }
+    }
+}
 if (-not $Qt -or -not (Test-Path "$Qt\bin\windeployqt.exe")) {
     throw "Qt for MSVC not found. Pass -Qt C:\Qt\<version>\msvc2022_64 or set QT_ROOT_DIR."
 }
 
+# Stop any running instances to avoid file locks
+Stop-Process -Name "XPanel", "xpanel-daemon" -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 500
+
 # MSVC environment: load vcvars64 when cl.exe is not on PATH yet.
 if (-not (Get-Command cl.exe -ErrorAction SilentlyContinue)) {
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    $vs = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+    $vs = & $vswhere -latest -prerelease -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+    if (-not $vs -and (Test-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat")) {
+        $vs = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\18\BuildTools"
+    }
     if (-not $vs) { throw 'Visual Studio C++ build tools not found' }
     cmd /c "`"$vs\VC\Auxiliary\Build\vcvars64.bat`" >nul && set" | ForEach-Object {
         if ($_ -match '^([^=]+)=(.*)$') { Set-Item "env:$($Matches[1])" $Matches[2] }
@@ -59,6 +79,9 @@ foreach ($need in 'platforms\qwindows.dll', 'imageformats\qsvg.dll', 'iconengine
     if (-not (Test-Path "$Stage\$need")) { throw "The package is missing $need" }
 }
 Copy-Item LICENSE, README.md, CHANGELOG.md $Stage
+# GPU clock: signed PawnIO module (LGPL-2.1) next to the daemon; the PawnIO driver is installed separately
+Copy-Item third_party\pawnio-modules\RyzenSMU.bin $Stage
+Copy-Item third_party\pawnio-modules\LICENSE "$Stage\RyzenSMU.LICENSE.txt"
 
 Write-Host '==> Installer (Inno Setup)'
 & $Iscc /Q "/DVersion=$Version" "/DSourceDir=$Root\$Stage" "/DOutputDir=$Root\dist" packaging\windows\xpanel.iss
@@ -70,3 +93,11 @@ if (-not (Test-Path $Setup)) { throw "$Setup was not created" }
 Write-Host ''
 Write-Host 'Release ready:'
 Get-Item $Setup | Format-Table Name, Length
+
+if ($Install) {
+    Write-Host '==> Installing to Program Files (silent)'
+    Stop-Process -Name "XPanel", "xpanel-daemon" -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 1
+    Start-Process -FilePath (Resolve-Path $Setup).Path -ArgumentList '/SILENT /NORESTART' -Wait
+    Write-Host 'Installation completed.'
+}

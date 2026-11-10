@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.9.3
+
+- **GPU clock on Windows, fixed clock.** The GPU Clock tile and the GPU clock rows in Settings >
+  Performance work on Windows again. The AMD driver allows no GPU tuning on the Ally iGPU, so
+  xpanel-daemon now sends the AMD SMU "force GPU clock" message through the PawnIO driver (the
+  signed PawnIO.Modules `RyzenSMU.bin`, LGPL-2.1, is installed with XPanel). The modes are
+  **Auto** and **Fixed** (800 to 2700 MHz on the Z1 Extreme, 2500 MHz on the Z1); there is no
+  min / max range on Windows. The firmware keeps a fixed clock until the next restart, also at idle:
+  when you go back to Auto, the tile says "Auto after restart" and Settings shows "Restart
+  required". Needs PawnIO (https://pawnio.eu) installed. The ADLX GPU clock code is removed.
+
+## 1.9.2
+
+- **GPU Clock tile on Windows.** The tile is no longer offered on Windows. No Windows interface
+  can set the Ally iGPU clock: ADLX and ADL report no tuning, and RyzenAdj 0.19 does not support
+  GPU clock limits on Phoenix. The CPU Clock tile works.
+
+## 1.9.1
+
+- **GPU clock on Windows.** The AMD driver (ADLX and ADL) does not allow GPU clock tuning on the
+  ROG Ally iGPU, so the GPU Clock tile says so and the GPU rows in Settings > Performance are
+  hidden. The CPU clock limits work.
+
+## 1.9.0
+
+- **CPU and GPU clock on Windows.** The CPU Clock and GPU Clock tiles in the Quick Panel and the
+  clock rows in Settings > Performance now work on Windows. The CPU limits use the power plan
+  (maximum frequency and minimum state). The GPU limits use AMD ADLX manual tuning. The GPU limit
+  needs the AMD driver to answer the daemon.
+
 ## 1.8.0
 
 - **Vibration on / off.** A new Quick Panel tile, **Vibration**, turns all controller rumble on or

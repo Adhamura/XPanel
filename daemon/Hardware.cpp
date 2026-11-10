@@ -312,12 +312,14 @@ bool applyGpuMemory(int mb)
     return writeFile(kApuMem + "current_value", QString::number(mb / 1024));
 }
 
-bool applyCpu(bool eco, const QString &opmode, bool boost)
+bool applyCpu(bool eco, const QString &opmode, bool boost, const QString &boostMode)
 {
     QString epp = "balance_performance";
-    if (eco || opmode == "silent") epp = "power";
-    else if (opmode == "performance") epp = "balance_power";
-    else if (opmode == "turbo") epp = "performance";
+    if (eco || opmode == "silent" || boostMode == "off" || boostMode == "disabled") epp = "power";
+    else if (boostMode == "efficient" || opmode == "performance") epp = "balance_power";
+    else if (boostMode == "aggressive" || opmode == "turbo") epp = "performance";
+    else if (boostMode == "enabled") epp = "balance_performance";
+
     bool ok = true;
     const QDir dir("/sys/devices/system/cpu/cpufreq");
     for (const QString &pol : dir.entryList({"policy*"}, QDir::Dirs)) {
@@ -326,8 +328,9 @@ bool applyCpu(bool eco, const QString &opmode, bool boost)
         if (readFile(base + "/energy_performance_preference") != epp)
             ok &= writeFile(base + "/energy_performance_preference", epp);
     }
+    const bool allowBoost = boost && !eco && boostMode != "off" && boostMode != "disabled";
     if (QFile::exists("/sys/devices/system/cpu/cpufreq/boost"))
-        ok &= writeFile("/sys/devices/system/cpu/cpufreq/boost", boost ? "1" : "0");
+        ok &= writeFile("/sys/devices/system/cpu/cpufreq/boost", allowBoost ? "1" : "0");
     return ok;
 }
 

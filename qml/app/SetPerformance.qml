@@ -45,14 +45,38 @@ CcPage {
     CcRow { title: qsTr("CPU Boost"); description: qsTr("Short bursts above the base clock for games and heavy tasks. Off saves power.")
         CcSwitch { enabledSwitch: device.connected && !(device.rev, !!device.value("eco"))
                    checked: (device.rev, device.value("cpuBoost") !== false && !device.value("eco"))
-                   onToggled: (v) => device.setValue("cpuBoost", v) } }
+                   onToggled: (v) => {
+                       device.setValue("cpuBoost", v)
+                       if (!v) device.setValue("cpuBoostMode", "off")
+                       else if (device.value("cpuBoostMode") === "off") device.setValue("cpuBoostMode", "aggressive")
+                   } } }
+
+    CcRow { title: qsTr("CPU Boost Mode")
+            description: qsTr("Off · Enabled · Aggressive · Efficient Aggressive frequency scaling behavior.")
+            visible: !(device.rev, !!device.value("eco"))
+        CcChoice { enabledChoice: device.connected && !(device.rev, !!device.value("eco"))
+                   options: [{ value: "off", label: qsTr("Off") },
+                             { value: "enabled", label: qsTr("Enabled") },
+                             { value: "aggressive", label: qsTr("Aggressive") },
+                             { value: "efficient", label: qsTr("Efficient") }]
+                   current: (device.rev, device.value("cpuBoost") === false ? "off" : (device.value("cpuBoostMode") || "aggressive"))
+                   onPicked: (v) => {
+                       device.setValue("cpuBoostMode", v)
+                       device.setValue("cpuBoost", v !== "off")
+                   } } }
 
     CcSection { title: qsTr("GPU Settings") }
     // Memory Assigned to GPU (UMA frame buffer): the daemon reports it when the firmware has it
     // (Windows: ASUS WMI; Linux: asus-armoury apu_mem)
-    readonly property bool gpuMemShown: (device.rev, !!device.value("gpuMemSupported"))
+    readonly property bool gpuMemShown: (device.rev, !!device.value("gpuMemSupported")) || Qt.platform.os === "windows"
     function gpuMemOptions() {
         const mbs = device.value("gpuMemOptions") || []
+        if (!mbs || mbs.length === 0) {
+            return [0, 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384].map(mb => ({
+                value: mb,
+                label: mb === 0 ? qsTr("Auto") : qsTr("%1 GB").arg(mb / 1024)
+            }))
+        }
         return mbs.map(mb => ({ value: mb,
                                 label: mb === 0 ? qsTr("Auto") : (mb % 1024 === 0 ? qsTr("%1 GB").arg(mb / 1024) : qsTr("%1 MB").arg(mb)) }))
     }
@@ -60,36 +84,108 @@ CcPage {
             description: qsTr("Video memory reserved for the GPU. Takes effect after a restart.")
         CcDropdown { enabledChoice: device.connected
                    options: (device.rev, page.gpuMemOptions())
-                   current: (device.rev, device.value("gpuMemory"))
+                   current: (device.rev, device.value("gpuMemory") !== undefined ? device.value("gpuMemory") : 6144)
                    onPicked: (v) => device.setValue("gpuMemory", v) } }
     CcRow { title: qsTr("Restart required"); visible: page.gpuMemShown && (device.rev, !!device.value("gpuMemPending"))
             description: Qt.platform.os === "windows" ? qsTr("Restart Windows to apply the new GPU memory size.")
                                                       : qsTr("Restart the Ally to apply the new GPU memory size.") }
 
-    CcRow { visible: !desktop.windows; title: qsTr("GPU clock"); description: qsTr("Auto lets the driver decide. A limit saves power and heat.")
+    // AMD Advanced Graphics Options (RSR, AFMF, Anti-Lag, Boost, Chill)
+    Item {
+        width: parent ? parent.width : 600
+        implicitHeight: Math.max(amdHeaderCol.implicitHeight, optBtn.implicitHeight) + 16
+        Column {
+            id: amdHeaderCol
+            anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+            spacing: 4
+            Row {
+                spacing: 10
+                Rectangle { width: 4; height: 24; color: T.accent; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: qsTr("AMD Advanced Graphics Options"); color: T.text; font.pixelSize: 22; font.bold: true; font.italic: true }
+            }
+            Text { text: qsTr("Driver features for resolution upscaling, frame generation, and latency."); color: T.dim; font.pixelSize: 15 }
+        }
+        CcButton {
+            id: optBtn
+            anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
+            text: qsTr("Optimize All")
+            onClicked: sys.optimizeAmdGraphics()
+        }
+    }
+    CcRow {
+        title: qsTr("Radeon™ Super Resolution (RSR)")
+        description: qsTr("In-driver upscaler using FSR algorithms to boost frame rates for games rendered at lower resolutions.")
+        CcSwitch {
+            checked: sys.amdRsr
+            onToggled: (v) => sys.setAmdRsr(v)
+        }
+    }
+    CcRow {
+        title: qsTr("AMD Fluid Motion Frames")
+        description: qsTr("Frame generation technology designed to boost frame rates and smooth movement.")
+        CcSwitch {
+            checked: sys.amdAfmf
+            onToggled: (v) => sys.setAmdAfmf(v)
+        }
+    }
+    CcRow {
+        title: qsTr("Radeon™ Anti-Lag")
+        description: qsTr("Controls pace of CPU work to ensure it does not get ahead of the GPU, reducing input latency.")
+        CcSwitch {
+            checked: sys.amdAntiLag
+            onToggled: (v) => sys.setAmdAntiLag(v)
+        }
+    }
+    CcRow {
+        title: qsTr("Radeon™ Boost")
+        description: qsTr("Dynamically reduces resolution during motion to improve responsiveness and frame rates.")
+        CcSwitch {
+            checked: sys.amdBoost
+            onToggled: (v) => sys.setAmdBoost(v)
+        }
+    }
+    CcRow {
+        title: qsTr("Radeon™ Chill")
+        description: qsTr("Power-saving feature that dynamically regulates frame rate based on in-game movement.")
+        CcSwitch {
+            checked: sys.amdChill
+            onToggled: (v) => sys.setAmdChill(v)
+        }
+    }
+
+    readonly property bool gpuFixedOnly: (device.rev, !!device.value("gpuFixedOnly"))
+    CcRow { visible: !!device.value("gpuMax") || !desktop.windows; title: qsTr("GPU clock")
+            description: page.gpuFixedOnly ? qsTr("Auto lets the driver decide. Fixed holds one clock, also at idle. Auto comes back after a restart.")
+                                           : qsTr("Auto lets the driver decide. A limit saves power and heat.")
         CcChoice { enabledChoice: device.connected
-                   options: [{ value: "auto", label: qsTr("Auto") }, { value: "limit", label: qsTr("Limit") }]
+                   options: [{ value: "auto", label: qsTr("Auto") }, { value: "limit", label: page.gpuFixedOnly ? qsTr("Fixed") : qsTr("Limit") }]
                    current: (device.rev, device.value("gpuClock") > 0 || device.value("gpuClockMin") > 0 ? "limit" : "auto")
                    onPicked: (v) => { if (v === "auto") device.setValue("gpuClockMin", 0)
                                       device.setValue("gpuClock", v === "auto" ? 0 : Math.round((device.value("gpuMax") || 2700) * 0.75)) } } }
-    CcRow { title: qsTr("GPU clock limit"); visible: !desktop.windows && device.value("gpuClock") > 0
+    CcRow { title: qsTr("Restart required"); visible: (device.rev, page.gpuFixedOnly && !device.value("gpuClock") && !device.value("gpuClockMin") && !!device.value("gpuForcedBoot"))
+            description: qsTr("Restart Windows to give the GPU clock back to the driver.") }
+    // Windows (fixed only): the Quick Panel tile may store the clock as the minimum (the daemon takes max, else min).
+    CcRow { title: page.gpuFixedOnly ? qsTr("GPU fixed clock") : qsTr("GPU clock limit")
+            visible: (device.rev, (device.value("gpuClock") > 0 || (page.gpuFixedOnly && device.value("gpuClockMin") > 0)) && !!device.value("gpuMax"))
         CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
-                   value: (device.rev, device.value("gpuClock") || 0); onMoved: (v) => device.setValue("gpuClock", v) } }
-    CcRow { title: qsTr("GPU minimum clock"); visible: !desktop.windows
+                   value: (device.rev, device.value("gpuClock") || (page.gpuFixedOnly ? device.value("gpuClockMin") : 0) || 0)
+                   onMoved: (v) => { device.setValue("gpuClock", v)
+                                     if (page.gpuFixedOnly && device.value("gpuClockMin")) device.setValue("gpuClockMin", 0) } } }
+    CcRow { visible: (!!device.value("gpuMax") || !desktop.windows) && !page.gpuFixedOnly; title: qsTr("GPU minimum clock");
             description: qsTr("Keeps the GPU from dropping below this clock. Uses more power at idle.")
         CcSlider { width: 460; from: device.value("gpuMin") || 800; to: device.value("gpuMax") || 2700; stepSize: 50; unit: " MHz"
                    enabledSlider: device.connected
                    value: (device.rev, device.value("gpuClockMin") || device.value("gpuMin") || 800)
                    onMoved: (v) => device.setValue("gpuClockMin", v <= (device.value("gpuMin") || 800) ? 0 : v) } }
 
-    CcSection { title: qsTr("CPU clock"); visible: !desktop.windows
+    CcSection { title: qsTr("CPU clock");
                 note: qsTr("Limits for every core. A lower maximum keeps the CPU cooler.") }
-    CcRow { title: qsTr("CPU maximum clock"); visible: !desktop.windows
+    CcRow { title: qsTr("CPU maximum clock");
         CcSlider { width: 460; from: device.value("cpuMin") || 400; to: device.value("cpuMax") || 5100; stepSize: 100; unit: " MHz"
                    enabledSlider: device.connected
                    value: (device.rev, device.value("cpuClock") || device.value("cpuMax") || 5100)
                    onMoved: (v) => device.setValue("cpuClock", v >= (device.value("cpuMax") || 5100) ? 0 : v) } }
-    CcRow { title: qsTr("CPU minimum clock"); visible: !desktop.windows
+    CcRow { title: qsTr("CPU minimum clock");
         CcSlider { width: 460; from: device.value("cpuMin") || 400; to: device.value("cpuMax") || 5100; stepSize: 100; unit: " MHz"
                    enabledSlider: device.connected
                    value: (device.rev, device.value("cpuClockMin") || device.value("cpuMin") || 400)

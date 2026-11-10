@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(XPanel VERSION 1.8.0 LANGUAGES CXX)
+project(XPanel VERSION 1.9.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -129,7 +129,8 @@ if(WIN32)
     target_sources(XPanel PRIVATE src/SystemControlWin.cpp src/SystemControlWin.h) # volume, radios, power, display, sensors
     target_link_libraries(XPanel PRIVATE pdh powrprof windowsapp)
     target_sources(XPanel PRIVATE src/AmdAdlWin.cpp src/AmdAdlWin.h) # AMD GPU temp/power via ADL (loaded at run time)
-    target_include_directories(XPanel PRIVATE third_party/adl/include)
+    target_sources(XPanel PRIVATE src/AmdAdlxWin.cpp src/AmdAdlxWin.h third_party/adlx/helper/ADLXHelper.cpp third_party/adlx/helper/ADLXHelper.h) # AMD graphics settings via ADLX (loaded at run time)
+    target_include_directories(XPanel PRIVATE third_party/adl/include third_party/adlx/include third_party/adlx/helper)
 endif()
 
 if(LayerShellQt_FOUND)
@@ -165,8 +166,12 @@ if(WIN32)
     add_executable(xpanel-daemon daemon/main.cpp daemon/Hardware.h daemon/Model.h daemon/HardwareWin.cpp
         daemon/InputLayerStub.h daemon/InputLayerWin.cpp daemon/InputLayerWinHelpers.h
         daemon/AllyMcu.h daemon/AllyMcuWin.h daemon/AllyMcuWin.cpp
-        daemon/GyroWin.cpp daemon/GyroWin.h daemon/GyroMath.h daemon/GyroMath.cpp third_party/vigem/src/ViGEmClient.cpp)
+        daemon/GyroWin.cpp daemon/GyroWin.h daemon/GyroMath.h daemon/GyroMath.cpp third_party/vigem/src/ViGEmClient.cpp
+        daemon/RyzenSmuWin.cpp daemon/RyzenSmuWin.h)
     target_include_directories(xpanel-daemon PRIVATE third_party/vigem/include)
+    # GPU clock through PawnIO: the signed RyzenSMU.bin module goes next to xpanel-daemon.exe
+    add_custom_command(TARGET xpanel-daemon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/third_party/pawnio-modules/RyzenSMU.bin $<TARGET_FILE_DIR:xpanel-daemon>/RyzenSMU.bin)
     set_target_properties(xpanel-daemon PROPERTIES WIN32_EXECUTABLE ON CXX_STANDARD 20) # C++/WinRT (GyroWin.cpp)
     target_sources(xpanel-daemon PRIVATE packaging/windows/xpanel.rc)
     target_compile_definitions(xpanel-daemon PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)

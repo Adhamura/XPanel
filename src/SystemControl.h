@@ -47,6 +47,13 @@ class SystemControl : public QObject {
     Q_PROPERTY(double socWatts READ socWatts NOTIFY statsChanged)
     Q_PROPERTY(double batteryWatts READ batteryWatts NOTIFY statsChanged)
     Q_PROPERTY(int ramUsedMb READ ramUsedMb NOTIFY statsChanged)
+    // AMD Advanced Graphics Options (RSR, AFMF, Anti-Lag, Boost, Chill)
+    Q_PROPERTY(bool amdGraphicsSupported READ amdGraphicsSupported NOTIFY amdGraphicsChanged)
+    Q_PROPERTY(bool amdRsr READ amdRsr NOTIFY amdGraphicsChanged)
+    Q_PROPERTY(bool amdAfmf READ amdAfmf NOTIFY amdGraphicsChanged)
+    Q_PROPERTY(bool amdAntiLag READ amdAntiLag NOTIFY amdGraphicsChanged)
+    Q_PROPERTY(bool amdBoost READ amdBoost NOTIFY amdGraphicsChanged)
+    Q_PROPERTY(bool amdChill READ amdChill NOTIFY amdGraphicsChanged)
 
 public:
     explicit SystemControl(QObject *parent = nullptr);
@@ -78,6 +85,13 @@ public:
     double batteryWatts() const { return m_batWatts; }
     int ramUsedMb() const { return m_ramMb; }
 
+    bool amdGraphicsSupported() const { return m_amdGraphicsSupported; }
+    bool amdRsr() const { return m_amdRsr; }
+    bool amdAfmf() const { return m_amdAfmf; }
+    bool amdAntiLag() const { return m_amdAntiLag; }
+    bool amdBoost() const { return m_amdBoost; }
+    bool amdChill() const { return m_amdChill; }
+
     Q_INVOKABLE void setBrightness(int percent);
     Q_INVOKABLE void setDisplayBrightness(const QString &id, int percent);
     Q_INVOKABLE void setVolume(int percent);
@@ -92,6 +106,13 @@ public:
     Q_INVOKABLE void power(const QString &what); // suspend, reboot, poweroff, logout
     Q_INVOKABLE void refreshAll();
 
+    Q_INVOKABLE void setAmdRsr(bool on);
+    Q_INVOKABLE void setAmdAfmf(bool on);
+    Q_INVOKABLE void setAmdAntiLag(bool on);
+    Q_INVOKABLE void setAmdBoost(bool on);
+    Q_INVOKABLE void setAmdChill(bool on);
+    Q_INVOKABLE void optimizeAmdGraphics();
+
 signals:
     void brightnessChanged();
     void displaysChanged();
@@ -103,6 +124,7 @@ signals:
     void clockChanged();
     void samplingChanged();
     void statsChanged();
+    void amdGraphicsChanged();
 
 private slots:
     void onBrightnessSignal(const QDBusMessage &msg);
@@ -180,6 +202,15 @@ private:
     int m_cpuLoad = 0, m_cpuTemp = 0, m_gpuLoad = 0, m_gpuTemp = 0, m_fanRpm = 0, m_ramMb = 0, m_cpuMhz = 0, m_gpuMhz = 0;
     QStringList m_cpuFreqFiles;
     double m_socWatts = 0, m_batWatts = 0;
+
+    void queryAmdGraphics();
+
+    bool m_amdGraphicsSupported = false;
+    bool m_amdRsr = false;
+    bool m_amdAfmf = false;
+    bool m_amdAntiLag = false;
+    bool m_amdBoost = true;
+    bool m_amdChill = false;
 
     QTimer m_slow;   // battery, clock, radios
     QTimer m_fast;   // sensors

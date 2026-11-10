@@ -160,7 +160,7 @@ private:
         m_state = QJsonObject{
             {"opmode", "performance"}, {"tdp", 15}, {"fan", "auto"},
             {"charge", Hardware::readChargeLimit()}, {"lighting", "static"},
-            {"tdpSlow", 0}, {"tdpFast", 0}, {"tdpLock", false}, {"eco", false}, {"cpuBoost", true}, {"gpuClock", 0},
+            {"tdpSlow", 0}, {"tdpFast", 0}, {"tdpLock", false}, {"eco", false}, {"cpuBoost", true}, {"cpuBoostMode", "aggressive"}, {"gpuClock", 0},
             {"gpuClockMin", 0}, {"cpuClock", 0}, {"cpuClockMin", 0},
             {"lightColor", "#00c8ff"}, {"lightBrightness", 3}, {"lightSpeed", "medium"},
             {"lightColor2", "#ff2d55"}, {"lightDirection", "right"},
@@ -233,6 +233,7 @@ private:
         if (key == "lightDirection") return kDirections.contains(v.toString());
         if (key == "lightColor" || key == "lightColor2") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
         if (key == "eco" || key == "cpuBoost" || key == "tdpLock" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
+        if (key == "cpuBoostMode") return v.isString() && (v.toString() == "off" || v.toString() == "enabled" || v.toString() == "aggressive" || v.toString() == "efficient");
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
         if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
             const QJsonArray a = v.toArray();
@@ -287,7 +288,8 @@ private:
     {
         Hardware::applyTdp(wantedTdp());
         Hardware::applyCpu(m_state["eco"].toBool(), m_state["opmode"].toString(),
-                           m_state["cpuBoost"].toBool(true) && !m_state["eco"].toBool());
+                           m_state["cpuBoost"].toBool(true) && !m_state["eco"].toBool(),
+                           m_state["cpuBoostMode"].toString("aggressive"));
         // a boost change resets the cores' max clock
         applyCpuClock();
         // A profile change can reset the fan curve: put ours back.
@@ -484,7 +486,7 @@ private:
                 changed = true;
             }
             if (apply.contains("opmode") || apply.contains("tdp") || apply.contains("tdpSlow") ||
-                apply.contains("tdpFast") || apply.contains("tdpLock") || apply.contains("eco") || apply.contains("cpuBoost")) applyTdp();
+                apply.contains("tdpFast") || apply.contains("tdpLock") || apply.contains("eco") || apply.contains("cpuBoost") || apply.contains("cpuBoostMode")) applyTdp();
             else if (apply.contains("cpuClock") || apply.contains("cpuClockMin")) applyCpuClock();
             if (apply.contains("gpuClock") || apply.contains("gpuClockMin")) applyGpuClock();
             if (apply.contains("bootSound")) Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);

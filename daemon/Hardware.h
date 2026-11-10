@@ -44,14 +44,16 @@ int batteryPercent();                 // 0..100, -1 = no battery
 
 // CPU energy preference + boost (amd-pstate-epp). eco = save power.
 // boost = allow CPU boost (the caller passes cpuBoost && !eco).
-bool applyCpu(bool eco, const QString &opmode, bool boost);
+bool applyCpu(bool eco, const QString &opmode, bool boost, const QString &boostMode = {});
 // "Memory Assigned to GPU" (UMA frame buffer, BIOS setting, Windows only; Linux: not supported).
 // {gpuMemSupported, gpuMemCurrent (MB, 0 = auto), gpuMemOptions ([0 = auto, MB...])}
 QJsonObject gpuMemory();
 bool applyGpuMemory(int mb);            // takes effect after a restart
 // GPU min / max clock in MHz, 0 = no limit; both 0 = automatic.
+// Windows: one fixed clock (max, else min), kept by the firmware until the restart.
 bool applyGpuClock(int minMhz, int maxMhz);
-QJsonObject gpuRange();                 // {gpuMin, gpuMax} MHz
+// {gpuMin, gpuMax} MHz; Windows adds gpuFixedOnly and gpuForcedBoot (a clock was forced since the start).
+QJsonObject gpuRange();
 // CPU min / max clock in MHz for every core, 0 = no limit.
 bool applyCpuClock(int minMhz, int maxMhz);
 QJsonObject cpuRange();                 // {cpuMin, cpuMax} MHz
