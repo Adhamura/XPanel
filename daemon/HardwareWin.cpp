@@ -8,6 +8,7 @@
 //   CPU: processor boost and energy preference of the active power plan (powercfg).
 // Armoury Crate changes the same settings: it must not run at the same time.
 #include "Hardware.h"
+#include "RyzenSmuWin.h"
 #include "Aura.h"
 #include "FanCurve.h"
 
@@ -412,14 +413,21 @@ bool applyGpuMemory(int mb)
     return devs(kVramMem, quint32(mb / g.unit));
 }
 
-bool applyCpu(bool eco, const QString &opmode, bool boostOn)
+bool applyCpu(bool eco, const QString &opmode, bool boostOn, const QString &boostMode)
 {
-    // Energy preference 0 (performance) .. 100 (power); boost 0 off, 2 aggressive.
+    // Energy preference 0 (performance) .. 100 (power); boost 0 off, 1 enabled, 2 aggressive, 4 efficient.
     int epp = 33;
     if (eco || opmode == "silent") epp = 80;
     else if (opmode == "performance") epp = 50;
     else if (opmode == "turbo") epp = 0;
-    const QString boost = boostOn ? "2" : "0";
+
+    QString boost = "0";
+    if (boostOn && !eco) {
+        if (boostMode == "enabled") boost = "1";
+        else if (boostMode == "efficient") boost = "4";
+        else if (boostMode == "off" || boostMode == "disabled") boost = "0";
+        else boost = "2"; // aggressive
+    }
     for (const QString &mode : {QStringLiteral("/setacvalueindex"), QStringLiteral("/setdcvalueindex")}) {
         runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PERFEPP", QString::number(epp)});
         runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PERFBOOSTMODE", boost});
@@ -428,24 +436,78 @@ bool applyCpu(bool eco, const QString &opmode, bool boostOn)
     return true;
 }
 
+namespace {
+// Set once a clock was forced since this boot. A volatile registry key: Windows drops it at the restart,
+// which is also when the firmware gives the GPU clock back to the driver.
+const wchar_t *kBootKey = L"SOFTWARE\\XPanel\\Boot";
+
+bool gpuForcedThisBoot()
+{
+    DWORD v = 0, size = sizeof(v);
+    return RegGetValueW(HKEY_LOCAL_MACHINE, kBootKey, L"GpuClockForced", RRF_RT_REG_DWORD, nullptr, &v, &size) == ERROR_SUCCESS && v;
+}
+
+void markGpuForced()
+{
+    HKEY parent = nullptr, key = nullptr;
+    if (RegCreateKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\XPanel", 0, nullptr, 0, KEY_CREATE_SUB_KEY, nullptr, &parent, nullptr) != ERROR_SUCCESS)
+        return;
+    if (RegCreateKeyExW(parent, L"Boot", 0, nullptr, REG_OPTION_VOLATILE, KEY_SET_VALUE, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+        const DWORD one = 1;
+        RegSetValueExW(key, L"GpuClockForced", 0, REG_DWORD, reinterpret_cast<const BYTE *>(&one), sizeof(one));
+        RegCloseKey(key);
+    }
+    RegCloseKey(parent);
+}
+
+int gpuMaxMhz()
+{
+    return RyzenSmu::codeName() == RyzenSmu::Phoenix2 ? 2500 : 2700; // Radeon 740M (Z1) : 780M (Z1 Extreme)
+}
+} // namespace
+
 bool applyGpuClock(int minMhz, int maxMhz)
 {
-    return minMhz <= 0 && maxMhz <= 0; // not available on Windows yet (the AMD driver owns the GPU clock)
+    // Windows: one fixed clock through the SMU (the AMD driver allows no GPU tuning on the Ally iGPU).
+    // 0 = automatic: nothing to send, the firmware keeps a forced clock until the restart.
+    const int mhz = maxMhz > 0 ? maxMhz : minMhz;
+    if (mhz <= 0)
+        return true;
+    if (!RyzenSmu::forceGfxClock(qBound(800, mhz, gpuMaxMhz())))
+        return false;
+    markGpuForced();
+    return true;
 }
 
 QJsonObject gpuRange()
 {
-    return {{"gpuMin", 0}, {"gpuMax", 0}};
+    if (!RyzenSmu::available())
+        return {{"gpuMin", 0}, {"gpuMax", 0}};
+    // gpuFixedOnly: no min / max range, one clock. gpuForcedBoot: a clock was forced since the start,
+    // so Auto comes back only after a restart.
+    return {{"gpuMin", 800}, {"gpuMax", gpuMaxMhz()}, {"gpuFixedOnly", true}, {"gpuForcedBoot", gpuForcedThisBoot()}};
+}
+
+namespace {
+constexpr int kCpuMinMhz = 400;
+constexpr int kCpuMaxMhz = 5100; // boost clock of the Z1 Extreme / Z2 Extreme; Windows does not report it
 }
 
 bool applyCpuClock(int minMhz, int maxMhz)
 {
-    return minMhz <= 0 && maxMhz <= 0;
+    // PROCFREQMAX: maximum frequency in MHz (0 = no limit). PROCTHROTTLEMIN: minimum state in percent.
+    const int minPct = minMhz <= 0 ? 5 : qBound(5, minMhz * 100 / kCpuMaxMhz, 100);
+    for (const QString &mode : {QStringLiteral("/setacvalueindex"), QStringLiteral("/setdcvalueindex")}) {
+        runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PROCFREQMAX", QString::number(qMax(0, maxMhz))});
+        runHidden("powercfg", {mode, "SCHEME_CURRENT", "SUB_PROCESSOR", "PROCTHROTTLEMIN", QString::number(minPct)});
+    }
+    runHidden("powercfg", {"/setactive", "SCHEME_CURRENT"});
+    return true;
 }
 
 QJsonObject cpuRange()
 {
-    return {{"cpuMin", 0}, {"cpuMax", 0}};
+    return {{"cpuMin", kCpuMinMhz}, {"cpuMax", kCpuMaxMhz}};
 }
 
 int readAttr(const QString &name)

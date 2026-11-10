@@ -33,6 +33,7 @@ Item {
     readonly property var catalog: allTiles.filter(t => desktop.unavailableTiles.indexOf(t.id) < 0)
     readonly property var allTiles: [
         { id: "opmode",     title: qsTr("Operating Mode"),    icon: "opmode" },
+        { id: "cpuboost",   title: qsTr("CPU Boost"),         icon: "cpu" },
         { id: "ctrlmode",   title: qsTr("Control Mode"),      icon: "ctrlmode" },
         { id: "vibration",  title: qsTr("Vibration"),         icon: "vibration" },
         { id: "fan",        title: qsTr("Fan Curve"),         icon: "fan" },
@@ -140,6 +141,12 @@ Item {
             const e = labelOf(displayModes, sys.displayMode)
             return { value: e ? e.label : "" }
         }
+        case "cpuboost": {
+            const on = device.value("cpuBoost") !== false && !device.value("eco")
+            const m = device.value("cpuBoostMode") || "aggressive"
+            const label = !device.connected ? off : !on ? qsTr("Off") : m === "aggressive" ? qsTr("Aggressive") : m === "efficient" ? qsTr("Efficient") : qsTr("Enabled")
+            return { value: label, badge: on ? qsTr("ON") : "" }
+        }
         case "wifi":     return { value: sys.wifi ? qsTr("On") : qsTr("Off") }
         case "bluetooth":return { value: sys.bluetooth ? qsTr("On") : qsTr("Off") }
         }
@@ -160,6 +167,18 @@ Item {
         case "cpuclock": popups.openClock("cpu"); return
         case "gpuclock": popups.openClock("gpu"); return
         case "opmode":   cycle("opmode", opModes); return
+        case "cpuboost": {
+            if (!device.connected) return
+            const on = device.value("cpuBoost") !== false && !device.value("eco")
+            if (on) {
+                device.setValue("cpuBoost", false)
+                device.setValue("cpuBoostMode", "off")
+            } else {
+                device.setValue("cpuBoost", true)
+                device.setValue("cpuBoostMode", "aggressive")
+            }
+            return
+        }
         case "charge":   cycle("charge", chargeModes); return
         case "rgb":      cycle("lighting", rgbModes); return
         case "fan":      cycle("fan", fanCycle()); return

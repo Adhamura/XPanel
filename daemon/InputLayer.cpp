@@ -39,7 +39,7 @@ qint64 nowMs() { return QDateTime::currentMSecsSinceEpoch(); }
 
 // Raw Ally key code -> logical button (names match the Control Mode page)
 const QHash<int, QString> kRawButtons = {
-    {BTN_SOUTH, "A"}, {BTN_EAST, "B"}, {BTN_NORTH, "X"}, {BTN_WEST, "Y"},
+    {BTN_SOUTH, "A"}, {BTN_EAST, "B"}, {BTN_WEST, "X"}, {BTN_NORTH, "Y"},
     {BTN_TL, "LB"}, {BTN_TR, "RB"}, {BTN_SELECT, "View"}, {BTN_START, "Menu"},
     {BTN_THUMBL, "L3"}, {BTN_THUMBR, "R3"}, {BTN_MODE, "Guide"},
     {KEY_F17, "Left paddle"}, {KEY_F18, "Right paddle"},
@@ -56,7 +56,7 @@ const QHash<int, QString> kRawSpecial = {
 
 // "pad:<name>" -> Xbox pad button code
 const QHash<QString, int> kPadButtons = {
-    {"A", BTN_SOUTH}, {"B", BTN_EAST}, {"X", BTN_NORTH}, {"Y", BTN_WEST},
+    {"A", BTN_SOUTH}, {"B", BTN_EAST}, {"X", BTN_WEST}, {"Y", BTN_NORTH},
     {"LB", BTN_TL}, {"RB", BTN_TR}, {"View", BTN_SELECT}, {"Menu", BTN_START},
     {"L3", BTN_THUMBL}, {"R3", BTN_THUMBR}, {"Guide", BTN_MODE},
 };

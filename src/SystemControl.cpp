@@ -32,6 +32,7 @@
 #include <thread>
 #include "BrightnessWin.h"
 #include "SystemControlWin.h"
+#include "AmdAdlxWin.h"
 #endif
 
 static QString readFile(const QString &fn)
@@ -171,6 +172,7 @@ void SystemControl::refreshAll()
     readRadios();
     readRefresh();
     tickClock();
+    queryAmdGraphics();
 }
 
 void SystemControl::setSampling(bool on)
@@ -1277,3 +1279,118 @@ void SystemControl::winSetRadio(bool wifi, bool on)
     }).detach();
 }
 #endif
+
+
+void SystemControl::queryAmdGraphics()
+{
+#ifdef Q_OS_WIN
+    QPointer<SystemControl> self(this);
+    QThreadPool::globalInstance()->start([self] {
+        const AmdAdlx::GraphicsState state = AmdAdlx::query();
+        if (!self)
+            return;
+        QMetaObject::invokeMethod(self.data(), [self, state] {
+            if (!self)
+                return;
+            self->m_amdGraphicsSupported = state.supported;
+            self->m_amdRsr = state.rsrEnabled;
+            self->m_amdAfmf = state.afmfEnabled;
+            self->m_amdAntiLag = state.antiLagEnabled;
+            self->m_amdBoost = state.boostEnabled;
+            self->m_amdChill = state.chillEnabled;
+            emit self->amdGraphicsChanged();
+        }, Qt::QueuedConnection);
+    });
+#else
+    m_amdGraphicsSupported = [] {
+        const QDir drm("/sys/class/drm");
+        for (const QString &card : drm.entryList({"card*"}, QDir::Dirs)) {
+            QFile f(drm.absoluteFilePath(card) + "/device/vendor");
+            if (f.open(QIODevice::ReadOnly) && f.readAll().trimmed().contains("0x1002"))
+                return true;
+        }
+        return false;
+    }();
+    emit amdGraphicsChanged();
+#endif
+}
+
+void SystemControl::setAmdRsr(bool on)
+{
+    m_amdRsr = on;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QThreadPool::globalInstance()->start([on] {
+        AmdAdlx::setRsr(on);
+    });
+#endif
+}
+
+void SystemControl::setAmdAfmf(bool on)
+{
+    m_amdAfmf = on;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QThreadPool::globalInstance()->start([on] {
+        AmdAdlx::setAfmf(on);
+    });
+#endif
+}
+
+void SystemControl::setAmdAntiLag(bool on)
+{
+    m_amdAntiLag = on;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QThreadPool::globalInstance()->start([on] {
+        AmdAdlx::setAntiLag(on);
+    });
+#endif
+}
+
+void SystemControl::setAmdBoost(bool on)
+{
+    m_amdBoost = on;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QThreadPool::globalInstance()->start([on] {
+        AmdAdlx::setBoost(on);
+    });
+#endif
+}
+
+void SystemControl::setAmdChill(bool on)
+{
+    m_amdChill = on;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QThreadPool::globalInstance()->start([on] {
+        AmdAdlx::setChill(on);
+    });
+#endif
+}
+
+void SystemControl::optimizeAmdGraphics()
+{
+    m_amdAntiLag = true;
+    m_amdBoost = true;
+    m_amdChill = false;
+    emit amdGraphicsChanged();
+#ifdef Q_OS_WIN
+    QPointer<SystemControl> self(this);
+    QThreadPool::globalInstance()->start([self] {
+        AmdAdlx::optimizeAll();
+        if (!self)
+            return;
+        const AmdAdlx::GraphicsState state = AmdAdlx::query();
+        QMetaObject::invokeMethod(self.data(), [self, state] {
+            if (!self)
+                return;
+            self->m_amdAntiLag = state.antiLagEnabled;
+            self->m_amdBoost = state.boostEnabled;
+            self->m_amdChill = state.chillEnabled;
+            emit self->amdGraphicsChanged();
+        }, Qt::QueuedConnection);
+    });
+#endif
+}

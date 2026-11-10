@@ -42,6 +42,11 @@ QtObject {
         gpu: { title: qsTr("GPU Clock"), minKey: "gpuClockMin", maxKey: "gpuClock", lo: "gpuMin", hi: "gpuMax", step: 100 }
     })
     readonly property var clockModes: ["auto", "range", "fixed"]
+    // Windows GPU: one fixed clock through the SMU, and Auto only comes back after a restart.
+    function modesOf(kind) { return kind === "gpu" && device.value("gpuFixedOnly") ? ["auto", "fixed"] : clockModes }
+    function autoPending(kind) {
+        return kind === "gpu" && !!device.value("gpuForcedBoot") && !device.value("gpuClock") && !device.value("gpuClockMin")
+    }
     function modeLabel(m) {
         return m === "fixed" ? qsTr("Fixed (you decide)") : m === "range" ? qsTr("Range (you decide)") : qsTr("Auto (driver decides)")
     }
@@ -53,7 +58,7 @@ QtObject {
     function clockMode(kind) {
         const k = clockKeys[kind], c = clockLimits(kind)
         if (!device.value(k.minKey) && !device.value(k.maxKey))
-            return config.get("clock." + kind + ".mode", "auto") === "range" ? "range" : "auto"
+            return config.get("clock." + kind + ".mode", "auto") === "range" && modesOf(kind).includes("range") ? "range" : "auto"
         return c.min === c.max ? "fixed" : "range"
     }
     function setClockLimits(kind, min, max) {
@@ -63,7 +68,8 @@ QtObject {
     }
     function clockItems(kind, mode, min, max) {
         const c = clockLimits(kind), step = clockKeys[kind].step
-        const items = [{ label: qsTr("Mode"), value: "mode", sub: modeLabel(mode), selected: mode !== "auto" }]
+        const items = [{ label: qsTr("Mode"), value: "mode", sub: mode === "auto" && autoPending(kind) ? qsTr("Auto after a restart") : modeLabel(mode),
+                         selected: mode !== "auto" }]
         const stepper = (which, label, value) => ({ stepper: true, which: which, label: label, value: value,
                                                     min: c.lo, max: c.hi, step: step, unit: " MHz" })
         if (mode === "range")
@@ -93,12 +99,14 @@ QtObject {
         const c = clockLimits(kind)
         if (!c.hi) {
             chooser.show(clockKeys[kind].title, [{ label: qsTr("Not available"), value: "none",
-                                                   sub: qsTr("Update xpanel-daemon") }], null)
+                                                   sub: kind === "gpu" && desktop.windows ? qsTr("Install PawnIO (pawnio.eu), then restart XPanel")
+                                                                                      : qsTr("Update xpanel-daemon") }], null)
             return
         }
         let mode = clockMode(kind)
         chooser.show(clockKeys[kind].title, clockItems(kind, mode, c.min, c.max), () => {
-            mode = clockModes[(clockModes.indexOf(mode) + 1) % clockModes.length]
+            const modes = modesOf(kind)
+            mode = modes[(modes.indexOf(mode) + 1) % modes.length]
             const v = applyMode(kind, mode)
             refresh(clockItems(kind, mode, v.min, v.max))
             return true
@@ -120,7 +128,7 @@ QtObject {
     }
     function tileInfo(kind) {
         const c = clockLimits(kind), mode = clockMode(kind)
-        if (mode === "auto") return { value: qsTr("Auto") }
+        if (mode === "auto") return { value: autoPending(kind) ? qsTr("Auto after restart") : qsTr("Auto") }
         return { value: mode === "fixed" ? c.min + " MHz" : c.min + "–" + c.max, badge: qsTr("ON") }
     }
 }
