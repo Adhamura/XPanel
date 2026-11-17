@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.10.0
+
+- **Motion Sensor on / off (Linux).** A new Quick Panel tile, **Motion Sensor**, turns the
+  gyro / accelerometer (BMI323) on or off. Off unbinds the sensor driver, so no program
+  (XPanel, InputPlumber, hhd, screen rotation) can read it, and its ~3000 I2C interrupts per
+  second stop. The choice is kept after a restart.
+- **Update note.** The tile needs the new daemon. With the AppImage run
+  `sudo ./XPanel-*-x86_64.AppImage --install` again; from source, `sudo scripts/install-daemon.sh`.
+
 ## 1.9.3
 
 - **GPU clock on Windows, fixed clock.** The GPU Clock tile and the GPU clock rows in Settings >

@@ -361,6 +361,16 @@ bool applyChargeLimit(int percent)
     return devs(kChargeLimit, quint32(qBound(50, percent, 100)));
 }
 
+int readImuSensor()
+{
+    return -1;
+}
+
+bool applyImuSensor(bool)
+{
+    return false;
+}
+
 int batteryPercent()
 {
     SYSTEM_POWER_STATUS s{};

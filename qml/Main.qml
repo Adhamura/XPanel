@@ -36,6 +36,7 @@ Item {
         { id: "cpuboost",   title: qsTr("CPU Boost"),         icon: "cpu" },
         { id: "ctrlmode",   title: qsTr("Control Mode"),      icon: "ctrlmode" },
         { id: "vibration",  title: qsTr("Vibration"),         icon: "vibration" },
+        { id: "motion",     title: qsTr("Motion Sensor"),     icon: "motion" },
         { id: "fan",        title: qsTr("Fan Curve"),         icon: "fan" },
         { id: "keyboard",   title: qsTr("Keyboard"),          icon: "keyboard" },
         { id: "monitor",    title: qsTr("Real-time Monitor"), icon: "monitor" },
@@ -134,6 +135,7 @@ Item {
         case "gpuclock":
             return device.connected ? popups.tileInfo(id === "cpuclock" ? "cpu" : "gpu") : { value: off }
         case "vibration":return { value: config.get("control.vibration", true) ? qsTr("On") : qsTr("Off") }
+        case "motion":   return { value: device.connected ? (device.value("imuSensor") ? qsTr("On") : qsTr("Off")) : off }
         case "monitor":  return { value: config.monitorOsd ? qsTr("On") : qsTr("Off") }
         case "refresh":  return { value: sys.refreshRate > 0 ? sys.refreshRate + "Hz" : "" }
         case "display": {
@@ -193,6 +195,7 @@ Item {
         case "screenshot":panel.requestClose(); sys.screenshot(); return
         case "monitor":   config.monitorOsd = !config.monitorOsd; return
         case "vibration": config.set("control.vibration", !config.get("control.vibration", true)); return
+        case "motion":    if (device.connected) device.setValue("imuSensor", !device.value("imuSensor")); return
         case "refresh":   sys.toggleRefreshRate(); return
         case "display": {
             if (!sys.hasExternal) return

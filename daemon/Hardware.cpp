@@ -4,6 +4,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QRegularExpression>
 #include <QThread>
@@ -209,6 +210,33 @@ bool applyChargeLimit(int percent)
 {
     return writeFile("/sys/class/power_supply/BAT0/charge_control_end_threshold",
                      QString::number(qBound(50, percent, 100)));
+}
+
+namespace {
+const char *kI2cDevices = "/sys/bus/i2c/devices/";
+const char *kBmi323 = "/sys/bus/i2c/drivers/bmi323/";
+
+QString imuI2cName()
+{
+    const QStringList l = QDir(kI2cDevices).entryList({"i2c-BOSC0200:*"}, QDir::Dirs | QDir::System | QDir::NoDotAndDotDot);
+    return l.isEmpty() ? QString() : l.first();
+}
+} // namespace
+
+int readImuSensor()
+{
+    const QString n = imuI2cName();
+    if (n.isEmpty())
+        return -1;
+    return QFileInfo::exists(QString(kI2cDevices) + n + "/driver") ? 1 : 0;
+}
+
+bool applyImuSensor(bool on)
+{
+    const int cur = readImuSensor();
+    if (cur < 0 || cur == int(on))
+        return cur >= 0;
+    return writeFile(QString(kBmi323) + (on ? "bind" : "unbind"), imuI2cName());
 }
 
 int batteryPercent()
