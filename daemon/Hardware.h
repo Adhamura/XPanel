@@ -33,6 +33,9 @@ bool applyTdp(const Tdp &t);
 bool applyFan(const QString &preset, const QJsonObject &curve = {});
 bool applyChargeLimit(int percent);   // 100 = no limit
 int readChargeLimit();
+// Motion sensor (BMI323): off unbinds its driver, so no program can read it.
+int readImuSensor();                  // 1 on, 0 off, -1 no sensor
+bool applyImuSensor(bool on);
 
 // effect: off | static | breathing | dualbreathing | colorcycle | rainbow | strobe (Aura.h) ;
 // color, color2 "#rrggbb" (color2: dual breathing) ; brightness 0..3 ; speed: low | medium | high ;

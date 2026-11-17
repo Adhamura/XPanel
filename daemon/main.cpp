@@ -159,7 +159,7 @@ private:
     {
         m_state = QJsonObject{
             {"opmode", "performance"}, {"tdp", 15}, {"fan", "auto"},
-            {"charge", Hardware::readChargeLimit()}, {"lighting", "static"},
+            {"charge", Hardware::readChargeLimit()}, {"lighting", "static"}, {"imuSensor", Hardware::readImuSensor() != 0},
             {"tdpSlow", 0}, {"tdpFast", 0}, {"tdpLock", false}, {"eco", false}, {"cpuBoost", true}, {"cpuBoostMode", "aggressive"}, {"gpuClock", 0},
             {"gpuClockMin", 0}, {"cpuClock", 0}, {"cpuClockMin", 0},
             {"lightColor", "#00c8ff"}, {"lightBrightness", 3}, {"lightSpeed", "medium"},
@@ -232,7 +232,7 @@ private:
         if (key == "fanCurve") return FanCurve::valid(v);
         if (key == "lightDirection") return kDirections.contains(v.toString());
         if (key == "lightColor" || key == "lightColor2") return QRegularExpression("^#[0-9a-fA-F]{6}$").match(v.toString()).hasMatch();
-        if (key == "eco" || key == "cpuBoost" || key == "tdpLock" || key == "bootSound" || key == "mcuPowersave") return v.isBool();
+        if (key == "eco" || key == "cpuBoost" || key == "tdpLock" || key == "bootSound" || key == "mcuPowersave" || key == "imuSensor") return v.isBool();
         if (key == "cpuBoostMode") return v.isString() && (v.toString() == "off" || v.toString() == "enabled" || v.toString() == "aggressive" || v.toString() == "efficient");
         if (key == "control") return v.isObject() && QJsonDocument(v.toObject()).toJson().size() < 65536;
         if (key == "gyroBias") { // [x, y, z] rad/s, from the gyro calibration
@@ -312,6 +312,7 @@ private:
         applyTdp();
         applyFan();
         Hardware::applyChargeLimit(m_state["charge"].toInt());
+        Hardware::applyImuSensor(m_state["imuSensor"].toBool(true));
         applyLighting();
         applyGpuClock();
         Hardware::writeAttr("boot_sound", m_state["bootSound"].toBool() ? 1 : 0);
@@ -493,6 +494,7 @@ private:
             if (apply.contains("mcuPowersave")) Hardware::writeAttr("mcu_powersave", m_state["mcuPowersave"].toBool() ? 1 : 0);
             if (apply.contains("fan") || (apply.contains("fanCurve") && m_state["fan"] == "custom")) applyFan();
             if (apply.contains("charge")) Hardware::applyChargeLimit(m_state["charge"].toInt());
+            if (apply.contains("imuSensor")) Hardware::applyImuSensor(m_state["imuSensor"].toBool());
             if (apply.contains("control")) m_input.setControl(m_state.value("control").toObject());
             if (apply.contains("gyroBias")) m_input.setGyroBias(m_state["gyroBias"].toArray());
             for (const char *k : {"lighting", "lightColor", "lightColor2", "lightBrightness", "lightSpeed", "lightDirection"})

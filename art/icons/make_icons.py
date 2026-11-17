@@ -84,6 +84,9 @@ ICONS = {
     # Vibration: handheld between two zigzag waves
     "vibration": s("device", '<rect x="21" y="10" width="22" height="44" rx="4"/>')
                + s("waves", '<path d="M13 19L7 25.5L13 32L7 38.5L13 45M51 19L57 25.5L51 32L57 38.5L51 45"/>'),
+    "motion": s("orbits", '<ellipse cx="32" cy="32" rx="26" ry="10" transform="rotate(-35 32 32)"/>'
+                          '<ellipse cx="32" cy="32" rx="26" ry="10" transform="rotate(35 32 32)"/>')
+            + f("core", '<circle cx="32" cy="32" r="5"/>'),
     # Manual TDP / settings: three sliders
     "sliders": s("rails", '<path d="M14 8V56M32 8V56M50 8V56"/>')
              + f("knobs", '<rect x="7" y="15" width="14" height="10" rx="3"/><rect x="25" y="36" width="14" height="10" rx="3"/>'
